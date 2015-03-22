@@ -2,20 +2,20 @@ package sw.airborne.firmwares.rotorcraft.stabilization;
 
 public class Stabilization_attitude_quat_int {
 	//TODO
-	 public static Int32AttitudeGains stabilization_gains = {
-			{STABILIZATION_ATTITUDE_PHI_PGAIN, STABILIZATION_ATTITUDE_THETA_PGAIN, STABILIZATION_ATTITUDE_PSI_PGAIN },
-			{STABILIZATION_ATTITUDE_PHI_DGAIN, STABILIZATION_ATTITUDE_THETA_DGAIN, STABILIZATION_ATTITUDE_PSI_DGAIN },
-			{STABILIZATION_ATTITUDE_PHI_DDGAIN, STABILIZATION_ATTITUDE_THETA_DDGAIN, STABILIZATION_ATTITUDE_PSI_DDGAIN },
-			{STABILIZATION_ATTITUDE_PHI_IGAIN, STABILIZATION_ATTITUDE_THETA_IGAIN, STABILIZATION_ATTITUDE_PSI_IGAIN }
+	public static Int32AttitudeGains stabilization_gains = {
+		{STABILIZATION_ATTITUDE_PHI_PGAIN, STABILIZATION_ATTITUDE_THETA_PGAIN, STABILIZATION_ATTITUDE_PSI_PGAIN },
+		{STABILIZATION_ATTITUDE_PHI_DGAIN, STABILIZATION_ATTITUDE_THETA_DGAIN, STABILIZATION_ATTITUDE_PSI_DGAIN },
+		{STABILIZATION_ATTITUDE_PHI_DDGAIN, STABILIZATION_ATTITUDE_THETA_DDGAIN, STABILIZATION_ATTITUDE_PSI_DDGAIN },
+		{STABILIZATION_ATTITUDE_PHI_IGAIN, STABILIZATION_ATTITUDE_THETA_IGAIN, STABILIZATION_ATTITUDE_PSI_IGAIN }
 	};
 
-	
 
-	 public static Int32Quat stabilization_att_sum_err_quat;
-	 public static Int32Eulers stabilization_att_sum_err;
 
-	 public static int stabilization_att_fb_cmd[] = new int[COMMANDS_NB];
-	 public static int stabilization_att_ff_cmd[]= new int[COMMANDS_NB];
+	public static Int32Quat stabilization_att_sum_err_quat;
+	public static Int32Eulers stabilization_att_sum_err;
+
+	public static int stabilization_att_fb_cmd[] = new int[COMMANDS_NB];
+	public static int stabilization_att_ff_cmd[]= new int[COMMANDS_NB];
 
 	public static final int IERROR_SCALE = 1024;
 	public static final int  GAIN_PRESCALER_FF= 48;
@@ -23,11 +23,11 @@ public class Stabilization_attitude_quat_int {
 	public static final int GAIN_PRESCALER_D =48;
 	public static final int  GAIN_PRESCALER_I =48;
 
-	
+
 
 	public static void send_att() { //FIXME really use this message here ?
-		 Int32Rates body_rate = stateGetBodyRates_i();
-		 Int32Eulers att = stateGetNedToBodyEulers_i();
+		Int32Rates body_rate = stateGetBodyRates_i();
+		Int32Eulers att = stateGetNedToBodyEulers_i();
 		DOWNLINK_SEND_STAB_ATTITUDE_INT(DefaultChannel, DefaultDevice,
 				(body_rate.p), (body_rate.q), (body_rate.r),
 				(att.phi), (att.theta), (att.psi),
@@ -65,7 +65,7 @@ public class Stabilization_attitude_quat_int {
 	}
 
 	public static void send_ahrs_ref_quat() {
-		 Int32Quat quat = stateGetNedToBodyQuat_i();
+		Int32Quat quat = stateGetNedToBodyQuat_i();
 		DOWNLINK_SEND_AHRS_REF_QUAT(DefaultChannel, DefaultDevice,
 				stab_att_ref_quat.qi,
 				stab_att_ref_quat.qx,
@@ -76,7 +76,7 @@ public class Stabilization_attitude_quat_int {
 				(quat.qy),
 				(quat.qz));
 	}
-	
+
 
 	public static void stabilization_attitude_init() {
 
@@ -86,9 +86,9 @@ public class Stabilization_attitude_quat_int {
 		INT_EULERS_ZERO( stabilization_att_sum_err );
 
 		if(PERIODIC_TELEMETRY){
-		register_periodic_telemetry(DefaultPeriodic, "STAB_ATTITUDE", send_att);
-		register_periodic_telemetry(DefaultPeriodic, "STAB_ATTITUDE_REF", send_att_ref);
-		register_periodic_telemetry(DefaultPeriodic, "AHRS_REF_QUAT", send_ahrs_ref_quat);
+			register_periodic_telemetry(DefaultPeriodic, "STAB_ATTITUDE", send_att);
+			register_periodic_telemetry(DefaultPeriodic, "STAB_ATTITUDE_REF", send_att_ref);
+			register_periodic_telemetry(DefaultPeriodic, "AHRS_REF_QUAT", send_ahrs_ref_quat);
 		}
 	}
 
@@ -115,7 +115,7 @@ public class Stabilization_attitude_quat_int {
 
 	public static void stabilization_attitude_set_rpy_setpoint_i( Int32Eulers *rpy) {
 		// stab_att_sp_euler.psi still used in ref..
-	//	memcpy(stab_att_sp_euler, rpy, sizeof( Int32Eulers));
+		//	memcpy(stab_att_sp_euler, rpy, sizeof( Int32Eulers));
 		stab_att_sp_euler = rpy.clone();
 		quat_from_rpy_cmd_i(stab_att_sp_quat, stab_att_sp_euler);
 	}
@@ -135,12 +135,12 @@ public class Stabilization_attitude_quat_int {
 
 		quat_from_earth_cmd_i(stab_att_sp_quat, cmd, heading);
 	}
-	
+
 	public static int OFFSET_AND_ROUND(int _a,int _b){
 		return (((_a)+(1<<((_b)-1)))>>(_b));
 	}
 	//#define OFFSET_AND_ROUND(_a, _b) (((_a)+(1<<((_b)-1)))>>(_b))
-	
+
 	public static int OFFSET_AND_ROUND2(int _a, int _b) {
 
 		return (((_a)+(1<<((_b)-1))-((_a)<0?1:0))>>(_b));
@@ -157,7 +157,7 @@ public class Stabilization_attitude_quat_int {
 	}
 
 	public static void attitude_run_fb(int fb_commands[],  Int32AttitudeGains gains,  Int32Quat att_err,
-			 Int32Rates rate_err,  Int32Quat sum_err)
+			Int32Rates rate_err,  Int32Quat sum_err)
 	{
 		/*  PID feedback */
 		fb_commands[COMMAND_ROLL] =
@@ -189,8 +189,8 @@ public class Stabilization_attitude_quat_int {
 		 */
 
 		/* attitude error                          */
-		 Int32Quat att_err;
-		 Int32Quat att_quat = stateGetNedToBodyQuat_i();
+		Int32Quat att_err;
+		Int32Quat att_quat = stateGetNedToBodyQuat_i();
 		INT32_QUAT_INV_COMP(att_err, att_quat, stab_att_ref_quat);
 		/* wrap it in the shortest direction       */
 		INT32_QUAT_WRAP_SHORTEST(att_err);
@@ -201,13 +201,13 @@ public class Stabilization_attitude_quat_int {
 				OFFSET_AND_ROUND(stab_att_ref_rate.p, (REF_RATE_FRAC - INT32_RATE_FRAC)),
 				OFFSET_AND_ROUND(stab_att_ref_rate.q, (REF_RATE_FRAC - INT32_RATE_FRAC)),
 				OFFSET_AND_ROUND(stab_att_ref_rate.r, (REF_RATE_FRAC - INT32_RATE_FRAC)) };
-		 Int32Rates rate_err;
-		 Int32Rates body_rate = stateGetBodyRates_i();
+		Int32Rates rate_err;
+		Int32Rates body_rate = stateGetBodyRates_i();
 		RATES_DIFF(rate_err, rate_ref_scaled, (body_rate));
 
 		/* integrated error */
 		if (enable_integrator) {
-			 Int32Quat new_sum_err, scaled_att_err;
+			Int32Quat new_sum_err, scaled_att_err;
 			/* update accumulator */
 			scaled_att_err.qi = att_err.qi;
 			scaled_att_err.qx = att_err.qx / IERROR_SCALE;
@@ -241,12 +241,12 @@ public class Stabilization_attitude_quat_int {
 	}
 
 	public static void stabilization_attitude_read_rc(boolean in_flight, boolean in_carefree, boolean coordinated_turn) {
-		 FloatQuat q_sp;
+		FloatQuat q_sp;
 		if( USE_EARTH_BOUND_RC_SETPOINT)
-		stabilization_attitude_read_rc_setpoint_quat_earth_bound_f(q_sp, in_flight, in_carefree, coordinated_turn);
+			stabilization_attitude_read_rc_setpoint_quat_earth_bound_f(q_sp, in_flight, in_carefree, coordinated_turn);
 		else
 			stabilization_attitude_read_rc_setpoint_quat_f(q_sp, in_flight, in_carefree, coordinated_turn);
-		
+
 		QUAT_BFP_OF_REAL(stab_att_sp_quat, q_sp);
 	}
 }
