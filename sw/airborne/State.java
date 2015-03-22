@@ -486,7 +486,7 @@ public class State {
 
 	/// Set acceleration in ECEF coordinates (int).
 	public static  void stateSetAccelEcef_i( EcefCoor_i ecef_accel) {
-	  INT32_VECT3_COPY(state.ecef_accel_i, *ecef_accel);
+	  INT32_VECT3_COPY(state.ecef_accel_i, ecef_accel);
 	  /* clear bits for all accel representations and only set the new one */
 	  state.accel_status = (1 << ACCEL_ECEF_I);
 	}
