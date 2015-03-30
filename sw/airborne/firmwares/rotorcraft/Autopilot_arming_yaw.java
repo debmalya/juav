@@ -1,6 +1,14 @@
 package sw.airborne.firmwares.rotorcraft;
 
 public class Autopilot_arming_yaw {
+	public enum Arming_yaw_state {
+		STATUS_MOTORS_OFF,
+		  STATUS_M_OFF_STICK_PUSHED,
+		  STATUS_START_MOTORS,
+		  STATUS_MOTORS_ON,
+		  STATUS_M_ON_STICK_PUSHED,
+		  STATUS_STOP_MOTORS
+	}
 	public static final int MOTOR_ARMING_DELAY  = 40;
 
 	public static int autopilot_motors_on_counter;

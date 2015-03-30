@@ -1,5 +1,32 @@
 package sw.airborne.firmwares.rotorcraft;
 
+//These have been left in C++ standard lets agree to replace them as imports when the interfaces or abstract classes have been written
+#include "subsystems/commands.h"
+#include "subsystems/actuators.h"
+
+
+#include "subsystems/imu.h"
+#include "subsystems/gps.h"
+#include "subsystems/air_data.h"
+
+
+#include "subsystems/electrical.h"
+
+#include "firmwares/rotorcraft/autopilot.h"
+
+
+#include "firmwares/rotorcraft/stabilization.h"
+#include "firmwares/rotorcraft/guidance.h"
+
+#include "subsystems/ahrs.h"
+#include "subsystems/ahrs/ahrs_aligner.h"
+#include "subsystems/ins.h"
+
+#include "state.h"
+
+#include "firmwares/rotorcraft/main.h"
+
+
 public class Main {
 
 	public static final int BARO_PERIODIC_FREQUENCY = 50;
