@@ -1,10 +1,29 @@
 package sw.simulator.nps;
-interface Nps_main{
-    bool_t nps_main_parse_options(int argc, char** argv);
-    void nps_main_init(void);
-    void nps_main_display(void);
-    void nps_main_run_sim_step(void);
-    boolean nps_main_periodic(gpointer data __attribute__ ((unused)));}
-public class Nps_main implements Nps_main {
-
+public class Nps_main {
+	static double sim_time;
+	static double host_time_elapsed;
+	Nps_autopilot_rotorcraft npsRotorcraft = new Nps_autopilot_rotorcraft();
+	void nps_main_run_sim_step() 
+	{
+		npsRotorcraft.nps_autopilot_run_step(sim_time);
+	}
+	public void updateSimTime(Double val)
+	{
+		sim_time = val;
+	}
+	void Nps_main()
+	{
+		host_time_elapsed =System.currentTimeMillis();
+	}
+	
+	public static void main(String args[])
+	{
+		Nps_main npsMain = new Nps_main();
+		while (Nps_main.sim_time <= npsMain.host_time_elapsed) {
+			Nps_main.host_time_elapsed =System.currentTimeMillis();
+			npsMain.nps_main_run_sim_step();
+		}
+	}
+	
+		
 }
