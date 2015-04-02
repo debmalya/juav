@@ -270,10 +270,10 @@ public class Autopilot {
 		  autopilot_rc = true;
 		  autopilot_power_switch = false;
 		  
-		  if(!POWER_SWITCH_GPIO_DEFINED){
-			  gpio_setup_output(POWER_SWITCH_GPIO);
-			  gpio_clear(POWER_SWITCH_GPIO); // POWER OFF
-		  }
+		//  if(!POWER_SWITCH_GPIO_DEFINED){
+			//  gpio_setup_output(POWER_SWITCH_GPIO);
+			 // gpio_clear(POWER_SWITCH_GPIO); // POWER OFF
+		  //}
 		  
 
 		  autopilot_arming_init();
@@ -354,12 +354,12 @@ public class Autopilot {
 		 */
 		if (autopilot_mode == AP_MODE_FAILSAFE) {
 			if (!autopilot_in_flight)
-				this.autopilot_set_mode(AP_MODE_KILL);
+			autopilot_set_mode(AP_MODE_KILL);
 
 			if(FAILSAFE_GROUND_DETECT){
 				//INFO("Using FAILSAFE_GROUND_DETECT: KILL")
 				if (autopilot_ground_detected)
-				this.autopilot_set_mode(AP_MODE_KILL);
+				autopilot_set_mode(AP_MODE_KILL);
 			}
 		}
 
