@@ -8,13 +8,13 @@ public class Std {
 	
 	public static final double M_PI_2 = (M_PI/2);
 	
-	public static int cbi(int sfr, int bit){
-		return (_SFR_BYTE(sfr) &= ~_BV(bit));
-	}
-	
-	public static int sbi(int sft, int bit){
-		return (_SFR_BYTE(sfr) |= _BV(bit));
-	}
+//	public static int cbi(int sfr, int bit){
+//		return (_SFR_BYTE(sfr) &= ~_BV(bit));
+//	}
+//	
+//	public static int sbi(int sft, int bit){
+//		return (_SFR_BYTE(sfr) |= _BV(bit));
+//	}
 	
 	public static boolean bit_is_set(int x, int b){
 		return ((x >> b) & 0x1) == 1;

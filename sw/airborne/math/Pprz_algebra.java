@@ -21,7 +21,7 @@ public class Pprz_algebra {
 	(_b).x = (float)((_a).x)/1e2);          
 	(_b).y = (float)((_a).y)/1e2); 	
 	(_b).z = (float)((_a).z)/1e2); }
-	public static void ECEF_BFP_OF_BFP(FloatVect3 _a,Int32Vect3 _b){
+	public static void ECEF_FLOAT_OF_BFP(FloatVect3 _a,Int32Vect3 _b){
 		(_b).x = (float)((_a).x)/1e2);          
 		(_b).y = (float)((_a).y)/1e2); 	
 		(_b).z = (float)((_a).z)/1e2); }
@@ -228,8 +228,8 @@ public class Pprz_algebra {
 	public static void VECT3_RATES_CROSS_VECT3(DoubleVect3 _vo,DoubleRates _r1,DoubleVect3 _v2) {    
 	    (_vo).x = (_r1).q*(_v2).z - (_r1).r*(_v2).y;    
 	    (_vo).y = (_r1).r*(_v2).x - (_r1).p*(_v2).z;    
-	    (_vo).z = (_r1).p*(_v2).y - (_r1).q*(_v2).x;    
-	  }
+	    (_vo).z = (_r1).p*(_v2).y - (_r1).q*(_v2).x;   } 
+	 
 
 
 	//
@@ -239,7 +239,7 @@ public class Pprz_algebra {
 	//
 
 
-	public static void EULERS_COPY(_a, _b) {				
+	public static void EULERS_COPY(_a , _b) {				
 	    (_a).phi   = (_b).phi;				
 	    (_a).theta = (_b).theta;				
 	    (_a).psi   = (_b).psi;				
@@ -574,7 +574,7 @@ public class Pprz_algebra {
 	  }
 
 	/* multiply _vin by _rmat, store in _vout */
-	public static void RMAT_VECT3_MUL(_vout, _rmat, _vin) {		 
+	public static void RMAT_VECT3_MUL(_vout , _rmat, _vin) {		 
 	    (_vout).x = RMAT_ELMT((_rmat), 0, 0) * (_vin).x +	 
 	                RMAT_ELMT((_rmat), 0, 1) * (_vin).y +	 
 	                RMAT_ELMT((_rmat), 0, 2) * (_vin).z;	 
