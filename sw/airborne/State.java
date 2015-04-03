@@ -1,7 +1,8 @@
 package sw.airborne;
 
 import sw.airborne.math.*; 
-
+import sw.include.Std;
+import static sw.airborne.math.Pprz_algebra_int.*;
 public class State {
 	/* *
 	 * This general state interface holds all the most important vehicle states like
@@ -63,10 +64,35 @@ public class State {
 		//memcpy(&state.ned_origin_i, ltp_def, sizeof( LtpDef_i));
 		state.ned_origin_i  = ltp_def.clone();  
 		/* convert to float */
-		ECEF_FLOAT_OF_BFP(state.ned_origin_f.ecef, state.ned_origin_i.ecef);
-		LLA_FLOAT_OF_BFP(state.ned_origin_f.lla, state.ned_origin_i.lla);
-		HIGH_RES_RMAT_FLOAT_OF_BFP(state.ned_origin_f.ltp_of_ecef, state.ned_origin_i.ltp_of_ecef);
-		state.ned_origin_f.hmsl = M_OF_MM(state.ned_origin_i.hmsl);
+		Pprz_algebra.ECEF_FLOAT_OF_BFP(state.ned_origin_f.ecef, state.ned_origin_i.ecef);
+        
+ (state.ned_origin_f.ecef).x = (float)(((state.ned_origin_i.ecef).x)/1e2);          
+ (state.ned_origin_f.ecef).y = (float)(((state.ned_origin_i.ecef).y)/1e2);         
+ (state.ned_origin_f.ecef).z = (float)(((state.ned_origin_i.ecef).z)/1e2);          
+
+		
+		//LLA_FLOAT_OF_BFP(state.ned_origin_f.lla, state.ned_origin_i.lla);
+		{                   
+		    (state.ned_origin_f.lla).lat = (float)(((state.ned_origin_i.lla).lat)/1e7);    
+		    (state.ned_origin_f.lla).lon = (float)(((state.ned_origin_i.lla).lon)/1e7);    
+		    (state.ned_origin_f.lla).alt = (float)(((state.ned_origin_i.lla).alt)/1e3);          
+		  }
+		
+		
+		//HIGH_RES_RMAT_FLOAT_OF_BFP(state.ned_origin_f.ltp_of_ecef, state.ned_origin_i.ltp_of_ecef);
+		{                 
+		    (state.ned_origin_f.ltp_of_ecef).m[0] = ((float)((state.ned_origin_i.ltp_of_ecef).m[0])/(1<<(20))); 
+		    (state.ned_origin_f.ltp_of_ecef).m[1] = ((float)((state.ned_origin_i.ltp_of_ecef).m[1])/(1<<(20))); 
+		    (state.ned_origin_f.ltp_of_ecef).m[2] = ((float)((state.ned_origin_i.ltp_of_ecef).m[2])/(1<<(20))); 
+		    (state.ned_origin_f.ltp_of_ecef).m[3] = ((float)((state.ned_origin_i.ltp_of_ecef).m[3])/(1<<(20))); 
+		    (state.ned_origin_f.ltp_of_ecef).m[4] = ((float)((state.ned_origin_i.ltp_of_ecef).m[4])/(1<<(20))); 
+		    (state.ned_origin_f.ltp_of_ecef).m[5] = ((float)((state.ned_origin_i.ltp_of_ecef).m[5])/(1<<(20))); 
+		    (state.ned_origin_f.ltp_of_ecef).m[6] = ((float)((state.ned_origin_i.ltp_of_ecef).m[6])/(1<<(20))); 
+		    (state.ned_origin_f.ltp_of_ecef).m[7] = ((float)((state.ned_origin_i.ltp_of_ecef).m[7])/(1<<(20))); 
+		    (state.ned_origin_f.ltp_of_ecef).m[8] = ((float)((state.ned_origin_i.ltp_of_ecef).m[8])/(1<<(20))); 
+		  }
+		
+		state.ned_origin_f.hmsl = ((state.ned_origin_i.hmsl)/1e3);//M_OF_MM(state.ned_origin_i.hmsl);
 
 		/* clear bits for all local frame representations */
 		state.pos_status &= ~(POS_LOCAL_COORD);
@@ -101,29 +127,56 @@ public class State {
 
 	/// Set position from ECEF coordinates (int).
 	public static void stateSetPositionEcef_i( EcefCoor_i ecef_pos) {
-	  INT32_VECT3_COPY(state.ecef_pos_i, ecef_pos);
+	 // INT32_VECT3_COPY(state.ecef_pos_i, ecef_pos);
+	  {        
+		    (state.ecef_pos_i).x = ecef_pos.x;				
+		    (state.ecef_pos_i).y = ecef_pos.y;				
+		    (state.ecef_pos_i).z = ecef_pos.z;				
+		  }
+	  
 	  /* clear bits for all position representations and only set the new one */
 	  state.pos_status = (1 << POS_ECEF_I);
 	}
 
 	/// Set position from local NED coordinates (int).
 	public static void stateSetPositionNed_i(NedCoor_i ned_pos) {
-	  INT32_VECT3_COPY(state.ned_pos_i, ned_pos);
-	  /* clear bits for all position representations and only set the new one */
+	  
+		//INT32_VECT3_COPY(state.ned_pos_i, ned_pos);
+		{        
+		    (state.ned_pos_i).x = ned_pos.x;				
+		    (state.ned_pos_i).y = ned_pos.y;				
+		    (state.ned_pos_i).z = ned_pos.z;				
+		  }
+		
+		
+		/* clear bits for all position representations and only set the new one */
 	  state.pos_status = (1 << POS_NED_I);
 	}
 
 	/// Set position from local ENU coordinates (int).
 	public static void stateSetPositionEnu_i( EnuCoor_i enu_pos) {
-	  INT32_VECT3_COPY(state.enu_pos_i, enu_pos);
+	  //INT32_VECT3_COPY(state.enu_pos_i, enu_pos);
+	  
+	  {        
+		    (state.enu_pos_i).x = enu_pos.x;				
+		    (state.enu_pos_i).y = enu_pos.y;				
+		    (state.enu_pos_i).z = enu_pos.z;				
+		  }
 	  /* clear bits for all position representations and only set the new one */
 	  state.pos_status = (1 << POS_ENU_I);
 	}
 
 	/// Set position from LLA coordinates (int).
 	public static  void stateSetPositionLla_i( LlaCoor_i lla_pos) {
-	  LLA_COPY(state.lla_pos_i, lla_pos);
-	  /* clear bits for all position representations and only set the new one */
+	 // LLA_COPY(state.lla_pos_i, lla_pos);
+	  
+		{			\
+		    (state.lla_pos_i).lat = lla_pos.lat;			\
+		    (state.lla_pos_i).lon = lla_pos.lon;			\
+		    (state.lla_pos_i).alt = lla_pos.alt;			\
+		}
+		
+		/* clear bits for all position representations and only set the new one */
 	  state.pos_status = (1 << POS_LLA_I);
 	}
 
@@ -136,20 +189,46 @@ public class State {
 	  /* clear all status bit */
 	  state.pos_status = 0;
 	  if (ecef_pos != null) {
-	    INT32_VECT3_COPY(state.ecef_pos_i, ecef_pos);
+	   // INT32_VECT3_COPY(state.ecef_pos_i, ecef_pos);
+	    {        \
+		    (state.ecef_pos_i).x = ecef_pos.x;				\
+		    (state.ecef_pos_i).y = ecef_pos.y;				\
+		    (state.ecef_pos_i).z = ecef_pos.z;				\
+		  }
+	    
 	    state.pos_status |= (1 << POS_ECEF_I);
 	  }
 	  if (ned_pos != null) {
-	    INT32_VECT3_COPY(state.ned_pos_i, ned_pos);
+	    //INT32_VECT3_COPY(state.ned_pos_i, ned_pos);
+		  {        \
+			    (state.ned_pos_i).x = ned_pos.x;				\
+			    (state.ned_pos_i).y = ned_pos.y;				\
+			    (state.ned_pos_i).z = ned_pos.z;				\
+			  }
+			
+	    
 	    state.pos_status |= (1 << POS_NED_I);
 	  }
 	  if (enu_pos != null) {
-	    INT32_VECT3_COPY(state.enu_pos_i, enu_pos);
+	   // INT32_VECT3_COPY(state.enu_pos_i, enu_pos);
+		  {        \
+			    (state.enu_pos_i).x = enu_pos.x;				\
+			    (state.enu_pos_i).y = enu_pos.y;				\
+			    (state.enu_pos_i).z = enu_pos.z;				\
+			  }
+		  
 	    state.pos_status |= (1 << POS_ENU_I);
 	  }
 	  if (lla_pos != null) {
-	    LLA_COPY(state.lla_pos_i, lla_pos);
-	    state.pos_status |= (1 << POS_LLA_I);
+	  //  LLA_COPY(state.lla_pos_i, lla_pos);
+		  {			\
+			    (state.lla_pos_i).lat = lla_pos.lat;			\
+			    (state.lla_pos_i).lon = lla_pos.lon;			\
+			    (state.lla_pos_i).alt = lla_pos.alt;			\
+			}
+		  
+		  
+		  state.pos_status |= (1 << POS_LLA_I);
 	  }
 	}
 
@@ -163,28 +242,56 @@ public class State {
 
 	/// Set position from ECEF coordinates (float).
 	public static void stateSetPositionEcef_f(EcefCoor_f ecef_pos) {
-	  VECT3_COPY(state.ecef_pos_f, ecef_pos);
+	  //VECT3_COPY(state.ecef_pos_f, ecef_pos);
+	  {        \
+		    (state.ecef_pos_f).x = ecef_pos.x;				\
+		    (state.ecef_pos_f).y = ecef_pos.y;				\
+		    (state.ecef_pos_f).z = ecef_pos.z;				\
+		  }
+	  
+	  
 	  /* clear bits for all position representations and only set the new one */
 	  state.pos_status = (1 << POS_ECEF_F);
 	}
 
 	/// Set position from local NED coordinates (float).
 	public static  void stateSetPositionNed_f( NedCoor_f ned_pos) {
-	  VECT3_COPY(state.ned_pos_f, ned_pos);
+	  //VECT3_COPY(state.ned_pos_f, ned_pos);
+	  {        \
+		    (state.ned_pos_f).x = ned_pos.x;				\
+		    (state.ned_pos_f).y = ned_pos.y;				\
+		    (state.ned_pos_f).z = ned_pos.z;				\
+		  }
+		
+	  
+	  
 	  /* clear bits for all position representations and only set the new one */
 	  state.pos_status = (1 << POS_NED_F);
 	}
 
 	/// Set position from local ENU coordinates (float).
 	public static  void stateSetPositionEnu_f( EnuCoor_f enu_pos) {
-	  VECT3_COPY(state.enu_pos_f, enu_pos);
+	  //VECT3_COPY(state.enu_pos_f, enu_pos);
+	  {        \
+		    (state.enu_pos_f).x = enu_pos.x;				\
+		    (state.enu_pos_f).y = enu_pos.y;				\
+		    (state.enu_pos_f).z = enu_pos.z;				\
+		  }
 	  /* clear bits for all position representations and only set the new one */
 	  state.pos_status = (1 << POS_ENU_F);
 	}
 
 	/// Set position from LLA coordinates (float).
 	public static  void stateSetPositionLla_f( LlaCoor_f lla_pos) {
-	  LLA_COPY(state.lla_pos_f, lla_pos);
+	 // LLA_COPY(state.lla_pos_f, lla_pos);
+	  {			\
+		    (state.lla_pos_f).lat = lla_pos.lat;			\
+		    (state.lla_pos_f).lon = lla_pos.lon;			\
+		    (state.lla_pos_f).alt = lla_pos.alt;			\
+		}
+	  
+	  
+	  
 	  /* clear bits for all position representations and only set the new one */
 	  state.pos_status = (1 << POS_LLA_F);
 	}
@@ -199,19 +306,45 @@ public class State {
 		/* clear all status bit */
 		state.pos_status = 0;
 		if (ecef_pos != NULL) {
-			VECT3_COPY(state.ecef_pos_f, ecef_pos);
+			//VECT3_COPY(state.ecef_pos_f, ecef_pos);
+			 {        \
+				    (state.ecef_pos_f).x = ecef_pos.x;				\
+				    (state.ecef_pos_f).y = ecef_pos.y;				\
+				    (state.ecef_pos_f).z = ecef_pos.z;				\
+				  }
+			
 			state.pos_status |= (1 << POS_ECEF_F);
 		}
 		if (ned_pos != NULL) {
-			VECT3_COPY(state.ned_pos_f, ned_pos);
+			//VECT3_COPY(state.ned_pos_f, ned_pos);
+			{        \
+			    (state.ned_pos_f).x = ned_pos.x;				\
+			    (state.ned_pos_f).y = ned_pos.y;				\
+			    (state.ned_pos_f).z = ned_pos.z;				\
+			  }
+			
+			
 			state.pos_status |= (1 << POS_NED_F);
 		}
 		if (enu_pos != NULL) {
-			VECT3_COPY(state.enu_pos_f, enu_pos);
+			//VECT3_COPY(state.enu_pos_f, enu_pos);
+			{        \
+			    (state.enu_pos_f).x = enu_pos.x;				\
+			    (state.enu_pos_f).y = enu_pos.y;				\
+			    (state.enu_pos_f).z = enu_pos.z;				\
+			  }
+			
 			state.pos_status |= (1 << POS_ENU_F);
 		}
 		if (lla_pos != NULL) {
-			LLA_COPY(state.lla_pos_f, lla_pos);
+			//LLA_COPY(state.lla_pos_f, lla_pos);
+			{			\
+			    (state.lla_pos_f).lat = lla_pos.lat;			\
+			    (state.lla_pos_f).lon = lla_pos.lon;			\
+			    (state.lla_pos_f).alt = lla_pos.alt;			\
+			}
+			
+			
 			state.pos_status |= (1 << POS_LLA_F);
 		}
 		if (utm_pos != NULL) {
@@ -301,22 +434,40 @@ public class State {
 
 	// Set ground speed in local NED coordinates (int).
 	public static  void stateSetSpeedNed_i( NedCoor_i ned_speed) {
-	  INT32_VECT3_COPY(state.ned_speed_i, ned_speed);
+	  //INT32_VECT3_COPY(state.ned_speed_i, ned_speed);
+	  {			\
+		    (state.ned_speed_i).x = ned_speed.x ;			\
+		    (state.ned_speed_i).y = ned_speed.y;			\
+		    (state.ned_speed_i).z = ned_speed.z;			\
+		}
+	  
 	  /* clear bits for all speed representations and only set the new one */
 	  state.speed_status = (1 << SPEED_NED_I);
 	}
 
 	// Set ground speed in local ENU coordinates (int).
 	public static  void stateSetSpeedEnu_i( EnuCoor_i enu_speed) {
-	  INT32_VECT3_COPY(state.enu_speed_i, enu_speed);
+	  //INT32_VECT3_COPY(state.enu_speed_i, enu_speed);
+	  {			\
+		    (state.enu_speed_i).x = enu_speed.x ;			\
+		    (state.enu_speed_i).y = enu_speed.y;			\
+		    (state.enu_speed_i).z = enu_speed.z;			\
+		}
+	  
 	  /* clear bits for all speed representations and only set the new one */
 	  state.speed_status = (1 << SPEED_ENU_I);
 	}
 
 	/// Set ground speed in ECEF coordinates (int).
 	public static  void stateSetSpeedEcef_i( EcefCoor_i ecef_speed) {
-	  INT32_VECT3_COPY(state.ecef_speed_i, ecef_speed);
-	  /* clear bits for all speed representations and only set the new one */
+	 //INT32_VECT3_COPY(state.ecef_speed_i, ecef_speed);
+		{			\
+		    (state.ecef_speed_i).x = ecef_speed.x ;			\
+		    (state.ecef_speed_i).y = ecef_speed.y;			\
+		    (state.ecef_speed_i).z = ecef_speed.z;			\
+		}
+		
+		/* clear bits for all speed representations and only set the new one */
 	  state.speed_status = (1 << SPEED_ECEF_I);
 	}
 
@@ -328,37 +479,70 @@ public class State {
 	  /* clear all status bit */
 	  state.speed_status = 0;
 	  if (ecef_speed != NULL) {
-	    INT32_VECT3_COPY(state.ecef_speed_i, ecef_speed);
-	    state.speed_status |= (1 << SPEED_ECEF_I);
+	  // INT32_VECT3_COPY(state.ecef_speed_i, ecef_speed);
+		  {			
+			    (state.ecef_speed_i).x = ecef_speed.x ;			
+			    (state.ecef_speed_i).y = ecef_speed.y;			
+			    (state.ecef_speed_i).z = ecef_speed.z;			
+			}
+		  state.speed_status |= (1 << SPEED_ECEF_I);
 	  }
 	  if (ned_speed != NULL) {
-	    INT32_VECT3_COPY(state.ned_speed_i, ned_speed);
-	    state.speed_status |= (1 << SPEED_NED_I);
+	    //INT32_VECT3_COPY(state.ned_speed_i, ned_speed);
+		  {			\
+			    (state.ned_speed_i).x = ned_speed.x ;			\
+			    (state.ned_speed_i).y = ned_speed.y;			\
+			    (state.ned_speed_i).z = ned_speed.z;			\
+			}
+		  state.speed_status |= (1 << SPEED_NED_I);
 	  }
 	  if (enu_speed != NULL) {
-	    INT32_VECT3_COPY(state.enu_speed_i, enu_speed);
-	    state.speed_status |= (1 << SPEED_ENU_I);
+	    //INT32_VECT3_COPY(state.enu_speed_i, enu_speed);
+		  {			\
+			    (state.enu_speed_i).x = enu_speed.x ;			\
+			    (state.enu_speed_i).y = enu_speed.y;			\
+			    (state.enu_speed_i).z = enu_speed.z;			\
+			}
+		  state.speed_status |= (1 << SPEED_ENU_I);
 	  }
 	}
 
 	/// Set ground speed in local NED coordinates (float).
 	public static  void stateSetSpeedNed_f( NedCoor_f ned_speed) {
-	  VECT3_COPY(state.ned_speed_f, ned_speed);
-	  /* clear bits for all speed representations and only set the new one */
+	  //VECT3_COPY(state.ned_speed_f, ned_speed);
+		 {			
+			    (state.ned_speed_f).x = ned_speed.x ;			
+			    (state.ned_speed_f).y = ned_speed.y;			
+			    (state.ned_speed_f).z = ned_speed.z;			
+			}
+		
+		/* clear bits for all speed representations and only set the new one */
 	  state.speed_status = (1 << SPEED_NED_F);
 	}
 
 	/// Set ground speed in local ENU coordinates (float).
 	public static  void stateSetSpeedEnu_f( EnuCoor_f enu_speed) {
-	  VECT3_COPY(state.enu_speed_f, enu_speed);
-	  /* clear bits for all speed representations and only set the new one */
+	  //VECT3_COPY(state.enu_speed_f, enu_speed);
+		{			
+		    (state.enu_speed_f).x = enu_speed.x ;			
+		    (state.enu_speed_f).y = enu_speed.y;			
+		    (state.enu_speed_f).z = enu_speed.z;			
+		}
+		
+		/* clear bits for all speed representations and only set the new one */
 	  state.speed_status = (1 << SPEED_ENU_F);
 	}
 
 	/// Set ground speed in ECEF coordinates (float).
 	public static  void stateSetSpeedEcef_f( EcefCoor_f ecef_speed) {
-	  VECT3_COPY(state.ecef_speed_f, ecef_speed);
-	  /* clear bits for all speed representations and only set the new one */
+	  //VECT3_COPY(state.ecef_speed_f, ecef_speed);
+		 {			\
+			    (state.ecef_speed_f).x = ecef_speed.x ;			\
+			    (state.ecef_speed_f).y = ecef_speed.y;			\
+			    (state.ecef_speed_f).z = ecef_speed.z;			\
+			}
+		
+		/* clear bits for all speed representations and only set the new one */
 	  state.speed_status = (1 << SPEED_ECEF_F);
 	}
 
@@ -370,16 +554,32 @@ public class State {
 	  /* clear all status bit */
 	  state.speed_status = 0;
 	  if (ecef_speed != NULL) {
-	    VECT3_COPY(state.ecef_speed_f, ecef_speed);
-	    state.speed_status |= (1 << SPEED_ECEF_F);
+	   // VECT3_COPY(state.ecef_speed_f, ecef_speed);
+		  {			\
+			    (state.ecef_speed_f).x = ecef_speed.x ;			\
+			    (state.ecef_speed_f).y = ecef_speed.y;			\
+			    (state.ecef_speed_f).z = ecef_speed.z;			\
+			}
+		  state.speed_status |= (1 << SPEED_ECEF_F);
 	  }
 	  if (ned_speed != NULL) {
-	    VECT3_COPY(state.ned_speed_f, ned_speed);
-	    state.speed_status |= (1 << SPEED_NED_F);
+	   // VECT3_COPY(state.ned_speed_f, ned_speed);
+		  {			\
+			    (state.ned_speed_f).x = ned_speed.x ;			\
+			    (state.ned_speed_f).y = ned_speed.y;			\
+			    (state.ned_speed_f).z = ned_speed.z;			\
+			}
+		  state.speed_status |= (1 << SPEED_NED_F);
 	  }
 	  if (enu_speed != NULL) {
-	    VECT3_COPY(state.enu_speed_f, enu_speed);
-	    state.speed_status |= (1 << SPEED_ENU_F);
+	    //VECT3_COPY(state.enu_speed_f, enu_speed);
+		  {			\
+			    (state.enu_speed_f).x = enu_speed.x ;			\
+			    (state.enu_speed_f).y = enu_speed.y;			\
+			    (state.enu_speed_f).z = enu_speed.z;			\
+			}
+		  
+		  state.speed_status |= (1 << SPEED_ENU_F);
 	  }
 	}
 
@@ -387,70 +587,70 @@ public class State {
 
 	/// Get ground speed in local NED coordinates (int).
 	public static   NedCoor_i stateGetSpeedNed_i() {
-	  if (!bit_is_set(state.speed_status, SPEED_NED_I))
+	  if (!Std.bit_is_set(state.speed_status, SPEED_NED_I))
 	    stateCalcSpeedNed_i();
 	  return state.ned_speed_i;
 	}
 
 	/// Get ground speed in local ENU coordinates (int).
 	public static   EnuCoor_i stateGetSpeedEnu_i() {
-	  if (!bit_is_set(state.speed_status, SPEED_ENU_I))
+	  if (!Std.bit_is_set(state.speed_status, SPEED_ENU_I))
 	    stateCalcSpeedEnu_i();
 	  return state.enu_speed_i;
 	}
 
 	/// Get ground speed in ECEF coordinates (int).
 	public static   EcefCoor_i stateGetSpeedEcef_i() {
-	  if (!bit_is_set(state.speed_status, SPEED_ECEF_I))
+	  if (!Std.bit_is_set(state.speed_status, SPEED_ECEF_I))
 	    stateCalcSpeedEcef_i();
 	  return state.ecef_speed_i;
 	}
 
 	/// Get norm of horizontal ground speed (int).
 	public static  int stateGetHorizontalSpeedNorm_i() {
-	  if (!bit_is_set(state.speed_status, SPEED_HNORM_I))
+	  if (!Std.bit_is_set(state.speed_status, SPEED_HNORM_I))
 	    stateCalcHorizontalSpeedNorm_i();
 	  return state.h_speed_norm_i;
 	}
 
 	/// Get dir of horizontal ground speed (int).
 	public static  int stateGetHorizontalSpeedDir_i() {
-	  if (!bit_is_set(state.speed_status, SPEED_HDIR_I))
+	  if (!Std.bit_is_set(state.speed_status, SPEED_HDIR_I))
 	    stateCalcHorizontalSpeedDir_i();
 	  return state.h_speed_dir_i;
 	}
 
 	/// Get ground speed in local NED coordinates (float).
 	public static   NedCoor_f stateGetSpeedNed_f() {
-	  if (!bit_is_set(state.speed_status, SPEED_NED_F))
+	  if (!Std.bit_is_set(state.speed_status, SPEED_NED_F))
 	    stateCalcSpeedNed_f();
 	  return state.ned_speed_f;
 	}
 
 	/// Get ground speed in local ENU coordinates (float).
 	public static   EnuCoor_f stateGetSpeedEnu_f() {
-	  if (!bit_is_set(state.speed_status, SPEED_ENU_F))
+	  if (!Std.bit_is_set(state.speed_status, SPEED_ENU_F))
 	    stateCalcSpeedEnu_f();
 	  return state.enu_speed_f;
 	}
 
 	/// Get ground speed in ECEF coordinates (float).
 	public static   EcefCoor_f stateGetSpeedEcef_f() {
-	  if (!bit_is_set(state.speed_status, SPEED_ECEF_F))
+	  if (!Std.bit_is_set(state.speed_status, SPEED_ECEF_F))
 	    stateCalcSpeedEcef_f();
 	  return state.ecef_speed_f;
 	}
 
 	/// Get norm of horizontal ground speed (float).
 	public static  float stateGetHorizontalSpeedNorm_f() {
-	  if (!bit_is_set(state.speed_status, SPEED_HNORM_F))
+	  if (!Std.bit_is_set(state.speed_status, SPEED_HNORM_F))
 	    stateCalcHorizontalSpeedNorm_f();
 	  return state.h_speed_norm_f;
 	}
 
 	/// Get dir of horizontal ground speed (float).
 	public static  float stateGetHorizontalSpeedDir_f() {
-	  if (!bit_is_set(state.speed_status, SPEED_HDIR_F))
+	  if (!Std.bit_is_set(state.speed_status, SPEED_HDIR_F))
 	    stateCalcHorizontalSpeedDir_f();
 	  return state.h_speed_dir_f;
 	}
@@ -472,7 +672,7 @@ public class State {
 
 	/// Test if accelerations are valid.
 	public static  boolean stateIsAccelValid() {
-	  return (state.accel_status);
+	  return (state.accel_status==0);
 	}
 
 	/* ********************** Set functions ****************************/
@@ -493,14 +693,14 @@ public class State {
 
 	/// Set acceleration in NED coordinates (float).
 	public static  void stateSetAccelNed_f( NedCoor_f ned_accel) {
-	  VECT3_COPY(state.ned_accel_f, ned_accel);
+	  Pprz_algebra_float.VECT3_COPY(state.ned_accel_f, ned_accel);
 	  /* clear bits for all accel representations and only set the new one */
 	  state.accel_status = (1 << ACCEL_NED_F);
 	}
 
 	/// Set acceleration in ECEF coordinates (float).
 	public static  void stateSetAccelEcef_f( EcefCoor_f ecef_accel) {
-	  VECT3_COPY(state.ecef_accel_f, ecef_accel);
+		Pprz_algebra_float.VECT3_COPY(state.ecef_accel_f, ecef_accel);
 	  /* clear bits for all accel representations and only set the new one */
 	  state.accel_status = (1 << ACCEL_ECEF_F);
 	}
@@ -689,13 +889,13 @@ public class State {
 	public static  void stateSetAirspeed_i(int airspeed) {
 	  state.airspeed_i = airspeed;
 	  /* clear bits for all airspeed representations and only set the new one */
-	  ClearBit(state.wind_air_status, AIRSPEED_F);
-	  SetBit(state.wind_air_status, AIRSPEED_I);
+	  Std.ClearBit(state.wind_air_status, AIRSPEED_F);
+	  Std.SetBit(state.wind_air_status, AIRSPEED_I);
 	}
 
 	/// Set horizontal windspeed (float).
 	public static  void stateSetHorizontalWindspeed_f( FloatVect2 h_windspeed) {
-	  VECT2_COPY(state.h_windspeed_f, h_windspeed);
+	  Pprz_algebra_float.VECT2_COPY(state.h_windspeed_f, h_windspeed);
 	  /* clear bits for all windspeed representations and only set the new one */
 	  ClearBit(state.wind_air_status, WINDSPEED_I);
 	  SetBit(state.wind_air_status, WINDSPEED_F);
@@ -705,8 +905,8 @@ public class State {
 	public static  void stateSetAirspeed_f(float airspeed) {
 	  state.airspeed_f = airspeed;
 	  /* clear bits for all airspeed representations and only set the new one */
-	  ClearBit(state.wind_air_status, AIRSPEED_I);
-	  SetBit(state.wind_air_status, AIRSPEED_F);
+	  Std.ClearBit(state.wind_air_status, AIRSPEED_I);
+	  Std.SetBit(state.wind_air_status, AIRSPEED_F);
 	}
 
 	/// Set angle of attack in radians (float).
@@ -714,43 +914,43 @@ public class State {
 	  state.angle_of_attack_f = aoa;
 	  /* clear bits for all AOA representations and only set the new one */
 	  /// @todo no integer yet
-	  SetBit(state.wind_air_status, AOA_F);
+	  Std.SetBit(state.wind_air_status, AOA_F);
 	}
 
 	/// Set sideslip angle in radians (float).
 	public static  void stateSetSideslip_f(float sideslip) {
 	  state.sideslip_f = sideslip;
 	  /* clear bits for all sideslip representations and only set the new one */
-	  /// @todo no integer yet
-	  SetBit(state.wind_air_status, SIDESLIP_F);
+	  // @todo no integer yet
+	  Std.SetBit(state.wind_air_status, SIDESLIP_F);
 	}
 
 	
 
 	/// Get horizontal windspeed (int).
 	public static   Int32Vect2 stateGetHorizontalWindspeed_i() {
-	  if (!bit_is_set(state.wind_air_status, WINDSPEED_I))
+	  if (!Std.bit_is_set(state.wind_air_status, WINDSPEED_I))
 	    stateCalcHorizontalWindspeed_i();
 	  return state.h_windspeed_i;
 	}
 
 	/// Get airspeed (int).
 	public static  int stateGetAirspeed_i() {
-	  if (!bit_is_set(state.wind_air_status, AIRSPEED_I))
+	  if (!Std.bit_is_set(state.wind_air_status, AIRSPEED_I))
 	    stateCalcAirspeed_i();
 	  return state.airspeed_i;
 	}
 
 	/// Get horizontal windspeed (float).
 	public static   FloatVect2 stateGetHorizontalWindspeed_f() {
-	  if (!bit_is_set(state.wind_air_status, WINDSPEED_F))
+	  if (!Std.bit_is_set(state.wind_air_status, WINDSPEED_F))
 	    stateCalcHorizontalWindspeed_f();
 	  return state.h_windspeed_f;
 	}
 
 	/// Get airspeed (float).
 	public static  float stateGetAirspeed_f() {
-	  if (!bit_is_set(state.wind_air_status, AIRSPEED_F))
+	  if (!Std.bit_is_set(state.wind_air_status, AIRSPEED_F))
 	    stateCalcAirspeed_f();
 	  return state.airspeed_f;
 	}
@@ -785,20 +985,21 @@ public class State {
 	}
 	
 	public static void stateCalcPositionEcef_i() {
-		if (bit_is_set(state.pos_status, POS_ECEF_I))
+		if (Std.bit_is_set(state.pos_status, POS_ECEF_I))
 			return;
 
-		if (bit_is_set(state.pos_status, POS_ECEF_F)) {
-			ECEF_BFP_OF_REAL(state.ecef_pos_i, state.ecef_pos_f);
+		if (Std.bit_is_set(state.pos_status, POS_ECEF_F)) {
+			Pprz_algebra.ECEF_BFP_OF_REAL(state.ecef_pos_i, state.ecef_pos_f);
+			     
 		}
-		else if (bit_is_set(state.pos_status, POS_NED_I)) {
+		else if (Std.bit_is_set(state.pos_status, POS_NED_I)) {
 			ecef_of_ned_pos_i(state.ecef_pos_i, state.ned_origin_i, state.ned_pos_i);
 		}
 		else if (bit_is_set(state.pos_status, POS_NED_F)) {
 			/* transform ned_f to ecef_f, set status bit, then convert to int */
 			ecef_of_ned_point_f(state.ecef_pos_f, state.ned_origin_f, state.ned_pos_f);
 			SetBit(state.pos_status, POS_ECEF_F);
-			ECEF_BFP_OF_REAL(state.ecef_pos_i, state.ecef_pos_f);
+			Pprz_algebra.ECEF_BFP_OF_REAL(state.ecef_pos_i, state.ecef_pos_f);
 		}
 		else if (bit_is_set(state.pos_status, POS_LLA_F)) {
 			/* transform lla_f to ecef_f, set status bit, then convert to int */

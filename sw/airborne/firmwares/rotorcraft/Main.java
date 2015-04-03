@@ -66,7 +66,7 @@ public class Main {
 /*
 		air_data_init();
 		if(USE_BARO_BOARD) baro_init();
-		
+	*/	
 		imu_init();
 		if(USE_IMU_FLOAT) imu_float_init();
 		*/

@@ -1,5 +1,8 @@
 package sw.airborne.firmwares.rotorcraft;
 
+import sw.airborne.math.*;
+import static sw.airborne.math.Pprz_algebra_int.*;
+
 public class Autopilot {
 	
 	public static final int AP_MODE_KILL = 0;
@@ -192,12 +195,12 @@ public class Autopilot {
 		      electrical.vsupply, time_sec);
 	}
 	
-	public static void send_energy(){
-		final int e = electrical.energy;
-		final float vsup = ((float)electrical.vsupply) / 10.0f;
-		float power = vsup * curs;
-		DOWNLINK_SEND_ENERGY(DefaultChannel, DefaultDevice, vsup, curs, e, power);
-	}
+//	public static void send_energy(){
+//		final int e = electrical.energy;
+//		final float vsup = ((float)electrical.vsupply) / 10.0f;
+//		float power = vsup * curs;
+//		DOWNLINK_SEND_ENERGY(DefaultChannel, DefaultDevice, vsup, curs, e, power);
+//	}
 	
 	public static void send_fp() {
 		  int carrot_up = -guidance_v_z_sp;

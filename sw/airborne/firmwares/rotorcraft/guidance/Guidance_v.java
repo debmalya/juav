@@ -177,7 +177,7 @@ public class Guidance_v {
 		guidance_v_thrust_coeff = get_vertical_thrust_coeff();
 		if (in_flight) {
 			int vertical_thrust = (stabilization_cmd[COMMAND_THRUST] * guidance_v_thrust_coeff) >> INT32_TRIG_FRAC;
-			gv_adapt_run(stateGetAccelNed_i().z, vertical_thrust, guidance_v_zd_ref);
+			Guidance_v_adapt.gv_adapt_run(stateGetAccelNed_i().z, vertical_thrust, guidance_v_zd_ref);
 		}
 		else {
 			/* reset estimate while not in_flight */
