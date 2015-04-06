@@ -1,6 +1,14 @@
 package sw.airborne.firmwares.rotorcraft;
 
 public class Autopilot_arming_throttle {
+	public enum Arming_throttle_state {
+		STATE_UNINIT,
+		STATE_WAITING,
+		STATE_MOTORS_OFF_READY,
+		STATE_ARMING,
+		STATE_MOTORS_ON,
+		STATE_UNARMING
+	}
 	public static final int AUTOPILOT_ARMING_DELAY = 10;
 	
 	public static Arming_throttle_state autopilot_arming_state;

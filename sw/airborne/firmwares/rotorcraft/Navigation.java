@@ -334,11 +334,23 @@ public class Navigation {
 			stage_time++;  block_time++;					
 		}	
 		/* from flight_plan.h */
-		auto_nav();
+		//auto_nav();             ???????
 
 		/* run carrot loop */
 		nav_run();
 	}
+	
+	// add   nav_run
+	public static void nav_run(){
+		if(Guidance_h.GUIDANCE_H_USE_REF){
+			navigation_carrot.x=navigation_target.x;
+			navigation_carrot.y=navigation_target.y;
+		}else {nav_advance_carrot();}
+		nav_set_altitude();
+	}
+	
+	
+	
 	
 	public static void nav_move_waypoint_lla(int wp_id, LlaCoor_i new_lla_pos) {
 		if (stateIsLocalCoordinateValid()) {

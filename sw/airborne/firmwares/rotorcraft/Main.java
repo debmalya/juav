@@ -1,5 +1,32 @@
 package sw.airborne.firmwares.rotorcraft;
 
+//These have been left in C++ standard lets agree to replace them as imports when the interfaces or abstract classes have been written
+#include "subsystems/commands.h"
+#include "subsystems/actuators.h"
+
+
+#include "subsystems/imu.h"
+#include "subsystems/gps.h"
+#include "subsystems/air_data.h"
+
+
+#include "subsystems/electrical.h"
+
+#include "firmwares/rotorcraft/autopilot.h"
+
+
+#include "firmwares/rotorcraft/stabilization.h"
+#include "firmwares/rotorcraft/guidance.h"
+
+#include "subsystems/ahrs.h"
+#include "subsystems/ahrs/ahrs_aligner.h"
+#include "subsystems/ins.h"
+
+#include "state.h"
+
+#include "firmwares/rotorcraft/main.h"
+
+
 public class Main {
 
 	public static final int BARO_PERIODIC_FREQUENCY = 50;
@@ -25,24 +52,24 @@ public class Main {
 
 	public static void main_init() {
 
-		mcu_init();
+		//mcu_init();
 
-		electrical_init();
+		//electrical_init();
 
 		stateInit();
 
-		actuators_init();
-		if(USE_MOTOR_MIXING) motor_mixing_init();
+		//actuators_init();
+		//if(USE_MOTOR_MIXING) motor_mixing_init();
 		
 
-		radio_control_init();
-
+		//radio_control_init();
+/*
 		air_data_init();
 		if(USE_BARO_BOARD) baro_init();
-		
+	*/	
 		imu_init();
 		if(USE_IMU_FLOAT) imu_float_init();
-		
+		*/
 		ahrs_aligner_init();
 		ahrs_init();
 
@@ -52,17 +79,17 @@ public class Main {
 		
 		autopilot_init();
 
-		modules_init();
+		//modules_init();
 
-		settings_init();
+		settings_init();    // ???
 
-		mcu_int_enable();
+		/*mcu_int_enable();
 		if(DATALINK == XBEE)
 				xbee_init();
 		
 
 		if(DATALINK == UDP)
-		udp_init();
+		udp_init();*/     // ????
 		
 		// register the timers for the periodic functions
 		main_periodic_tid = sys_time_register_timer((1./PERIODIC_FREQUENCY), null);
@@ -79,7 +106,7 @@ public class Main {
 	public static void handle_periodic_tasks() {
 		if (sys_time_check_and_ack_timer(main_periodic_tid))
 			main_periodic();
-		if (sys_time_check_and_ack_timer(modules_tid))
+	/*	if (sys_time_check_and_ack_timer(modules_tid))
 			modules_periodic_task();
 		if (sys_time_check_and_ack_timer(radio_control_tid))
 			radio_control_periodic_task();
@@ -91,7 +118,7 @@ public class Main {
 			telemetry_periodic();
 		if(USE_BARO_BOARD)
 		if (sys_time_check_and_ack_timer(baro_tid))
-			baro_periodic();
+			baro_periodic();*/
 		
 	}
 	
@@ -99,13 +126,13 @@ public class Main {
 	private static int PERIODIC_FREQUENCY_MAIN_PERIODIC=0;
 	public static void main_periodic() {
 
-		imu_periodic();
+		//imu_periodic();
 
 		/* run control loops */
-		autopilot_periodic();
+		Autopilot.autopilot_periodic();
 		/* set actuators     */
 		//actuators_set(autopilot_motors_on);
-		SetActuatorsFromCommands(commands, autopilot_mode);
+	//	SetActuatorsFromCommands(commands, autopilot_mode);
 
 		if (autopilot_in_flight) {
 			//RunOnceEvery(PERIODIC_FREQUENCY, { autopilot_flight_time++; datalink_time++; });
@@ -124,15 +151,15 @@ public class Main {
 		}	
 	}
 
-	public static void telemetry_periodic() {
-		periodic_telemetry_send_Main();
-	}
+	//public static void telemetry_periodic() {
+//		periodic_telemetry_send_Main();
+//	}
 
 	/* mode to enter when RC is lost while using a mode with RC input (not AP_MODE_NAV) */
 	public static final int RC_LOST_MODE = AP_MODE_FAILSAFE;
 	
 
-	public static void failsafe_check() {
+/*	public static void failsafe_check() {
 		if (radio_control.status == RC_REALLY_LOST &&
 				autopilot_mode != AP_MODE_KILL &&
 				autopilot_mode != AP_MODE_HOME &&
@@ -170,14 +197,14 @@ public class Main {
 	}
 
 		autopilot_check_in_flight(autopilot_motors_on);
-	}
+	}*/
 
 	public static void main_event() {
 
-		i2c_event();
+		i2c_event();      //?
 
 		DatalinkEvent();
-
+/*
 		if (autopilot_rc) {
 			RadioControlEvent(autopilot_on_rc_frame);
 		}
@@ -185,7 +212,7 @@ public class Main {
 		ImuEvent(on_gyro_event, on_accel_event, on_mag_event);
 
 		if(USE_BARO_BOARD)
-		BaroEvent();
+		BaroEvent();*/
 		
 
 		if(USE_GPS)
@@ -196,19 +223,19 @@ public class Main {
 		DetectGroundEvent();
 		
 
-		modules_event_task();
+		//modules_event_task();
 
 	}
 
-	public static void on_accel_event( ) {
+	/*public static void on_accel_event( ) {
 		ImuScaleAccel(imu);
 
 		if (ahrs.status != AHRS_UNINIT) {
 			ahrs_update_accel();
 		}
-	}
+	}*/
 
-	public static void on_gyro_event() {
+/*	public static void on_gyro_event() {
 
 		ImuScaleGyro(imu);
 
@@ -227,7 +254,7 @@ public class Main {
 		if(USE_VEHICLE_INTERFACE_DEFINED)
 		vi_notify_imu_available();
 	
-	}
+	}*/
 
 	public static void on_gps_event() {
 		ahrs_update_gps();
@@ -237,7 +264,7 @@ public class Main {
 			vi_notify_gps_available();
 		
 	}
-
+/*
 	public static void on_mag_event() {
 		ImuScaleMag(imu);
 
@@ -250,6 +277,6 @@ public class Main {
 		if(USE_VEHICLE_INTERFACE_DEFINED)
 		vi_notify_mag_available();
 		
-	}
+	}*/
 
 }

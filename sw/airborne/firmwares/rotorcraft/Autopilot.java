@@ -1,5 +1,8 @@
 package sw.airborne.firmwares.rotorcraft;
 
+import sw.airborne.math.*;
+import static sw.airborne.math.Pprz_algebra_int.*;
+
 public class Autopilot {
 	
 	public static final int AP_MODE_KILL = 0;
@@ -192,12 +195,12 @@ public class Autopilot {
 		      electrical.vsupply, time_sec);
 	}
 	
-	public static void send_energy(){
-		final int e = electrical.energy;
-		final float vsup = ((float)electrical.vsupply) / 10.0f;
-		float power = vsup * curs;
-		DOWNLINK_SEND_ENERGY(DefaultChannel, DefaultDevice, vsup, curs, e, power);
-	}
+//	public static void send_energy(){
+//		final int e = electrical.energy;
+//		final float vsup = ((float)electrical.vsupply) / 10.0f;
+//		float power = vsup * curs;
+//		DOWNLINK_SEND_ENERGY(DefaultChannel, DefaultDevice, vsup, curs, e, power);
+//	}
 	
 	public static void send_fp() {
 		  int carrot_up = -guidance_v_z_sp;
@@ -218,7 +221,7 @@ public class Autopilot {
 		      stabilization_cmd[COMMAND_THRUST],
 		      autopilot_flight_time);
 		}
-	
+	/*
 	public static void send_rc(){
 		DOWNLINK_SEND_RC(DefaultChannel, DefaultDevice, RADIO_CONTROL_NB_CHANNEL, radio_control.values);
 	}
@@ -254,6 +257,7 @@ public class Autopilot {
 		      stabilization_cmd[COMMAND_YAW],
 		      stabilization_cmd[COMMAND_THRUST]);
 	}
+	*/
 	
 	public static void autopilot_init(){
 		  /* mode is finally set at end of init if MODE_STARTUP is not KILL */
@@ -269,10 +273,10 @@ public class Autopilot {
 		  autopilot_rc = true;
 		  autopilot_power_switch = false;
 		  
-		  if(!POWER_SWITCH_GPIO_DEFINED){
-			  gpio_setup_output(POWER_SWITCH_GPIO);
-			  gpio_clear(POWER_SWITCH_GPIO); // POWER OFF
-		  }
+		//  if(!POWER_SWITCH_GPIO_DEFINED){
+			//  gpio_setup_output(POWER_SWITCH_GPIO);
+			 // gpio_clear(POWER_SWITCH_GPIO); // POWER OFF
+		  //}
 		  
 
 		  autopilot_arming_init();
@@ -353,12 +357,12 @@ public class Autopilot {
 		 */
 		if (autopilot_mode == AP_MODE_FAILSAFE) {
 			if (!autopilot_in_flight)
-				autopilot_set_mode(AP_MODE_KILL);
+			autopilot_set_mode(AP_MODE_KILL);
 
 			if(FAILSAFE_GROUND_DETECT){
 				//INFO("Using FAILSAFE_GROUND_DETECT: KILL")
 				if (autopilot_ground_detected)
-					autopilot_set_mode(AP_MODE_KILL);
+				autopilot_set_mode(AP_MODE_KILL);
 			}
 		}
 
@@ -374,12 +378,12 @@ public class Autopilot {
 		 * downwards velocity setpoints.
 		 */
 		if (autopilot_mode == AP_MODE_KILL) {
-			SetCommands(commands_failsafe);
+			//SetCommands(commands_failsafe);
 		}
 		else {
-			guidance_v_run( autopilot_in_flight );
-			guidance_h_run( autopilot_in_flight );
-			SetRotorcraftCommands(stabilization_cmd, autopilot_in_flight, autopilot_motors_on);
+			Guidance_v.guidance_v_run( autopilot_in_flight );
+			Guidance_h.guidance_h_run( autopilot_in_flight );
+			//SetRotorcraftCommands(stabilization_cmd, autopilot_in_flight, autopilot_motors_on);
 		}
 
 	}
@@ -396,13 +400,13 @@ public class Autopilot {
 			case AP_MODE_FAILSAFE:
 				if(!KILL_AS_FAILSAFE_DEFINED){
 					stabilization_attitude_set_failsafe_setpoint();
-					guidance_h_mode_changed(GUIDANCE_H_MODE_ATTITUDE);
+					Guidance_h.guidance_h_mode_changed(GUIDANCE_H_MODE_ATTITUDE);
 					break;
 				}
 			case AP_MODE_KILL:
 				autopilot_in_flight = FALSE;
 				autopilot_in_flight_counter = 0;
-				guidance_h_mode_changed(GUIDANCE_H_MODE_KILL);
+				Guidance.guidance_h_mode_changed(GUIDANCE_H_MODE_KILL);
 				break;
 			case AP_MODE_RC_DIRECT:
 				guidance_h_mode_changed(GUIDANCE_H_MODE_RC_DIRECT);
