@@ -1,8 +1,8 @@
 package sw.airborne.math;
 
 public class DoubleQuat {
-	double qi;
-	double qx;
-	double qy;
-	double qz;
+	public 	double qi;
+	public double qx;
+	public double qy;
+	public double qz;
 }

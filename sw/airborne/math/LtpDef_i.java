@@ -4,7 +4,7 @@ public class LtpDef_i {
 	 public EcefCoor_i ecef;        ///< Reference point in ecef
 	  public LlaCoor_i  lla;         ///< Reference point in lla
 	  public Int32Mat33 ltp_of_ecef; ///< Rotation matrix
-	  int hmsl; 
+	  public int hmsl; 
 	  public LtpDef_i clone(){
 		  return this;
 	  }

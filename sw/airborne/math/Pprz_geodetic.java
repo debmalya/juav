@@ -8,6 +8,21 @@ public class Pprz_geodetic {
 	    (_po).y =  (_pi).x;				
 	    (_po).z = -(_pi).z;				
 	  }
+	public  static void ENU_OF_TO_NED(EnuCoor_f _po,NedCoor_f _pi) {		
+		(_po).x =  (_pi).y;				
+		(_po).y =  (_pi).x;				
+		(_po).z = -(_pi).z;				
+	}
+	public  static void ENU_OF_TO_NED(EnuCoor_i _po,NedCoor_i _pi) {		
+		(_po).x =  (_pi).y;				
+		(_po).y =  (_pi).x;				
+		(_po).z = -(_pi).z;				
+	}
+	public  static void ENU_OF_TO_NED(NedCoor_f _po,EnuCoor_f _pi) {		
+		(_po).x =  (_pi).y;				
+		(_po).y =  (_pi).x;				
+		(_po).z = -(_pi).z;				
+	}
 
 	public static void LLA_ASSIGN(LlaCoor_i _pos,int _lat,int _lon,int _alt){	
 	    (_pos).lat = (_lat);			
@@ -19,6 +34,11 @@ public class Pprz_geodetic {
 	    (_pos1).lat = (_pos2).lat;			
 	    (_pos1).lon = (_pos2).lon;			
 	    (_pos1).alt = (_pos2).alt;			
+	}
+	public static void LLA_COPY(LlaCoor_f _pos1,LlaCoor_f _pos2){			
+		(_pos1).lat = (_pos2).lat;			
+		(_pos1).lon = (_pos2).lon;			
+		(_pos1).alt = (_pos2).alt;			
 	}
 
 	public static void LTP_DEF_COPY(LtpDef_i _def1,LtpDef_i _def2){                              

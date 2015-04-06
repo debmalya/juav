@@ -1,5 +1,8 @@
 package sw.airborne.math;
 
-public class NedCoor_f extends FloatVect3{
-
+public class NedCoor_f {
+	public float x;
+	public float y;
+	public float z;
+	
 }

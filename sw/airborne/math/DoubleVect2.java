@@ -1,6 +1,6 @@
 package sw.airborne.math;
 
 public class DoubleVect2 {
-	double x;
-	double y;
+	public double x;
+	public double y;
 }

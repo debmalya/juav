@@ -1,5 +1,8 @@
 package sw.airborne.subsystems;
 
+import static sw.airborne.math.Pprz_algebra.*;
+import static sw.airborne.math.Pprz_algebra_int.*;
+
 public class Imu {
 	
 	public static ImuState imu = new ImuState();

@@ -1,7 +1,7 @@
 package sw.airborne.math;
 
 public class DoubleEulers {
-	double phi; ///< in radians
-	double theta; ///< in radians
-	double psi; ///< in radians
+	public double phi; ///< in radians
+	public double theta; ///< in radians
+	public double psi; ///< in radians
 }

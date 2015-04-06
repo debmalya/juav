@@ -184,4 +184,10 @@ public class Pprz_geodetic_int {
 
 	}
 
+	
+	public static void ecef_of_ned_vect_i(EcefCoor_i ecef,  LtpDef_i def,  NedCoor_i ned) {
+		   EnuCoor_i enu = new EnuCoor_i();
+		  ENU_OF_TO_NED(enu, ned);
+		  ecef_of_enu_vect_i(ecef, def, enu);
+		}
 }

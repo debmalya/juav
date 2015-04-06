@@ -1,5 +1,9 @@
 package sw.airborne.firmwares.rotorcraft.stabilization;
 
+import sw.airborne.math.*;
+import static sw.airborne.math.Pprz_algebra.*;
+import static sw.airborne.math.Pprz_algebra_int.*;
+
 public class Stabilization_attitude_quat_float {
 	 public static FloatAttitudeGains stabilization_gains[] = new FloatAttitudeGains[STABILIZATION_ATTITUDE_GAIN_NB];
 

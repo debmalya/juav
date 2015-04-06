@@ -1,7 +1,8 @@
 package sw.airborne.firmwares.rotorcraft.stabilization;
 
 import sw.airborne.math.*;
-
+import static sw.airborne.math.Pprz_algebra.*;
+import static sw.airborne.math.Pprz_algebra_int.*;
 public class Stabilization_rate {
 	
 	public static final int F_UPDATE_RES= 9;

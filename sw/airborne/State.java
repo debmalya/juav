@@ -3,6 +3,13 @@ package sw.airborne;
 import sw.airborne.math.*; 
 import sw.include.Std;
 import static sw.airborne.math.Pprz_algebra_int.*;
+import static sw.airborne.math.Pprz_algebra.*;
+import static sw.include.Std.*;
+import static sw.airborne.math.Pprz_geodetic.*;
+import static sw.airborne.math.Pprz_orientation_conversion.*;
+import static sw.airborne.math.Pprz_geodetic_int.*;
+import static sw.airborne.math.Pprz_geodetic_float.*;
+
 public class State {
 	/* *
 	 * This general state interface holds all the most important vehicle states like
@@ -41,7 +48,7 @@ public class State {
 	public static final int SPEED_ENU_F  = 7;
 	public static final int SPEED_HNORM_F= 8;
 	public static final int SPEED_HDIR_F = 9;
-	public static final double SPEED_LOCAL_COORD = ((1<<SPEED_NED_I)|(1<<SPEED_ENU_I)|(1<<SPEED_NED_F)|(1<<SPEED_ENU_F));
+	public static final int SPEED_LOCAL_COORD = ((1<<SPEED_NED_I)|(1<<SPEED_ENU_I)|(1<<SPEED_NED_F)|(1<<SPEED_ENU_F));
 	
 	public static final int ACCEL_ECEF_I= 0;
 	public static final int ACCEL_NED_I = 1;
@@ -92,7 +99,7 @@ public class State {
 		    (state.ned_origin_f.ltp_of_ecef).m[8] = ((float)((state.ned_origin_i.ltp_of_ecef).m[8])/(1<<(20))); 
 		  }
 		
-		state.ned_origin_f.hmsl = ((state.ned_origin_i.hmsl)/1e3);//M_OF_MM(state.ned_origin_i.hmsl);
+		state.ned_origin_f.hmsl = (float)((state.ned_origin_i.hmsl)/1e3);//M_OF_MM(state.ned_origin_i.hmsl);
 
 		/* clear bits for all local frame representations */
 		state.pos_status &= ~(POS_LOCAL_COORD);
@@ -305,7 +312,7 @@ public class State {
 			UtmCoor_f utm_pos) {
 		/* clear all status bit */
 		state.pos_status = 0;
-		if (ecef_pos != NULL) {
+		if (ecef_pos != null) {
 			Pprz_algebra_float.VECT3_COPY(state.ecef_pos_f, ecef_pos);
 //			 {        \
 //				    (state.ecef_pos_f).x = ecef_pos.x;				\
@@ -315,7 +322,7 @@ public class State {
 			
 			state.pos_status |= (1 << POS_ECEF_F);
 		}
-		if (ned_pos != NULL) {
+		if (ned_pos != null) {
 			Pprz_algebra_float.VECT3_COPY(state.ned_pos_f, ned_pos);
 //			{        \
 //			    (state.ned_pos_f).x = ned_pos.x;				\
@@ -326,7 +333,7 @@ public class State {
 			
 			state.pos_status |= (1 << POS_NED_F);
 		}
-		if (enu_pos != NULL) {
+		if (enu_pos != null) {
 			Pprz_algebra_float.VECT3_COPY(state.enu_pos_f, enu_pos);
 //			{        \
 //			    (state.enu_pos_f).x = enu_pos.x;				\
@@ -336,7 +343,7 @@ public class State {
 			
 			state.pos_status |= (1 << POS_ENU_F);
 		}
-		if (lla_pos != NULL) {
+		if (lla_pos != null) {
 			LLA_COPY(state.lla_pos_f, lla_pos);
 //			{			\
 //			    (state.lla_pos_f).lat = lla_pos.lat;			\
@@ -347,7 +354,7 @@ public class State {
 			
 			state.pos_status |= (1 << POS_LLA_F);
 		}
-		if (utm_pos != NULL) {
+		if (utm_pos != null) {
 			//memcpy(state.utm_pos_f, utm_pos, sizeof( UtmCoor_f));
 			state.utm_pos_f = utm_pos.clone();
 			state.pos_status |= (1 << POS_UTM_F);
@@ -378,7 +385,7 @@ public class State {
 	}
 
 	/// Get position in LLA coordinates (int).
-	public public static   LlaCoor_i stateGetPositionLla_i() {
+	public static   LlaCoor_i stateGetPositionLla_i() {
 	  if (!Std.bit_is_set(state.pos_status, POS_LLA_I))
 	    stateCalcPositionLla_i();
 	  return state.lla_pos_i;
@@ -748,7 +755,7 @@ public class State {
 
 	/// Test if attitudes are valid.
 	public static  boolean stateIsAttitudeValid() {
-	  return (orienationCheckValid(state.ned_to_body_orientation));
+	  return (orientationCheckValid(state.ned_to_body_orientation));
 	}
 
 	/* ******************** Set functions ************************* */
@@ -857,22 +864,22 @@ public class State {
 
 	/// test if wind speed is available.
 	public static  boolean stateIsWindspeedValid() {
-	  return (state.wind_air_status &= ~((1<<WINDSPEED_I)|(1<<WINDSPEED_F)));
+	  return (state.wind_air_status &= ~((1<<WINDSPEED_I)|(1<<WINDSPEED_F))) != 0;
 	}
 
 	/// test if air speed is available.
 	public static  boolean stateIsAirspeedValid() {
-	  return (state.wind_air_status &= ~((1<<AIRSPEED_I)|(1<<AIRSPEED_F)));
+	  return (state.wind_air_status &= ~((1<<AIRSPEED_I)|(1<<AIRSPEED_F))) !=0;
 	}
 
 	/// test if angle of attack is available.
 	public static  boolean stateIsAngleOfAttackValid() {
-	  return (state.wind_air_status &= ~(1<<AOA_F));
+	  return (state.wind_air_status &= ~(1<<AOA_F))!=0;
 	}
 
 	/// test if sideslip is available.
 	public static  boolean stateIsSideslipValid() {
-	  return (state.wind_air_status &= ~(1<<SIDESLIP_F));
+	  return (state.wind_air_status &= ~(1<<SIDESLIP_F))!=0;
 	}
 
 	/************************ Set functions ****************************/
@@ -1919,20 +1926,20 @@ public class State {
 			state.h_speed_dir_f = SPEED_FLOAT_OF_BFP(state.h_speed_dir_i);
 		}
 		else if (bit_is_set(state.speed_status, SPEED_NED_F)) {
-			state.h_speed_dir_f = atan2f(state.ned_speed_f.y, state.ned_speed_f.x);
+			state.h_speed_dir_f =(float) Math.atan2((double)state.ned_speed_f.y, (double)state.ned_speed_f.x);
 		}
 		else if (bit_is_set(state.speed_status, SPEED_ENU_F)) {
-			state.h_speed_dir_f = atan2f(state.enu_speed_f.x, state.enu_speed_f.y);
+			state.h_speed_dir_f =(float) Math.atan2((double)state.enu_speed_f.x, (double)state.enu_speed_f.y);
 		}
 		else if (bit_is_set(state.speed_status, SPEED_NED_I)) {
 			SPEEDS_FLOAT_OF_BFP(state.ned_speed_f, state.ned_speed_i);
 			SetBit(state.speed_status, SPEED_NED_F);
-			state.h_speed_dir_f = atan2f(state.ned_speed_f.y, state.ned_speed_f.x);
+			state.h_speed_dir_f = (float) Math.atan2((double) state.ned_speed_f.y,(double) state.ned_speed_f.x);
 		}
 		else if (bit_is_set(state.speed_status, SPEED_ENU_I)) {
 			SPEEDS_FLOAT_OF_BFP(state.enu_speed_f, state.enu_speed_i);
 			SetBit(state.speed_status, SPEED_ENU_F);
-			state.h_speed_dir_f = atan2f(state.enu_speed_f.x, state.enu_speed_f.y);
+			state.h_speed_dir_f = (float) Math.atan2((double)state.enu_speed_f.x,(double) state.enu_speed_f.y);
 		}
 		/* set bit to indicate this representation is computed */
 		SetBit(state.speed_status, SPEED_HDIR_F);
@@ -1963,7 +1970,7 @@ public class State {
 		} else { /* ned coordinate system not initialized,  set errno */
 			errno = 2;
 		}
-		if (errno) {
+		if (errno!=0) {
 			//struct NedCoor_i _ned_zero = {0};
 			//return _ned_zero;
 		}
@@ -2020,7 +2027,7 @@ public class State {
 		} else { /* ned coordinate system not initialized,  set errno */
 			errno = 2;
 		}
-		if (errno) {
+		if (errno!=0) {
 			//struct NedCoor_f _ned_zero = {0.0f};
 			//return _ned_zero;
 		}

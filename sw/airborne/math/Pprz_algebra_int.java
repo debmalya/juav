@@ -1,5 +1,7 @@
 package sw.airborne.math;
 
+import static sw.airborne.math.Pprz_algebra.*;
+
 public class Pprz_algebra_int {
 	
 	
@@ -7,6 +9,16 @@ public class Pprz_algebra_int {
 		(_a).x = (_b).x;				
 	    (_a).y = (_b).y;				
 	    (_a).z = (_b).z;
+	}
+	public static void INT32_VECT3_COPY(NedCoor_i _a,NedCoor_i _b){
+		(_a).x = (_b).x;				
+		(_a).y = (_b).y;				
+		(_a).z = (_b).z;
+	}
+	public static void INT32_VECT3_COPY(EnuCoor_i _a,EnuCoor_i _b){
+		(_a).x = (_b).x;				
+		(_a).y = (_b).y;				
+		(_a).z = (_b).z;
 	}
 	public static void INT32_VECT2_COPY(Int32Vect2 _a,Int32Vect2 _b){
 		(_a).x = (_b).x;				
@@ -56,5 +68,12 @@ public class Pprz_algebra_int {
 	    (_o).y = ((_i).y >> (_r));       
 	    (_o).z = ((_i).z >> (_r));       
 	  }
-
+	
+	public static void INT_RATES_ZERO(Int32Rates e){
+		RATES_ASSIGN(e, 0,0,0);
+	}
+	public static void INT_VECT3_ZERO(Int32Vect3 e){
+		RATES_ASSIGN(e, 0,0,0);
+	}
+	
 }

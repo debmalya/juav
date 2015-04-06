@@ -37,6 +37,10 @@ public class Pprz_algebra {
 	    (_a).x = (_b).x;				
 	    (_a).y = (_b).y;				
 	  }
+	public static void VECT2_COPY(Int32Vect2 _a,Int32Vect2 _b) {			
+		(_a).x = (_b).x;				
+		(_a).y = (_b).y;				
+	}
 
 	/* a += b */
 	public static void VECT2_ADD(DoubleVect2 _a,DoubleVect2 _b) {			
@@ -96,6 +100,11 @@ public class Pprz_algebra {
 	    (_a).z = (_z);				
 	  }
 	public static void VECT3_ASSIGN(DoubleVect3 _a,double _x,double _y,double _z) {		
+		(_a).x = (_x);				
+		(_a).y = (_y);				
+		(_a).z = (_z);				
+	}
+	public static void VECT3_ASSIGN(Int32Vect3 _a,int _x,int _y,int _z) {		
 		(_a).x = (_x);				
 		(_a).y = (_y);				
 		(_a).z = (_z);				
@@ -334,6 +343,16 @@ public class Pprz_algebra {
 	    (_ra).q = (_q);				
 	    (_ra).r = (_r);				
 	  }
+	public static void RATES_ASSIGN(Int32Rates _ra, int _p, int _q, int _r) {		
+		(_ra).p = (_p);				
+		(_ra).q = (_q);				
+		(_ra).r = (_r);				
+	}
+	public static void RATES_ASSIGN(Int32Vect3 _ra, int _p, int _q, int _r) {		
+		(_ra).x = (_p);				
+		(_ra).y = (_q);				
+		(_ra).z = (_r);				
+	}
 
 	/* a = b */
 	public static void RATES_COPY(DoubleRates _a,DoubleRates _b) {			
@@ -428,6 +447,9 @@ public class Pprz_algebra {
 	public static Double MAT33_ELMT(DoubleMat33 _m, int _row, int _col) {
 		return (_m).m[_row*3 +_col];
 		} ///??????
+	public static float MAT33_ELMT(FloatMat33 _m, int _row, int _col) {
+		return (_m).m[_row*3 +_col];
+	} ///??????
 
 	public static void MAT33_COPY(DoubleMat33 _mat1,DoubleMat33 _mat2) {			
 		(_mat1).m[0*3 +0] = MAT33_ELMT((_mat2),0,0);	
@@ -454,6 +476,17 @@ public class Pprz_algebra {
 	                MAT33_ELMT((_mat), 2, 1) * (_vin).y +	
 	                MAT33_ELMT((_mat), 2, 2) * (_vin).z;	
 	  }
+	public static void MAT33_VECT3_MUL(EnuCoor_f _vout,FloatMat33 _mat, EcefCoor_f _vin) {		
+		(_vout).x = MAT33_ELMT((_mat), 0, 0) * (_vin).x +	
+				MAT33_ELMT((_mat), 0, 1) * (_vin).y +	
+				MAT33_ELMT((_mat), 0, 2) * (_vin).z;	
+		(_vout).y = MAT33_ELMT((_mat), 1, 0) * (_vin).x +   
+				MAT33_ELMT((_mat), 1, 1) * (_vin).y +   
+				MAT33_ELMT((_mat), 1, 2) * (_vin).z;	
+		(_vout).z = MAT33_ELMT((_mat), 2, 0) * (_vin).x +	
+				MAT33_ELMT((_mat), 2, 1) * (_vin).y +	
+				MAT33_ELMT((_mat), 2, 2) * (_vin).z;	
+	}
 
 	/* multiply _vin by transpose of _mat, store in _vout */
 	public static void MAT33_VECT3_TRANSP_MUL(DoubleVect3 _vout,DoubleMat33 _mat, DoubleVect3 _vin) {     
@@ -467,6 +500,17 @@ public class Pprz_algebra {
 	                MAT33_ELMT((_mat), 1, 2) * (_vin).y +	
 	                MAT33_ELMT((_mat), 2, 2) * (_vin).z;	
 	  }
+	public static void MAT33_VECT3_TRANSP_MUL(EcefCoor_d _vout,DoubleMat33 _mat, EnuCoor_f _vin) {     
+		(_vout).x = MAT33_ELMT((_mat), 0, 0) * (_vin).x +	
+				MAT33_ELMT((_mat), 1, 0) * (_vin).y +	
+				MAT33_ELMT((_mat), 2, 0) * (_vin).z;	
+		(_vout).y = MAT33_ELMT((_mat), 0, 1) * (_vin).x +   
+				MAT33_ELMT((_mat), 1, 1) * (_vin).y +   
+				MAT33_ELMT((_mat), 2, 1) * (_vin).z;	
+		(_vout).z = MAT33_ELMT((_mat), 0, 2) * (_vin).x +   
+				MAT33_ELMT((_mat), 1, 2) * (_vin).y +	
+				MAT33_ELMT((_mat), 2, 2) * (_vin).z;	
+	}
 
 	/* invS = 1/det(S) com(S)' */
 	public static void MAT33_INV( DoubleMat33 _minv, DoubleMat33 _m, double FLT_EPSILON) {						
@@ -530,6 +574,12 @@ public class Pprz_algebra {
 	    (_qo).qy = (_qi).qy;		    
 	    (_qo).qz = (_qi).qz;		    
 	  }
+	public static void QUAT_COPY(Int32Quat _qo, Int32Quat _qi) {	    
+		(_qo).qi = (_qi).qi;		    
+		(_qo).qx = (_qi).qx;		    
+		(_qo).qy = (_qi).qy;		    
+		(_qo).qz = (_qi).qz;		    
+	}
 
 	public static void QUAT_EXPLEMENTARY(DoubleQuat b,DoubleQuat a) {    
 	    (b).qi = -(a).qi;               
@@ -734,6 +784,16 @@ public class Pprz_algebra {
 	    (_ef).y = SPEED_FLOAT_OF_BFP((_ei).y);		
 	    (_ef).z = SPEED_FLOAT_OF_BFP((_ei).z);		
 	  }
+	public static void SPEEDS_FLOAT_OF_BFP(EnuCoor_f _ef,EnuCoor_i _ei) {			
+		(_ef).x = SPEED_FLOAT_OF_BFP((_ei).x);		
+		(_ef).y = SPEED_FLOAT_OF_BFP((_ei).y);		
+		(_ef).z = SPEED_FLOAT_OF_BFP((_ei).z);		
+	}
+	public static void SPEEDS_FLOAT_OF_BFP(NedCoor_f _ef,NedCoor_i _ei) {			
+		(_ef).x = SPEED_FLOAT_OF_BFP((_ei).x);		
+		(_ef).y = SPEED_FLOAT_OF_BFP((_ei).y);		
+		(_ef).z = SPEED_FLOAT_OF_BFP((_ei).z);		
+	}
 
 	public static void SPEEDS_BFP_OF_REAL(FloatVect3 _ef,Int32Vect3 _ei) {			
 	    (_ef).x = SPEED_BFP_OF_REAL((_ei).x);		
@@ -746,12 +806,32 @@ public class Pprz_algebra {
 	    (_ef).y = ACCEL_FLOAT_OF_BFP((_ei).y);		
 	    (_ef).z = ACCEL_FLOAT_OF_BFP((_ei).z);		
 	  }
+	public static void ACCELS_FLOAT_OF_BFP(EcefCoor_f _ef,NedCoor_i _ei) {			
+		(_ef).x = ACCEL_FLOAT_OF_BFP((_ei).x);		
+		(_ef).y = ACCEL_FLOAT_OF_BFP((_ei).y);		
+		(_ef).z = ACCEL_FLOAT_OF_BFP((_ei).z);		
+	}
+	public static void ACCELS_FLOAT_OF_BFP(NedCoor_f _ef,NedCoor_i _ei) {			
+		(_ef).x = ACCEL_FLOAT_OF_BFP((_ei).x);		
+		(_ef).y = ACCEL_FLOAT_OF_BFP((_ei).y);		
+		(_ef).z = ACCEL_FLOAT_OF_BFP((_ei).z);		
+	}
 
 	public static void ACCELS_BFP_OF_REAL(FloatVect3 _ef,Int32Vect3 _ei) {			
 	    (_ef).x = ACCEL_BFP_OF_REAL((_ei).x);		
 	    (_ef).y = ACCEL_BFP_OF_REAL((_ei).y);		
 	    (_ef).z = ACCEL_BFP_OF_REAL((_ei).z);		
 	  }
+	public static void ACCELS_BFP_OF_REAL(NedCoor_i _ef,NedCoor_f _ei) {			
+		(_ef).x = ACCEL_BFP_OF_REAL((_ei).x);		
+		(_ef).y = ACCEL_BFP_OF_REAL((_ei).y);		
+		(_ef).z = ACCEL_BFP_OF_REAL((_ei).z);		
+	}
+	public static void ACCELS_BFP_OF_REAL(EcefCoor_i _ef,EcefCoor_f _ei) {			
+		(_ef).x = ACCEL_BFP_OF_REAL((_ei).x);		
+		(_ef).y = ACCEL_BFP_OF_REAL((_ei).y);		
+		(_ef).z = ACCEL_BFP_OF_REAL((_ei).z);		
+	}
 
 	public static void MAGS_FLOAT_OF_BFP(FloatVect3 _ef,Int32Vect3 _ei) {			
 	    (_ef).x = MAG_FLOAT_OF_BFP((_ei).x);		
