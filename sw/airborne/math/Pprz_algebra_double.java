@@ -115,4 +115,58 @@ public class Pprz_algebra_double {
 		(_e).psi = atan2( dcm01, dcm00 );                   
 		
 	}
+	
+	public static void ecef_of_lla_d( EcefCoor_d ecef,  LlaCoor_d lla) {
+
+		  // FIXME : make an ellipsoid struct
+		  static const double a = 6378137.0;           /* earth semimajor axis in meters */
+		  static const double f = 1./298.257223563;    /* reciprocal flattening          */
+		  const double e2 = 2.*f-(f*f);                /* first eccentricity squared     */
+
+		  const double sin_lat = sin(lla->lat);
+		  const double cos_lat = cos(lla->lat);
+		  const double sin_lon = sin(lla->lon);
+		  const double cos_lon = cos(lla->lon);
+		  const double chi = sqrt(1. - e2*sin_lat*sin_lat);
+		  const double a_chi = a / chi;
+
+		  ecef->x = (a_chi + lla->alt) * cos_lat * cos_lon;
+		  ecef->y = (a_chi + lla->alt) * cos_lat * sin_lon;
+		  ecef->z = (a_chi*(1. - e2) + lla->alt) * sin_lat;
+		}
+	
+	public static void lla_of_ecef_d(LlaCoor_d lla,EcefCoor_d ecef) {
+
+		  // FIXME : make an ellipsoid struct
+		  static const double a = 6378137.0;           /* earth semimajor axis in meters */
+		  static const double f = 1./298.257223563;    /* reciprocal flattening          */
+		  const double b = a*(1.-f);                   /* semi-minor axis                */
+		  const double b2 = b*b;
+
+		  const double e2 = 2.*f-(f*f);                /* first eccentricity squared     */
+		  const double ep2 = f*(2.-f)/((1.-f)*(1.-f)); /* second eccentricity squared    */
+		  const double E2 = a*a - b2;
+
+
+		  const double z2 = ecef->z*ecef->z;
+		  const double r2 = ecef->x*ecef->x+ecef->y*ecef->y;
+		  const double r = sqrt(r2);
+		  const double F = 54.*b2*z2;
+		  const double G = r2 + (1-e2)*z2 - e2*E2;
+		  const double c = (e2*e2*F*r2)/(G*G*G);
+		  const double s = pow( (1 + c + sqrt(c*c + 2*c)), 1./3.);
+		  const double s1 = 1+s+1/s;
+		  const double P = F/(3*s1*s1*G*G);
+		  const double Q = sqrt(1+2*e2*e2*P);
+		  const double ro = -(e2*P*r)/(1+Q) + sqrt((a*a/2)*(1+1/Q) - ((1-e2)*P*z2)/(Q*(1+Q)) - P*r2/2);
+		  const double tmp = (r - e2*ro)*(r - e2*ro);
+		  const double U = sqrt( tmp + z2 );
+		  const double V = sqrt( tmp + (1-e2)*z2 );
+		  const double zo = (b2*ecef->z)/(a*V);
+
+		  lla->alt = U*(1 - b2/(a*V));
+		  lla->lat = atan((ecef->z + ep2*zo)/r);
+		  lla->lon = atan2(ecef->y,ecef->x);
+
+		}
 }

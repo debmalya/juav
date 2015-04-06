@@ -1,6 +1,8 @@
 package sw.airborne.math;
 
 public class Pprz_algebra_int {
+	
+	
 	public static void INT32_VECT3_COPY(Int32Vect3 _a,Int32Vect3 _b){
 		(_a).x = (_b).x;				
 	    (_a).y = (_b).y;				
@@ -48,5 +50,11 @@ public class Pprz_algebra_int {
 	public static float ACCEL_FLOAT_OF_BFP(int _ai) {return FLOAT_OF_BFP((_ai), INT32_ACCEL_FRAC);}
 	public static int  MAG_BFP_OF_REAL(float _af)   { return BFP_OF_REAL((_af), INT32_MAG_FRAC);}
 	public static float MAG_FLOAT_OF_BFP(int _ai)  {return FLOAT_OF_BFP((_ai), INT32_MAG_FRAC);}
+	
+	public static void  INT32_VECT3_RSHIFT(EnuCoor_i _o,EnuCoor_i _i,int _r) { 
+	    (_o).x = ((_i).x >> (_r));       
+	    (_o).y = ((_i).y >> (_r));       
+	    (_o).z = ((_i).z >> (_r));       
+	  }
 
 }

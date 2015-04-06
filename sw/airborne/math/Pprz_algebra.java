@@ -125,6 +125,12 @@ public class Pprz_algebra {
 	    (_a).z += (_b).z;				
 	  }
 
+	public static void VECT3_ADD(EcefCoor_i _a, EcefCoor_i _b) {			
+		(_a).x += (_b).x;				
+		(_a).y += (_b).y;				
+		(_a).z += (_b).z;				
+	}
+
 	/* a -= b */
 	public static void VECT3_SUB(DoubleVect3 _a,DoubleVect3 _b) {			
 	    (_a).x -= (_b).x;				
@@ -159,9 +165,21 @@ public class Pprz_algebra {
 	    (_c).y = (_a).y - (_b).y;			
 	    (_c).z = (_a).z - (_b).z;			
 	  }
+	/* c = a - b */
+	public static void VECT3_DIFF(EcefCoor_i _c,EcefCoor_i _a,EcefCoor_i _b) {                
+		(_c).x = (_a).x - (_b).x;			
+		(_c).y = (_a).y - (_b).y;			
+		(_c).z = (_a).z - (_b).z;			
+	}
 
 	/* _vo = _vi * _s */
 	public static void VECT3_SMUL(DoubleVect3 _vo,DoubleVect3 _vi,int _s) {			
+	    (_vo).x =  (_vi).x * (_s);				
+	    (_vo).y =  (_vi).y * (_s);				
+	    (_vo).z =  (_vi).z * (_s);				
+	  }
+	
+	public static void VECT3_SMUL(EnuCoor_i _vo,EnuCoor_i _vi,int _s) {			
 	    (_vo).x =  (_vi).x * (_s);				
 	    (_vo).y =  (_vi).y * (_s);				
 	    (_vo).z =  (_vi).z * (_s);				
@@ -724,4 +742,9 @@ public class Pprz_algebra {
 	    (_ef).y = MAG_BFP_OF_REAL((_ei).y);		
 	    (_ef).z = MAG_BFP_OF_REAL((_ei).z);		
 	  }
+	
+	public static void INT32_VECT3_ADD(EcefCoor_i _a,EcefCoor_i _b) {
+		VECT3_ADD(_a, _b);
+	}
+	}
 }

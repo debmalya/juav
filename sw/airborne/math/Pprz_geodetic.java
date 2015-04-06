@@ -1,10 +1,10 @@
 package sw.airborne.math;
 
 public class Pprz_geodetic {
-	public  static void ENU_OF_TO_NED(_po, _pi) {		\
-	    (_po).x =  (_pi).y;				\
-	    (_po).y =  (_pi).x;				\
-	    (_po).z = -(_pi).z;				\
+	public  static void ENU_OF_TO_NED(NedCoor_i _po,EnuCoor_i _pi) {		
+	    (_po).x =  (_pi).y;				
+	    (_po).y =  (_pi).x;				
+	    (_po).z = -(_pi).z;				
 	  }
 
 	#define LLA_ASSIGN(_pos,_lat,_lon,_alt){	\
