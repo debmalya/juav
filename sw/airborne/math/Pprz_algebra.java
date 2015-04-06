@@ -95,6 +95,11 @@ public class Pprz_algebra {
 	    (_a).y = (_y);				
 	    (_a).z = (_z);				
 	  }
+	public static void VECT3_ASSIGN(DoubleVect3 _a,double _x,double _y,double _z) {		
+		(_a).x = (_x);				
+		(_a).y = (_y);				
+		(_a).z = (_z);				
+	}
 
 	/* a = a * b */
 
@@ -746,5 +751,5 @@ public class Pprz_algebra {
 	public static void INT32_VECT3_ADD(EcefCoor_i _a,EcefCoor_i _b) {
 		VECT3_ADD(_a, _b);
 	}
-	}
+	
 }

@@ -12,4 +12,10 @@ public class Pprz_algebra_float {
 	    (_a).y = (_b).y;				
 	    
 	}
+	
+	public static void  FLOAT_VECT3_CROSS_PRODUCT(DoubleVect3 _vo, DoubleVect3 _v1,DoubleVect3 _v2) {          
+	    (_vo).x = (_v1).y*(_v2).z - (_v1).z*(_v2).y;            
+	    (_vo).y = (_v1).z*(_v2).x - (_v1).x*(_v2).z;            
+	    (_vo).z = (_v1).x*(_v2).y - (_v1).y*(_v2).x;            
+	  }
 }
