@@ -49,4 +49,5 @@ public class Imu {
 	public static void ImuScaleMag(){
 		
 	}
+	public static void imu_float_init(){}
 }
