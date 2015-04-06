@@ -122,6 +122,11 @@ public class Pprz_algebra {
 	    (_a).y = (_b).y;				
 	    (_a).z = (_b).z;				
 	  }
+	public static void VECT3_COPY(EcefCoor_i _a,EcefCoor_i _b) {        
+		(_a).x = (_b).x;				
+		(_a).y = (_b).y;				
+		(_a).z = (_b).z;				
+	}
 
 	/* a += b */
 	public static void VECT3_ADD(DoubleVect3 _a,DoubleVect3 _b) {			
@@ -421,19 +426,19 @@ public class Pprz_algebra {
 	 */
 	/* accessor : row and col range from 0 to 2 */
 	public static Double MAT33_ELMT(DoubleMat33 _m, int _row, int _col) {
-		return (_m).m[_row][_col];
+		return (_m).m[_row*3 +_col];
 		} ///??????
 
 	public static void MAT33_COPY(DoubleMat33 _mat1,DoubleMat33 _mat2) {			
-		(_mat1).m[0][0] = MAT33_ELMT((_mat2),0,0);	
-		(_mat1).m[0][1] = MAT33_ELMT((_mat2),0,1);	
-		(_mat1).m[0][2] = MAT33_ELMT((_mat2),0,2);	
-		(_mat1).m[1][0] = MAT33_ELMT((_mat2),1,0);	
-		(_mat1).m[1][1] = MAT33_ELMT((_mat2),1,1);	
-		(_mat1).m[1][2] = MAT33_ELMT((_mat2),1,2);	
-		(_mat1).m[2][0] = MAT33_ELMT((_mat2),2,0);	
-		(_mat1).m[2][1] = MAT33_ELMT((_mat2),2,1);	
-		(_mat1).m[2][2] = MAT33_ELMT((_mat2),2,2);	
+		(_mat1).m[0*3 +0] = MAT33_ELMT((_mat2),0,0);	
+		(_mat1).m[0*3 +1] = MAT33_ELMT((_mat2),0,1);	
+		(_mat1).m[0*3 +2] = MAT33_ELMT((_mat2),0,2);	
+		(_mat1).m[1*3 +0] = MAT33_ELMT((_mat2),1,0);	
+		(_mat1).m[1*3 +1] = MAT33_ELMT((_mat2),1,1);	
+		(_mat1).m[1*3 +2] = MAT33_ELMT((_mat2),1,2);	
+		(_mat1).m[2*3 +0] = MAT33_ELMT((_mat2),2,0);	
+		(_mat1).m[2*3 +1] = MAT33_ELMT((_mat2),2,1);	
+		(_mat1).m[2*3 +2] = MAT33_ELMT((_mat2),2,2);	
 	}
 
 
@@ -476,23 +481,23 @@ public class Pprz_algebra {
 	    final double m22 = MAT33_ELMT((_m),0,0)*MAT33_ELMT((_m),1,1) - MAT33_ELMT((_m),0,1)*MAT33_ELMT((_m),1,0);		
 	    final double det = MAT33_ELMT((_m),0,0)*m00 - MAT33_ELMT((_m),1,0)*m10 + MAT33_ELMT((_m),2,0)*m20; 
 	    if (det > FLT_EPSILON) {					
-	      (_minv).m[0][0] =  m00 / det;						
-	      (_minv).m[1][0] = -m01 / det;						
-	      (_minv).m[2][0] =  m02 / det;						
-	      (_minv).m[0][1] = -m10 / det;						
-	      (_minv).m[1][1] =  m11 / det;						
-	      (_minv).m[2][1] = -m12 / det;						
-	      (_minv).m[0][2] =  m20 / det;						
-	      (_minv).m[1][2] = -m21 / det;						
-	      (_minv).m[2][2] =  m22 / det;						
+	      (_minv).m[0*3 +0] =  m00 / det;						
+	      (_minv).m[1*3 +0] = -m01 / det;						
+	      (_minv).m[2*3 +0] =  m02 / det;						
+	      (_minv).m[0*3 +1] = -m10 / det;						
+	      (_minv).m[1*3 +1] =  m11 / det;						
+	      (_minv).m[2*3 +1] = -m12 / det;						
+	      (_minv).m[0*3 +2] =  m20 / det;						
+	      (_minv).m[1*3 +2] = -m21 / det;						
+	      (_minv).m[2*3 +2] =  m22 / det;						
 	    }									
 	  }
 
 	/* set _row of _mat with _vin multiplied by scalar _s */
 	public static void MAT33_ROW_VECT3_SMUL(DoubleMat33 _mat, int _row,DoubleVect3 _vin, double _s) {         
-	    (_mat).m[_row][ 0] = (_vin).x * (_s);           
-	    (_mat).m[_row][1] = (_vin).y * (_s);           
-	    (_mat).m[_row][2] = (_vin).z * (_s);           
+	    (_mat).m[_row*3 + 0] = (_vin).x * (_s);           
+	    (_mat).m[_row*3 +1] = (_vin).y * (_s);           
+	    (_mat).m[_row*3 +2] = (_vin).z * (_s);           
 	  }
 
 
@@ -580,22 +585,23 @@ public class Pprz_algebra {
 
 
 	/* accessor : row and col range from 0 to 2 */
-	public static double RMAT_ELMT(DoubleRMat _rm,int _row,int  _col) {return _rm.m [_row] [_col];}
+	public static double RMAT_ELMT(DoubleRMat _rm,int _row,int  _col) {return _rm.m [_row * 3 + _col];}
+	public static int RMAT_ELMT(Int32Mat33 _rm,int _row,int  _col) {return _rm.m [_row * 3 + _col];}
 
 	/* trace */
 	public static double RMAT_TRACE( DoubleRMat _rm) {return (RMAT_ELMT(_rm, 0, 0)+RMAT_ELMT(_rm, 1, 1)+RMAT_ELMT(_rm, 2, 2));}
 
 
 	public static void RMAT_DIFF(DoubleRMat _c,DoubleRMat  _a, DoubleRMat _b) {				 
-	    (_c).m[0][0] = (_a).m[0][0] - (_b).m[0][0];			 
-	    (_c).m[0][1] = (_a).m[0][1] - (_b).m[0][1];			 
-	    (_c).m[0][2] = (_a).m[0][2] - (_b).m[0][2];			 
-	    (_c).m[1][0] = (_a).m[1][0] - (_b).m[1][0];			 
-	    (_c).m[1][1] = (_a).m[1][1] - (_b).m[1][1];			 
-	    (_c).m[1][2] = (_a).m[1][2] - (_b).m[1][2];			 
-	    (_c).m[2][0] = (_a).m[2][0] - (_b).m[2][0];			 
-	    (_c).m[2][1] = (_a).m[2][1]- (_b).m[2][1];			 
-	    (_c).m[2][2] = (_a).m[2][2] - (_b).m[2][2];			 
+	    (_c).m[0] = (_a).m[0] - (_b).m[0];			 
+	    (_c).m[1] = (_a).m[1] - (_b).m[1];			 
+	    (_c).m[2] = (_a).m[2] - (_b).m[2];			 
+	    (_c).m[3] = (_a).m[3] - (_b).m[3];			 
+	    (_c).m[4] = (_a).m[4] - (_b).m[4];			 
+	    (_c).m[5] = (_a).m[5] - (_b).m[5];			 
+	    (_c).m[6] = (_a).m[6] - (_b).m[6];			 
+	    (_c).m[7] = (_a).m[7]- (_b).m[7];			 
+	    (_c).m[8] = (_a).m[8] - (_b).m[8];			 
 	  }
 
 	/* multiply _vin by _rmat, store in _vout */
@@ -625,15 +631,26 @@ public class Pprz_algebra {
 
 
 	public static void RMAT_COPY(DoubleRMat _mat1,DoubleRMat _mat2) { 
-	(_mat1).m[0][0] = RMAT_ELMT((_mat2),0,0);	
-	(_mat1).m[0][1] = RMAT_ELMT((_mat2),0,1);	
-	(_mat1).m[0][2] = RMAT_ELMT((_mat2),0,2);	
-	(_mat1).m[1][0] = RMAT_ELMT((_mat2),1,0);	
-	(_mat1).m[1][1] = RMAT_ELMT((_mat2),1,1);	
-	(_mat1).m[1][2] = RMAT_ELMT((_mat2),1,2);	
-	(_mat1).m[2][0] = RMAT_ELMT((_mat2),2,0);	
-	(_mat1).m[2][1] = RMAT_ELMT((_mat2),2,1);	
-	(_mat1).m[2][2] = RMAT_ELMT((_mat2),2,2);	}
+	(_mat1).m[0] = RMAT_ELMT((_mat2),0,0);	
+	(_mat1).m[1] = RMAT_ELMT((_mat2),0,1);	
+	(_mat1).m[2] = RMAT_ELMT((_mat2),0,2);	
+	(_mat1).m[3] = RMAT_ELMT((_mat2),1,0);	
+	(_mat1).m[4] = RMAT_ELMT((_mat2),1,1);	
+	(_mat1).m[5] = RMAT_ELMT((_mat2),1,2);	
+	(_mat1).m[6] = RMAT_ELMT((_mat2),2,0);	
+	(_mat1).m[7] = RMAT_ELMT((_mat2),2,1);	
+	(_mat1).m[8] = RMAT_ELMT((_mat2),2,2);	}
+
+	public static void RMAT_COPY(Int32Mat33 _mat1,Int32Mat33 _mat2) { 
+		(_mat1).m[0] = RMAT_ELMT((_mat2),0,0);	
+		(_mat1).m[1] = RMAT_ELMT((_mat2),0,1);	
+		(_mat1).m[2] = RMAT_ELMT((_mat2),0,2);	
+		(_mat1).m[3] = RMAT_ELMT((_mat2),1,0);	
+		(_mat1).m[4] = RMAT_ELMT((_mat2),1,1);	
+		(_mat1).m[5] = RMAT_ELMT((_mat2),1,2);	
+		(_mat1).m[6] = RMAT_ELMT((_mat2),2,0);	
+		(_mat1).m[7] = RMAT_ELMT((_mat2),2,1);	
+		(_mat1).m[8] = RMAT_ELMT((_mat2),2,2);	}
 
 
 
