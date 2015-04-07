@@ -11,8 +11,8 @@ public class Gps {
 	public static final int GPS_NB_CHANNELS = 1;
 	
 	public GpsState gps;
-	public boolean gps_has_fix;
-	public boolean gps_available;
+	public static  boolean gps_has_fix;
+	public static boolean gps_available;
 	
 	public Gps(){
 		gps = new GpsState();

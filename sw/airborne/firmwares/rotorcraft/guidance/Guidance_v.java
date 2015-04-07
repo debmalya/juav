@@ -30,7 +30,7 @@ public class Guidance_v {
 		}
 	}
 
-	public static final double GUIDANCE_V_CLIMB_RC_DEADBAND =MAX_PPRZ/10;
+	public static final double GUIDANCE_V_CLIMB_RC_DEADBAND =MAX_PPRZ/10;//9600
 	public static final int GUIDANCE_V_MAX_RC_CLIMB_SPEED =GUIDANCE_V_REF_MIN_ZD;
 	public static final int GUIDANCE_V_MAX_RC_DESCENT_SPEED =GUIDANCE_V_REF_MAX_ZD;
 
