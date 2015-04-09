@@ -6,6 +6,10 @@ public class Pprz_algebra_float {
 	
 	public static final double M_SQRT2 =   1.41421356237309504880;
 	
+	public static  void FLOAT_VECT3_ZERO(DoubleVect3 _v) {
+		VECT3_ASSIGN(_v, 0., 0., 0.);
+	}
+	
 	public static void VECT3_COPY(FloatVect3 _a,FloatVect3 _b){
 		(_a).x = (_b).x;				
 	    (_a).y = (_b).y;				
