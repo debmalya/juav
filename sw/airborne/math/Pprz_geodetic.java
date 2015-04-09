@@ -61,11 +61,22 @@ public class Pprz_geodetic {
 	  (_pos).y = (_utm1).north - (_utm2).north;   
 	  (_pos).z = (_utm1).alt - (_utm2).alt;       
 	}
+	public static void ENU_OF_UTM_DIFF(EnuCoor_f _pos,UtmCoor_f _utm1,UtmCoor_f _utm2) { 
+		(_pos).x = (_utm1).east - (_utm2).east;     
+		(_pos).y = (_utm1).north - (_utm2).north;   
+		(_pos).z = (_utm1).alt - (_utm2).alt;       
+	}
 
 	public static void NED_OF_UTM_DIFF(NedCoor_i _pos,UtmCoor_i _utm1,UtmCoor_i _utm2) { 
 	  (_pos).x = (_utm1).north - (_utm2).north;   
 	  (_pos).y = (_utm1).east - (_utm2).east;     
 	  (_pos).z = -(_utm1).alt + (_utm2).alt;      
+	}
+	
+	public static void NED_OF_UTM_DIFF(NedCoor_f _pos,UtmCoor_f _utm1,UtmCoor_f _utm2) { 
+		(_pos).x = (_utm1).north - (_utm2).north;   
+		(_pos).y = (_utm1).east - (_utm2).east;     
+		(_pos).z = -(_utm1).alt + (_utm2).alt;      
 	}
 
 	public static void UTM_OF_ENU_ADD(UtmCoor_i _utm, EnuCoor_i _pos, UtmCoor_i _utm0) { 
@@ -73,11 +84,21 @@ public class Pprz_geodetic {
 	  (_utm).north = (_utm0).north + (_pos).y;   
 	  (_utm).alt = (_utm0).alt + (_pos).z;       
 	}
+	public static void UTM_OF_ENU_ADD(UtmCoor_f _utm, EnuCoor_f _pos, UtmCoor_f _utm0) { 
+		(_utm).east = (_utm0).east + (_pos).x;     
+		(_utm).north = (_utm0).north + (_pos).y;   
+		(_utm).alt = (_utm0).alt + (_pos).z;       
+	}
 
 	public static void UTM_OF_NED_ADD(UtmCoor_i _utm,NedCoor_i _pos,UtmCoor_i _utm0) { 
 	  (_utm).east = (_utm0).east + (_pos).y;     
 	  (_utm).north = (_utm0).north + (_pos).x;   
 	  (_utm).alt = (_utm0).alt - (_pos).z;       
+	}
+	public static void UTM_OF_NED_ADD(UtmCoor_f _utm,NedCoor_f _pos,UtmCoor_f _utm0) { 
+		(_utm).east = (_utm0).east + (_pos).y;     
+		(_utm).north = (_utm0).north + (_pos).x;   
+		(_utm).alt = (_utm0).alt - (_pos).z;       
 	}
 
 }

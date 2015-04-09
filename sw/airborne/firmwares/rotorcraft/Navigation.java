@@ -1,11 +1,33 @@
 package sw.airborne.firmwares.rotorcraft;
 
+<<<<<<< HEAD
 import static sw.airborne.math.Pprz_algebra.*;
 import static sw.airborne.math.Pprz_algebra_int.*;
 import static sw.airborne.math.Pprz_algebra_float.*;
 import sw.airborne.firmwares.rotorcraft.guidance.Guidance_h;
 import  sw.airborne.math.*;
 import static sw.airborne.State.*;
+=======
+import sw.airborne.math.*; 
+import sw.include.Std;
+import static sw.airborne.math.Pprz_algebra_int.*;
+import static sw.airborne.math.Pprz_algebra.*;
+import static sw.include.Std.*;
+import static sw.airborne.math.Pprz_geodetic.*;
+import static sw.airborne.math.Pprz_orientation_conversion.*;
+import static sw.airborne.math.Pprz_geodetic_int.*;
+import static sw.airborne.math.Pprz_geodetic_float.*;
+import static sw.airborne.math.Pprz_algebra_float.*;
+import static sw.airborne.math.Pprz_trig_int.*;
+import static sw.airborne.State.*;
+import static sw.airborne.firmwares.rotorcraft.guidance.Guidance_h_ref.*;
+
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_none.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_rate.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_rc_setpoint.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_euler_int.*;
+
+>>>>>>> 65ad43c4be6b974b70b2263b992fc2bd6257f4c4
 public class Navigation {
 	public static final int VERTICAL_MODE_MANUAL=      0;
 	public static final int VERTICAL_MODE_CLIMB=       1;
@@ -415,7 +437,7 @@ public class Navigation {
 		return true;
 	}
 	
-	public static boolean bool_t nav_is_in_flight() {
+	public static boolean boolean nav_is_in_flight() {
 		return autopilot_in_flight;
 	}
 	
