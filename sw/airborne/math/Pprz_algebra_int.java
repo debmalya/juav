@@ -63,6 +63,7 @@ public class Pprz_algebra_int {
 	public static int  POS_BFP_OF_REAL(float _af) { return   BFP_OF_REAL((_af), INT32_POS_FRAC);}
 	public static float POS_FLOAT_OF_BFP(int _ai)  { return FLOAT_OF_BFP((_ai), INT32_POS_FRAC);}
 	public static int  SPEED_BFP_OF_REAL(float _af) {return BFP_OF_REAL((_af), INT32_SPEED_FRAC);}
+	public static int  SPEED_BFP_OF_REAL(double _af) {return BFP_OF_REAL((_af), INT32_SPEED_FRAC);}
 	public static float SPEED_FLOAT_OF_BFP(int _ai){return FLOAT_OF_BFP((_ai), INT32_SPEED_FRAC);}
 	public static int  ACCEL_BFP_OF_REAL(float _af) { return BFP_OF_REAL((_af), INT32_ACCEL_FRAC);}
 	public static float ACCEL_FLOAT_OF_BFP(int _ai) {return FLOAT_OF_BFP((_ai), INT32_ACCEL_FRAC);}
@@ -72,7 +73,33 @@ public class Pprz_algebra_int {
 	public static int R_FRAC = 14;
 	public static int INT32_SQRT_MAX_ITER = 40;
 	
+	public static void INT_RATES_LSHIFT(Int32Rates _o,Int32Rates _i,int _r) {   
+	    (_o).p = ((_i).p << (_r));       
+	    (_o).q = ((_i).q << (_r));       
+	    (_o).r = ((_i).r << (_r));       
+	  }
+
 	
+	public static void INT_EULERS_ZERO(Int32Eulers _e) {
+		EULERS_ASSIGN(_e, 0, 0, 0);
+	}
+	
+	public static void INT_VECT2_ZERO(Int32Vect2 _v){
+		VECT2_ASSIGN(_v, 0, 0);
+	}
+	public static void INT32_VECT2_RSHIFT(Int32Vect2 _o,Int32Vect2 _i,int _r) { 
+		(_o).x = ((_i).x >> (_r)); 
+		(_o).y = ((_i).y >> (_r)); 
+	}
+	public static void INT32_VECT2_RSHIFT(Int32Vect2 _o,Int64Vect2 _i,int _r) { 
+		(_o).x = ((_i).x >> (_r)); 
+		(_o).y = ((_i).y >> (_r)); 
+	}
+
+	public static void INT32_VECT2_LSHIFT(Int32Vect2 _o,Int32Vect2 _i,int _l) { 
+		(_o).x = ((_i).x << (_l)); 
+		(_o).y = ((_i).y << (_l)); 
+}
 	public static void  INT32_VECT3_RSHIFT(EnuCoor_i _o,EnuCoor_i _i,int _r) { 
 	    (_o).x = ((_i).x >> (_r));       
 	    (_o).y = ((_i).y >> (_r));       

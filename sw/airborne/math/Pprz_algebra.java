@@ -3,6 +3,11 @@ import static sw.airborne.math.Pprz_algebra_int.*;
 
 public class Pprz_algebra {
 	
+	
+	public static void VECT2_ASSIGN(Int32Vect2 _a,int _x,int _y) {		
+	    (_a).x = (_x);				
+	    (_a).y = (_y);				
+	  }
 	public static float RMAT_TRACE(FloatRMat rm){
 		return (rm.m[0] + rm.m[4] + rm.m[8]);
 	}
@@ -49,12 +54,24 @@ public class Pprz_algebra {
 		(_a).x = (_b).x;				
 		(_a).y = (_b).y;				
 	}
+	public static void VECT2_COPY(Int32Vect2 _a,NedCoor_i _b) {			
+		(_a).x = (_b).x;				
+		(_a).y = (_b).y;				
+	}
 
 	/* a += b */
 	public static void VECT2_ADD(DoubleVect2 _a,DoubleVect2 _b) {			
 	    (_a).x += (_b).x;				
 	    (_a).y += (_b).y;				
 	  }
+	public static void VECT2_ADD(Int32Vect2 _a,Int32Vect2 _b) {			
+		(_a).x += (_b).x;				
+		(_a).y += (_b).y;				
+	}
+	public static void VECT2_ADD(Int64Vect2 _a,Int32Vect2 _b) {			
+		(_a).x += (_b).x;				
+		(_a).y += (_b).y;				
+	}
 
 	/* a -= b */
 	public static void VECT2_SUB(DoubleVect2 _a, DoubleVect2 _b) {			
@@ -67,18 +84,38 @@ public class Pprz_algebra {
 	    (_c).x = (_a).x + (_b).x;			
 	    (_c).y = (_a).y + (_b).y;			
 	  }
+	public static void VECT2_SUM(Int32Vect2 _c, Int32Vect2 _a, Int32Vect2 _b) {			
+		(_c).x = (_a).x + (_b).x;			
+		(_c).y = (_a).y + (_b).y;			
+	}
 
 	/* c = a - b */
 	public static void VECT2_DIFF(DoubleVect2 _c, DoubleVect2 _a, DoubleVect2 _b) {                
 	    (_c).x = (_a).x - (_b).x;			
 	    (_c).y = (_a).y - (_b).y;			
 	  }
+	public static void VECT2_DIFF(Int32Vect2 _c, Int32Vect2 _a, Int32Vect2 _b) {                
+		(_c).x = (_a).x - (_b).x;			
+		(_c).y = (_a).y - (_b).y;			
+	}
+	public static void VECT2_DIFF(Int32Vect2 _c, EnuCoor_i _a, EnuCoor_i _b) {                
+		(_c).x = (_a).x - (_b).x;			
+		(_c).y = (_a).y - (_b).y;			
+	}
 
 	/* _vo = _vi * _s */
 	public static void VECT2_SMUL(DoubleVect2 _vo, DoubleVect2 _vi, int _s) {		
 	    (_vo).x =  (_vi).x * (_s);			
 	    (_vo).y =  (_vi).y * (_s);			
 	  }
+	public static void VECT2_SMUL(Int32Vect2 _vo, Int32Vect2 _vi, int _s) {		
+		(_vo).x =  (_vi).x * (_s);			
+		(_vo).y =  (_vi).y * (_s);			
+	}
+	public static void VECT2_SMUL(Int32Vect2 _vo, EnuCoor_i _vi, int _s) {		
+		(_vo).x =  (_vi).x * (_s);			
+		(_vo).y =  (_vi).y * (_s);			
+	}
 
 	/* _vo =  _vi / _s */
 	public static void VECT2_SDIV(DoubleVect2 _vo,DoubleVect2 _vi,int _s) {		
@@ -316,6 +353,12 @@ public class Pprz_algebra {
 	    (_e).theta = (_theta);                          
 	    (_e).psi   = (_psi);                            
 	  }
+	
+	public static void EULERS_ASSIGN(Int32Eulers _e, int _phi, int _theta, int _psi) {		
+		(_e).phi   = (_phi);                            
+		(_e).theta = (_theta);                          
+		(_e).psi   = (_psi);                            
+	}
 
 	/* a += b */
 	public static void EULERS_ADD(DoubleEulers _a, DoubleEulers _b) {				
@@ -405,6 +448,11 @@ public class Pprz_algebra {
 	    (_a).q += (_b).q;				
 	    (_a).r += (_b).r;				
 	  }
+	public static void RATES_ADD(Int32Rates _a, Int32Rates _b) {			
+		(_a).p += (_b).p;				
+		(_a).q += (_b).q;				
+		(_a).r += (_b).r;				
+	}
 
 	/* a -= b */
 	public static void RATES_SUB(DoubleRates _a, DoubleRates _b) {			
@@ -433,6 +481,11 @@ public class Pprz_algebra {
 	    (_c).q = (_a).q - (_b).q;			
 	    (_c).r = (_a).r - (_b).r;			
 	  }
+	public static void RATES_DIFF(Int32Rates _c, Int32Rates _a, Int32Rates  _b) {                
+		(_c).p = (_a).p - (_b).p;			
+		(_c).q = (_a).q - (_b).q;			
+		(_c).r = (_a).r - (_b).r;			
+	}
 
 	/* _ro =  _ri * _s */
 	public static void RATES_SMUL(DoubleRates _ro, DoubleRates _ri, double _s) {		
@@ -447,6 +500,11 @@ public class Pprz_algebra {
 	    (_ro).q =  (_ri).q / (_s);			
 	    (_ro).r =  (_ri).r / (_s);			
 	  }
+	public static void RATES_SDIV(Int32Rates _ro, Int32Rates _ri, int _s) {		
+		(_ro).p =  (_ri).p / (_s) ;			
+		(_ro).q =  (_ri).q / (_s);			
+		(_ro).r =  (_ri).r / (_s);			
+	}
 
 	/* Element wise vector multiplication */
 	public static void RATES_EWMULT_RSHIFT(DoubleRates c, DoubleRates a,DoubleRates b, int _s) {  
@@ -454,6 +512,11 @@ public class Pprz_algebra {
 	    (c).q = (int)((a).q * (b).q) >> (_s);		
 	    (c).r = (int)((a).r * (b).r) >> (_s);		
 	  }//?????????????????????????????????????????
+	public static void RATES_EWMULT_RSHIFT(Int32Rates c, Int32Rates a,Int32Rates b, int _s) {  
+		(c).p = (int)((a).p * (b).p) >> (_s);		
+		(c).q = (int)((a).q * (b).q) >> (_s);		
+		(c).r = (int)((a).r * (b).r) >> (_s);		
+	}//?????????????????????????????????????????
 
 
 	/* _v = Bound(_v, _min, _max) */
@@ -462,6 +525,11 @@ public class Pprz_algebra {
 	    (_v).q = (_v).q < (_min) ? (_min) : (_v).q > (_max) ? (_max) : (_v).q;	
 	    (_v).r = (_v).r < (_min) ? (_min) : (_v).r > (_max) ? (_max) : (_v).r;	
 	  }
+	public static void RATES_BOUND_CUBE(Int32Rates _v, int _min, int _max) {				
+		(_v).p = (_v).p < (_min) ? (_min) : (_v).p > (_max) ? (_max) : (_v).p;	
+		(_v).q = (_v).q < (_min) ? (_min) : (_v).q > (_max) ? (_max) : (_v).q;	
+		(_v).r = (_v).r < (_min) ? (_min) : (_v).r > (_max) ? (_max) : (_v).r;	
+	}
 
 	public static void RATES_BOUND_BOX(DoubleRates _v, DoubleRates _v_min, DoubleRates _v_max) {				
 	    if ((_v).p > (_v_max).p) (_v).p = (_v_max).p; else if ((_v).p < (_v_min).p) (_v).p = (_v_min).p; 

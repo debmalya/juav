@@ -1,6 +1,23 @@
 package sw.airborne.firmwares.rotorcraft;
 
-import sw.airborne.math.*;
+import sw.airborne.math.*; 
+import sw.include.Std;
+import static sw.airborne.math.Pprz_algebra_int.*;
+import static sw.airborne.math.Pprz_algebra.*;
+import static sw.include.Std.*;
+import static sw.airborne.math.Pprz_geodetic.*;
+import static sw.airborne.math.Pprz_orientation_conversion.*;
+import static sw.airborne.math.Pprz_geodetic_int.*;
+import static sw.airborne.math.Pprz_geodetic_float.*;
+import static sw.airborne.math.Pprz_algebra_float.*;
+import static sw.airborne.math.Pprz_trig_int.*;
+import static sw.airborne.State.*;
+import static sw.airborne.firmwares.rotorcraft.guidance.Guidance_h_ref.*;
+
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_none.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_rate.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_rc_setpoint.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_euler_int.*;
 
 public class Navigation {
 	
@@ -403,7 +420,7 @@ public class Navigation {
 		return true;
 	}
 	
-	public static boolean bool_t nav_is_in_flight() {
+	public static boolean boolean nav_is_in_flight() {
 		return autopilot_in_flight;
 	}
 	

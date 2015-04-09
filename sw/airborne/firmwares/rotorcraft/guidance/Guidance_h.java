@@ -1,6 +1,23 @@
 package sw.airborne.firmwares.rotorcraft.guidance;
 
-import sw.airborne.math.*;
+import sw.airborne.math.*; 
+import sw.include.Std;
+import static sw.airborne.math.Pprz_algebra_int.*;
+import static sw.airborne.math.Pprz_algebra.*;
+import static sw.include.Std.*;
+import static sw.airborne.math.Pprz_geodetic.*;
+import static sw.airborne.math.Pprz_orientation_conversion.*;
+import static sw.airborne.math.Pprz_geodetic_int.*;
+import static sw.airborne.math.Pprz_geodetic_float.*;
+import static sw.airborne.math.Pprz_algebra_float.*;
+import static sw.airborne.math.Pprz_trig_int.*;
+import static sw.airborne.State.*;
+import static sw.airborne.firmwares.rotorcraft.guidance.Guidance_h_ref.*;
+
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_none.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_rate.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_rc_setpoint.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_euler_int.*;
 
 public class Guidance_h {
 
@@ -25,7 +42,7 @@ public class Guidance_h {
 	 * but not enabled if GUIDANCE_H_USE_REF was defined to false.
 	 */
 	public static void guidance_h_SetUseRef(int _val) {                    
-		guidance_h_use_ref = _val && GUIDANCE_H_USE_REF;    
+		guidance_h_use_ref = (_val!=0) && GUIDANCE_H_USE_REF;    
 	}
 
 	public static void guidance_h_SetMaxSpeed(int _val) {          
@@ -133,9 +150,9 @@ public class Guidance_h {
 		INT_VECT2_ZERO(guidance_h_trim_att_integrator);
 		INT_EULERS_ZERO(guidance_h_rc_sp);
 		guidance_h_heading_sp = 0;
-		guidance_h_pgain = GUIDANCE_H_PGAIN;
-		guidance_h_igain = GUIDANCE_H_IGAIN;
-		guidance_h_dgain = GUIDANCE_H_DGAIN;
+		guidance_h_pgain = GUIDANCE_H_PGAIN;//hardcode TODO
+		guidance_h_igain = GUIDANCE_H_IGAIN;//hardcode TODO
+		guidance_h_dgain = GUIDANCE_H_DGAIN;//hardcode TODO
 		guidance_h_again = GUIDANCE_H_AGAIN;
 		guidance_h_vgain = GUIDANCE_H_VGAIN;
 		transition_percentage = 0;
@@ -503,8 +520,8 @@ public class Guidance_h {
 			/* Rotate from body to NED frame by negative psi angle */
 			int psi = -stateGetNedToBodyEulers_i().psi;
 			int s_psi, c_psi;
-			PPRZ_ITRIG_SIN(s_psi, psi);
-			PPRZ_ITRIG_COS(c_psi, psi);
+			s_psi = PPRZ_ITRIG_SIN(psi);
+			c_psi = PPRZ_ITRIG_COS(psi);
 			speed_sp.x = (int)(( (int)c_psi * rc_x + (int)s_psi * rc_y) >> INT32_TRIG_FRAC);
 			speed_sp.y = (int)((-(int)s_psi * rc_x + (int)c_psi * rc_y) >> INT32_TRIG_FRAC);
 		}
