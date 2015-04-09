@@ -1,11 +1,19 @@
 package sw.airborne.firmwares.rotorcraft;
 
-import sw.airborne.math.*;
-
+import static sw.airborne.math.Pprz_algebra.*;
+import static sw.airborne.math.Pprz_algebra_int.*;
+import static sw.airborne.math.Pprz_algebra_float.*;
+import sw.airborne.firmwares.rotorcraft.guidance.Guidance_h;
+import  sw.airborne.math.*;
+import static sw.airborne.State.*;
 public class Navigation {
-	
+	public static final int VERTICAL_MODE_MANUAL=      0;
+	public static final int VERTICAL_MODE_CLIMB=       1;
+	public static final int VERTICAL_MODE_ALT   =      2;
+
+	public static final int NB_WAYPOINT = 10;//////??????
 	public static final int nb_waypoint = NB_WAYPOINT;
-	public static EnuCoor_i waypoints[NB_WAYPOINT];
+	public static EnuCoor_i[] waypoints = new EnuCoor_i[10];
 	public static EnuCoor_i navigation_target;
 	public static EnuCoor_i navigation_carrot;
 	public static EnuCoor_i nav_last_point;
@@ -43,7 +51,8 @@ public class Navigation {
 	public static int CARROT_DIST = (12 << 8);
 	
 	/** minimum horizontal distance to waypoint to mark as arrived */
-	public static final double ARRIVED_AT_WAYPOINT = 3.0; 
+	public static final double ARRIVED_AT_WAYPOINT = 3.0;
+	private static final int WP_HOME = 0;///???????????????? 
 	
 	public static void send_nav_status() {
 		DOWNLINK_SEND_ROTORCRAFT_NAV_STATUS(DefaultChannel, DefaultDevice,
@@ -60,7 +69,7 @@ public class Navigation {
 		else if (horizontal_mode == HORIZONTAL_MODE_CIRCLE) {
 			float cx = POS_FLOAT_OF_BFP(waypoints[nav_circle_centre].x);
 			float cy = POS_FLOAT_OF_BFP(waypoints[nav_circle_centre].y);
-			float r = POS_FLOAT_OF_BFP(nav_circle_radius);
+			float r = POS_FLOAT_OF_BFP((nav_circle_radius);
 			DOWNLINK_SEND_CIRCLE(DefaultChannel, DefaultDevice, cx, cy, r);
 		}
 	}
@@ -120,7 +129,7 @@ public class Navigation {
 	public static void nav_advance_carrot() {
 		EnuCoor_i pos = stateGetPositionEnu_i();
 		/* compute a vector to the waypoint */
-		Int32Vect2 path_to_waypoint;
+		Int32Vect2 path_to_waypoint=new Int32Vect2();;
 		VECT2_DIFF(path_to_waypoint, navigation_target, pos);
 
 		/* saturate it */
@@ -299,7 +308,7 @@ public class Navigation {
 	
 	private static int last_nav_alt = 0;
 	public static void nav_set_altitude() {
-		if (Math.abs(nav_altitude - last_nav_alt) > (POS_BFP_OF_REAL(0.2))) {
+		if (Math.abs(nav_altitude - last_nav_alt) > (POS_BFP_OF_REAL((float)0.2))) {
 			nav_flight_altitude = nav_altitude;
 			last_nav_alt = nav_altitude;
 		}
@@ -324,14 +333,17 @@ public class Navigation {
 		nav_circle_radians = 0;
 		horizontal_mode = HORIZONTAL_MODE_WAYPOINT;
 	}
-	
+	public static int block_time=0;
+	public static int stage_time=0;
 	private static int SIXTEEN_PERIODIC_TASK = 0;
 	public static void nav_periodic_task() {
 		//RunOnceEvery(16, { stage_time++;  block_time++; });
 		SIXTEEN_PERIODIC_TASK++;					
 		if (SIXTEEN_PERIODIC_TASK >= 16) {			
 			SIXTEEN_PERIODIC_TASK = 0;					
-			stage_time++;  block_time++;					
+			
+			stage_time++;  
+			block_time++;					
 		}	
 		/* from flight_plan.h */
 		//auto_nav();             ???????
@@ -427,7 +439,7 @@ public class Navigation {
 	  EnuCoor_i pos = stateGetPositionEnu_i();
 	  Int32Vect2 home_d;
 	  VECT2_DIFF(home_d, waypoints[WP_HOME], pos);
-	  INT32_VECT2_RSHIFT(home_d, home_d, INT32_POS_FRAC);
+	  INT32_VECT2_RSHIFT(home_d, home_d, 8);
 	  dist2_to_home = (float)(home_d.x * home_d.x + home_d.y * home_d.y);
 	  too_far_from_home = dist2_to_home > max_dist2_from_home;
 	}
@@ -436,22 +448,24 @@ public class Navigation {
 	public static boolean nav_set_heading_rad(float rad) {
 	  nav_heading = ANGLE_BFP_OF_REAL(rad);
 	  INT32_COURSE_NORMALIZE(nav_heading);
-	  return FALSE;
+	  return false;
 	}
 
 	/** Set nav_heading in degrees. */
 	public static boolean nav_set_heading_deg(float deg) {
-	  return nav_set_heading_rad(RadOfDeg(deg));
+	  return nav_set_heading_rad((float)((deg) * (3.14159/180.0)));
 	}
 	
 	/** Set heading to point towards x,y position in local coordinates */
 	public static boolean nav_set_heading_towards(float x, float y) {
-	  FloatVect2 target = {x, y};
+	  FloatVect2 target = new FloatVect2();
+	  target.x=x;
+	  target.y=y;
 	  FloatVect2 pos_diff;
 	  VECT2_DIFF(pos_diff, target, stateGetPositionEnu_f());
 	  // don't change heading if closer than 0.5m to target
 	  if (FLOAT_VECT2_NORM2(pos_diff) > 0.25) {
-	    float heading_f = atan2f(pos_diff.x, pos_diff.y);
+	    float heading_f = (float) Math.atan2(pos_diff.x, pos_diff.y);
 	    nav_heading = ANGLE_BFP_OF_REAL(heading_f);
 	  }
 	  // return false so it can be called from the flightplan

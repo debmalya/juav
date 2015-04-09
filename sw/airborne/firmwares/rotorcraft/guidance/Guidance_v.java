@@ -1,4 +1,12 @@
 package sw.airborne.firmwares.rotorcraft.guidance;
+import static sw.airborne.State.*;
+import static sw.airborne.math.Pprz_algebra_int.*;
+import static sw.include.Std.*;
+import static sw.airborne.firmwares.rotorcraft.Navigation.*;
+import static sw.airborne.firmwares.rotorcraft.Stabilization.*;
+import static sw.airborne.firmwares.rotorcraft.guidance.Guidance_v_ref.*;
+import static sw.airborne.firmwares.rotorcraft.guidance.Guidance_v_adapt.*;
+import sw.airborne.math.Int32RMat;
 
 public class Guidance_v {
 	public static final int GUIDANCE_V_MODE_KILL     = 0;
@@ -33,6 +41,10 @@ public class Guidance_v {
 	public static final double GUIDANCE_V_CLIMB_RC_DEADBAND =MAX_PPRZ/10;//9600
 	public static final int GUIDANCE_V_MAX_RC_CLIMB_SPEED =GUIDANCE_V_REF_MIN_ZD;
 	public static final int GUIDANCE_V_MAX_RC_DESCENT_SPEED =GUIDANCE_V_REF_MAX_ZD;
+	
+	private static final int COMMAND_THRUST = 0;
+	private static final boolean NO_RC_THRUST_LIMIT = false;
+	private static final int MAX_PPRZ = 9600;
 
 	public static int guidance_v_mode;
 	public static int guidance_v_ff_cmd;
@@ -125,8 +137,8 @@ public class Guidance_v {
 		guidance_v_rc_zd_sp = (MAX_PPRZ/2) - (int)radio_control.values[RADIO_THROTTLE];
 		DeadBand(guidance_v_rc_zd_sp, GUIDANCE_V_CLIMB_RC_DEADBAND);
 
-		climb_scale = Math.abs(SPEED_BFP_OF_REAL(GUIDANCE_V_MAX_RC_CLIMB_SPEED) / (MAX_PPRZ/2 - GUIDANCE_V_CLIMB_RC_DEADBAND));
-		descent_scale = Math.abs(SPEED_BFP_OF_REAL(GUIDANCE_V_MAX_RC_DESCENT_SPEED) / (MAX_PPRZ/2 - GUIDANCE_V_CLIMB_RC_DEADBAND));
+		climb_scale = (int) Math.abs(SPEED_BFP_OF_REAL(GUIDANCE_V_MAX_RC_CLIMB_SPEED) / (MAX_PPRZ/2 - GUIDANCE_V_CLIMB_RC_DEADBAND));
+		descent_scale = (int) Math.abs(SPEED_BFP_OF_REAL(GUIDANCE_V_MAX_RC_DESCENT_SPEED) / (MAX_PPRZ/2 - GUIDANCE_V_CLIMB_RC_DEADBAND));
 
 		if(guidance_v_rc_zd_sp > 0)
 			guidance_v_rc_zd_sp *= descent_scale;
@@ -165,7 +177,7 @@ public class Guidance_v {
 
 	public static void guidance_v_notify_in_flight( boolean in_flight) {
 		if (in_flight) {
-			gv_adapt_init();
+			Guidance_v_adapt.gv_adapt_init();
 		}
 	}
 
@@ -176,12 +188,12 @@ public class Guidance_v {
 		// AKA SUPERVISION and co
 		guidance_v_thrust_coeff = get_vertical_thrust_coeff();
 		if (in_flight) {
-			int vertical_thrust = (stabilization_cmd[COMMAND_THRUST] * guidance_v_thrust_coeff) >> INT32_TRIG_FRAC;
+			int vertical_thrust = (stabilization_cmd[COMMAND_THRUST] * guidance_v_thrust_coeff) >> 14;
 			Guidance_v_adapt.gv_adapt_run(stateGetAccelNed_i().z, vertical_thrust, guidance_v_zd_ref);
 		}
 		else {
 			/* reset estimate while not in_flight */
-			gv_adapt_init();
+			Guidance_v_adapt.gv_adapt_init();
 		}
 
 		switch (guidance_v_mode) {
@@ -193,13 +205,13 @@ public class Guidance_v {
 
 		case GUIDANCE_V_MODE_RC_CLIMB:
 			guidance_v_zd_sp = guidance_v_rc_zd_sp;
-			gv_update_ref_from_zd_sp(guidance_v_zd_sp);
+			Guidance_v_ref.gv_update_ref_from_zd_sp(guidance_v_zd_sp);
 			run_hover_loop(in_flight);
 			stabilization_cmd[COMMAND_THRUST] = guidance_v_delta_t;
 			break;
 
 		case GUIDANCE_V_MODE_CLIMB:
-			gv_update_ref_from_zd_sp(guidance_v_zd_sp);
+			Guidance_v_ref.gv_update_ref_from_zd_sp(guidance_v_zd_sp);
 			run_hover_loop(in_flight);
 			if(NO_RC_THRUST_LIMIT){
 
@@ -207,7 +219,7 @@ public class Guidance_v {
 			}
 			else{
 				// saturate max authority with RC stick
-				stabilization_cmd[COMMAND_THRUST] = Min(guidance_v_rc_delta_t, guidance_v_delta_t);
+				stabilization_cmd[COMMAND_THRUST] = Math.min(guidance_v_rc_delta_t, guidance_v_delta_t);
 
 			}
 
@@ -215,13 +227,13 @@ public class Guidance_v {
 
 		case GUIDANCE_V_MODE_HOVER:
 			guidance_v_zd_sp = 0;
-			gv_update_ref_from_z_sp(guidance_v_z_sp);
+			Guidance_v_ref.gv_update_ref_from_z_sp(guidance_v_z_sp);
 			run_hover_loop(in_flight);
 			if(NO_RC_THRUST_LIMIT)
 			stabilization_cmd[COMMAND_THRUST] = guidance_v_delta_t;
 			else
 				
-				stabilization_cmd[COMMAND_THRUST] = Min(guidance_v_rc_delta_t, guidance_v_delta_t);
+				stabilization_cmd[COMMAND_THRUST] = Math.min(guidance_v_rc_delta_t, guidance_v_delta_t);
 			
 			break;
 
@@ -230,13 +242,13 @@ public class Guidance_v {
 			if (vertical_mode == VERTICAL_MODE_ALT) {
 				guidance_v_z_sp = -nav_flight_altitude;
 				guidance_v_zd_sp = 0;
-				gv_update_ref_from_z_sp(guidance_v_z_sp);
+				Guidance_v_ref.gv_update_ref_from_z_sp(guidance_v_z_sp);
 				run_hover_loop(in_flight);
 			}
 			else if (vertical_mode == VERTICAL_MODE_CLIMB) {
 				guidance_v_z_sp = stateGetPositionNed_i().z;
 				guidance_v_zd_sp = -nav_climb;
-				gv_update_ref_from_zd_sp(guidance_v_zd_sp);
+				Guidance_v_ref.gv_update_ref_from_zd_sp(guidance_v_zd_sp);
 				run_hover_loop(in_flight);
 			}
 			else if (vertical_mode == VERTICAL_MODE_MANUAL) {
@@ -248,13 +260,13 @@ public class Guidance_v {
 			}
 			if(NO_RC_THRUST_LIMIT)
 			stabilization_cmd[COMMAND_THRUST] = guidance_v_delta_t;
-			else{
-				/* use rc limitation if available */
-				if (radio_control.status == RC_OK)
-					stabilization_cmd[COMMAND_THRUST] = Math.min(guidance_v_rc_delta_t, guidance_v_delta_t);
-				else
-					stabilization_cmd[COMMAND_THRUST] = guidance_v_delta_t;
-			}
+//			else{
+//				/* use rc limitation if available */
+//				if (radio_control.status == RC_OK)
+//					stabilization_cmd[COMMAND_THRUST] = Math.min(guidance_v_rc_delta_t, guidance_v_delta_t);
+//				else
+//					stabilization_cmd[COMMAND_THRUST] = guidance_v_delta_t;
+//			}
 			break;
 		}
 		default:
@@ -266,7 +278,7 @@ public class Guidance_v {
 	private static int max_bank_coef;
 	public static int get_vertical_thrust_coeff() {
 		//static const int max_bank_coef = BFP_OF_REAL(RadOfDeg(30.), INT32_TRIG_FRAC);
-		max_bank_coef = BFP_OF_REAL(RadOfDeg(30.), INT32_TRIG_FRAC);
+		max_bank_coef = BFP_OF_REAL((float)((30.0) * (3.1415926/180.0)), 14);
 		Int32RMat att = stateGetNedToBodyRMat_i();
 		/* thrust vector:
 		 *  INT32_RMAT_VMULT(thrust_vect, att, zaxis)
@@ -318,10 +330,10 @@ public class Guidance_v {
 		}
 		else {
 			/* use the fixed nominal throttle */
-			inv_m = BFP_OF_REAL(9.81 / (guidance_v_nominal_throttle * MAX_PPRZ), FF_CMD_FRAC);
+			inv_m = BFP_OF_REAL((float)(9.81 / (guidance_v_nominal_throttle * MAX_PPRZ)), FF_CMD_FRAC);
 		}
 
-		int g_m_zdd = (int)BFP_OF_REAL(9.81, FF_CMD_FRAC) -
+		int g_m_zdd = (int)BFP_OF_REAL((float)9.81, FF_CMD_FRAC) -
 				(guidance_v_zdd_ref << (FF_CMD_FRAC - INT32_ACCEL_FRAC));
 
 		guidance_v_ff_cmd = g_m_zdd / inv_m;

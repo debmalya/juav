@@ -153,7 +153,7 @@ public class Main {
 		//imu_periodic();
 
 		/* run control loops */
-		Autopilot.autopilot_periodic();
+		autopilot_periodic();
 		/* set actuators     */
 		//actuators_set(autopilot_motors_on);
 	//	SetActuatorsFromCommands(commands, autopilot_mode);

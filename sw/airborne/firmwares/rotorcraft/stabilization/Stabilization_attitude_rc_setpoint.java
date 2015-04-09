@@ -1,6 +1,10 @@
 package sw.airborne.firmwares.rotorcraft.stabilization;
 
 import sw.airborne.math.*;
+import static sw.airborne.State.*;
+import static sw.airborne.math.Pprz_algebra_int.*;
+import static sw.airborne.math.Pprz_trig_int.*;
+
 
 public class Stabilization_attitude_rc_setpoint {
 	
@@ -45,8 +49,8 @@ public class Stabilization_attitude_rc_setpoint {
 
 	  int heading;
 
-	  if(abs(att.phi) < INT32_ANGLE_PI_2) {
-	    int sin_theta;
+	  if(Math.abs(att.phi) < INT32_ANGLE_PI_2) {
+	    int sin_theta = 0;
 	    PPRZ_ITRIG_SIN(sin_theta, att.theta);
 	    heading = att.psi - INT_MULT_RSHIFT(sin_theta, att.phi, INT32_TRIG_FRAC);
 	  }

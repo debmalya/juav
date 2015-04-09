@@ -3,7 +3,7 @@ package sw.airborne.firmwares.rotorcraft.stabilization;
 import sw.airborne.math.*;
 import static sw.airborne.math.Pprz_algebra.*;
 import static sw.airborne.math.Pprz_algebra_int.*;
-
+import static sw.airborne.firmwares.rotorcraft.Stabilization.*;
 public class Stabilization_none {
 	public static Int32Rates stabilization_none_rc_cmd = new Int32Rates();
 

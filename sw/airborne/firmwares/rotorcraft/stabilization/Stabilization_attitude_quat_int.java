@@ -1,5 +1,17 @@
 package sw.airborne.firmwares.rotorcraft.stabilization;
+import static sw.airborne.math.Pprz_trig_int.*;
+import static sw.airborne.math.Pprz_algebra.*;
+import static sw.airborne.firmwares.rotorcraft.Stabilization.*;
+import static sw.include.Std.*;
 
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_rc_setpoint.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_ref_quat_int.*;
+import static sw.airborne.math.Pprz_algebra_int.*;
+import static sw.airborne.State.*;
+import sw.airborne.math.*;
+import  sw.airborne.math.Int32Quat;
+import sw.airborne.math.Int32Vect2;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_quat_transformations.*;
 public class Stabilization_attitude_quat_int {
 	//TODO
 	public static Int32AttitudeGains stabilization_gains = {
@@ -22,6 +34,14 @@ public class Stabilization_attitude_quat_int {
 	public static final int  GAIN_PRESCALER_P =48;
 	public static final int GAIN_PRESCALER_D =48;
 	public static final int  GAIN_PRESCALER_I =48;
+
+
+
+	private static final int REF_RATE_FRAC = 16;
+
+
+
+	private static final int MAX_PPRZ = 9600;
 
 
 
@@ -92,6 +112,8 @@ public class Stabilization_attitude_quat_int {
 		}
 	}
 
+	public static  Int32Eulers stab_att_sp_euler;
+
 	public static void stabilization_attitude_enter() {
 
 		/* reset psi setpoint to current psi angle */
@@ -104,6 +126,8 @@ public class Stabilization_attitude_quat_int {
 
 	}
 
+	public static Int32Quat stab_att_sp_quat=new Int32Quat();
+
 	public static void stabilization_attitude_set_failsafe_setpoint() {
 		/* set failsafe to zero roll/pitch and current heading */
 		int heading2 = stabilization_attitude_get_heading_i() / 2;
@@ -113,14 +137,18 @@ public class Stabilization_attitude_quat_int {
 		PPRZ_ITRIG_SIN(stab_att_sp_quat.qz, heading2);
 	}
 
-	public static void stabilization_attitude_set_rpy_setpoint_i( Int32Eulers *rpy) {
+	public static void stabilization_attitude_set_rpy_setpoint_i( Int32Eulers rpy) {
 		// stab_att_sp_euler.psi still used in ref..
 		//	memcpy(stab_att_sp_euler, rpy, sizeof( Int32Eulers));
-		stab_att_sp_euler = rpy.clone();
+		stab_att_sp_euler.phi = rpy.phi;
+		stab_att_sp_euler.psi = rpy.psi;
+		stab_att_sp_euler.theta = rpy.theta;
+
+		
 		quat_from_rpy_cmd_i(stab_att_sp_quat, stab_att_sp_euler);
 	}
 
-	public static void stabilization_attitude_set_earth_cmd_i( Int32Vect2 *cmd, int heading) {
+	public static void stabilization_attitude_set_earth_cmd_i( Int32Vect2 cmd, int heading) {
 		// stab_att_sp_euler.psi still used in ref..
 		stab_att_sp_euler.psi = heading;
 
@@ -176,6 +204,9 @@ public class Stabilization_attitude_quat_int {
 				GAIN_PRESCALER_I * gains.i.z  * QUAT1_FLOAT_OF_BFP(sum_err.qz) / 2;
 
 	}
+	public static Int32Quat stab_att_ref_quat;
+	public static Int32Rates stab_att_ref_rate;
+	public static Int32Rates stab_att_ref_accel;
 
 	public static void stabilization_attitude_run(boolean enable_integrator) {
 
@@ -197,10 +228,10 @@ public class Stabilization_attitude_quat_int {
 		INT32_QUAT_NORMALIZE(att_err);
 
 		/*  rate error                */
-		Int32Rates rate_ref_scaled = {
-				OFFSET_AND_ROUND(stab_att_ref_rate.p, (REF_RATE_FRAC - INT32_RATE_FRAC)),
-				OFFSET_AND_ROUND(stab_att_ref_rate.q, (REF_RATE_FRAC - INT32_RATE_FRAC)),
-				OFFSET_AND_ROUND(stab_att_ref_rate.r, (REF_RATE_FRAC - INT32_RATE_FRAC)) };
+		Int32Rates rate_ref_scaled =new Int32Rates();
+		rate_ref_scaled.p=OFFSET_AND_ROUND(stab_att_ref_rate.p, (REF_RATE_FRAC - INT32_RATE_FRAC));
+				rate_ref_scaled.q=	OFFSET_AND_ROUND(stab_att_ref_rate.q, (REF_RATE_FRAC - INT32_RATE_FRAC));
+						rate_ref_scaled.r=		OFFSET_AND_ROUND(stab_att_ref_rate.r, (REF_RATE_FRAC - INT32_RATE_FRAC));
 		Int32Rates rate_err;
 		Int32Rates body_rate = stateGetBodyRates_i();
 		RATES_DIFF(rate_err, rate_ref_scaled, (body_rate));

@@ -1,10 +1,13 @@
 package sw.airborne.firmwares.rotorcraft.stabilization;
+import sw.airborne.math.*;
+import static sw.airborne.math.Pprz_algebra_int.*;
+import static sw.airborne.math.Pprz_algebra.*;
 
 public class Stabilization_attitude_quat_transformations {
 	public static void quat_from_rpy_cmd_i( Int32Quat quat,  Int32Eulers rpy) {
-		 FloatEulers rpy_f;
+		 FloatEulers rpy_f = null;
 		EULERS_FLOAT_OF_BFP(rpy_f, rpy);
-		 FloatQuat quat_f;
+		 FloatQuat quat_f = null;
 		quat_from_rpy_cmd_f(quat_f, rpy_f);
 		QUAT_BFP_OF_REAL(quat, quat_f);
 	}
@@ -21,12 +24,12 @@ public class Stabilization_attitude_quat_transformations {
 
 	public static void quat_from_earth_cmd_i( Int32Quat quat,  Int32Vect2 cmd, int heading) {
 		// use float conversion for now...
-		 FloatVect2 cmd_f;
+		 FloatVect2 cmd_f=new FloatVect2();
 		cmd_f.x = ANGLE_FLOAT_OF_BFP(cmd.x);
 		cmd_f.y = ANGLE_FLOAT_OF_BFP(cmd.y);
 		float heading_f = ANGLE_FLOAT_OF_BFP(heading);
 
-		 FloatQuat quat_f;
+		 FloatQuat quat_f = null;
 		quat_from_earth_cmd_f(quat_f, cmd_f, heading_f);
 
 		// convert back to fixed point
@@ -40,7 +43,8 @@ public class Stabilization_attitude_quat_transformations {
 		 *
 		 * orientation vector describing simultaneous rotation of roll/pitch
 		 */
-		FloatVect3 ov = {cmd.y, -cmd.x, 0.0};
+		FloatVect3 ov = new FloatVect3();
+		ov.x=cmd.y; ov.y=-cmd.x; ov.z=(float) 0.0;
 		/* quaternion from that orientation vector */
 		 FloatQuat q_rp;
 		FLOAT_QUAT_OF_ORIENTATION_VECT(q_rp, ov);

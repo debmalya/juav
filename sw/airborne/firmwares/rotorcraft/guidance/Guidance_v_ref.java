@@ -1,4 +1,6 @@
 package sw.airborne.firmwares.rotorcraft.guidance;
+import static sw.include.Std.*;
+import static sw.airborne.math.Pprz_algebra_int.*;
 
 public class Guidance_v_ref {
 
@@ -18,25 +20,25 @@ public class Guidance_v_ref {
 	public static int gv_z_ref;
 
 	public static final double GUIDANCE_V_REF_MIN_ZDD = (-2.0*9.81);
-	public static final int GV_MIN_ZDD = BFP_OF_REAL(GUIDANCE_V_REF_MIN_ZDD, GV_ZDD_REF_FRAC);
+	public static final int GV_MIN_ZDD = BFP_OF_REAL((float)GUIDANCE_V_REF_MIN_ZDD, GV_ZDD_REF_FRAC);
 	public static final double GUIDANCE_V_REF_MAX_ZDD =( 0.8*9.81);
-	public static final int GV_MAX_ZDD = BFP_OF_REAL(GUIDANCE_V_REF_MAX_ZDD, GV_ZDD_REF_FRAC);
+	public static final int GV_MAX_ZDD = BFP_OF_REAL((float)GUIDANCE_V_REF_MAX_ZDD, GV_ZDD_REF_FRAC);
 
-	public static final int GV_MIN_ZD  = BFP_OF_REAL(GUIDANCE_V_REF_MIN_ZD , GV_ZD_REF_FRAC);
-	public static final int GV_MAX_ZD = BFP_OF_REAL(GUIDANCE_V_REF_MAX_ZD , GV_ZD_REF_FRAC);
+	public static final int GV_MIN_ZD  = BFP_OF_REAL((float)GUIDANCE_V_REF_MIN_ZD , GV_ZD_REF_FRAC);
+	public static final int GV_MAX_ZD = BFP_OF_REAL((float)GUIDANCE_V_REF_MAX_ZD , GV_ZD_REF_FRAC);
 
 	public static final double GUIDANCE_V_REF_OMEGA =RadOfDeg(100.);
 	public static final double GUIDANCE_V_REF_ZETA = 0.85;
 
 	public static final int GV_ZETA_OMEGA_FRAC =10;
-	public static final int  GV_ZETA_OMEGA =BFP_OF_REAL((GUIDANCE_V_REF_ZETA*GUIDANCE_V_REF_OMEGA), GV_ZETA_OMEGA_FRAC);
+	public static final int  GV_ZETA_OMEGA =BFP_OF_REAL((float)(GUIDANCE_V_REF_ZETA*GUIDANCE_V_REF_OMEGA), GV_ZETA_OMEGA_FRAC);
 	public static final int GV_OMEGA_2_FRAC= 7;
-	public static final int  GV_OMEGA_2   = BFP_OF_REAL((GUIDANCE_V_REF_OMEGA*GUIDANCE_V_REF_OMEGA), GV_OMEGA_2_FRAC);
+	public static final int  GV_OMEGA_2   = BFP_OF_REAL((float)(GUIDANCE_V_REF_OMEGA*GUIDANCE_V_REF_OMEGA), GV_OMEGA_2_FRAC);
 
 	/* first order time constant */
 	public static final double  GV_REF_THAU_F = 0.25;
 	public static final int GV_REF_INV_THAU_FRAC =16;
-	public static final int  GV_REF_INV_THAU = BFP_OF_REAL((1./0.25), GV_REF_INV_THAU_FRAC);
+	public static final int  GV_REF_INV_THAU = BFP_OF_REAL((float)(1./0.25), GV_REF_INV_THAU_FRAC);
 	
 	public static void gv_set_ref(int alt, int speed, int accel) {
 		int new_z = ((int)alt)<<(GV_Z_REF_FRAC - INT32_POS_FRAC);

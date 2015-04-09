@@ -190,4 +190,11 @@ public class Pprz_geodetic_int {
 		  ENU_OF_TO_NED(enu, ned);
 		  ecef_of_enu_vect_i(ecef, def, enu);
 		}
+	public static void INT32_VECT2_NED_OF_ENU(Int32Vect2 _o,EnuCoor_i _i) {
+		INT32_VECT2_ENU_OF_NED(_o,_i);
+	}
+	public static void INT32_VECT2_ENU_OF_NED(Int32Vect2 _o,EnuCoor_i _i) {		
+	    (_o).x = (_i).y;				
+	    (_o).y = (_i).x;				
+	  }
 }

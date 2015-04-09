@@ -1,6 +1,9 @@
 package sw.airborne.firmwares.rotorcraft.guidance;
 
 import sw.airborne.math.*;
+import static sw.airborne.math.Pprz_algebra.*;
+import static sw.airborne.math.Pprz_algebra_int.*;
+
 
 public class Guidance_h_ref {
 	
@@ -8,7 +11,7 @@ public class Guidance_h_ref {
 
 	 public static Int32Vect2 gh_speed_ref;
 
-	 public static Int64Vect2 gh_pos_ref;
+	 public static Int32Vect2 gh_pos_ref;
 	 
 	 public static final int gh_max_accel = BFP_OF_REAL(GUIDANCE_H_REF_MAX_ACCEL, GH_ACCEL_REF_FRAC);
 	 
