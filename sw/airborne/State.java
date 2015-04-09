@@ -9,6 +9,7 @@ import static sw.airborne.math.Pprz_geodetic.*;
 import static sw.airborne.math.Pprz_orientation_conversion.*;
 import static sw.airborne.math.Pprz_geodetic_int.*;
 import static sw.airborne.math.Pprz_geodetic_float.*;
+import static sw.airborne.math.Pprz_algebra_float.*;
 
 public class State {
 	/* *
@@ -485,7 +486,7 @@ public class State {
 	     EnuCoor_i enu_speed) {
 	  /* clear all status bit */
 	  state.speed_status = 0;
-	  if (ecef_speed.notequals0()) {
+	  if (ecef_speed!= null) {
 	  INT32_VECT3_COPY(state.ecef_speed_i, ecef_speed);
 //		  {			
 //			    (state.ecef_speed_i).x = ecef_speed.x ;			
@@ -494,7 +495,7 @@ public class State {
 //			}
 		  state.speed_status |= (1 << SPEED_ECEF_I);
 	  }
-	  if (ned_speed.notequals0()) {
+	  if (ned_speed!= null) {
 	    INT32_VECT3_COPY(state.ned_speed_i, ned_speed);
 //		  {			\
 //			    (state.ned_speed_i).x = ned_speed.x ;			\
@@ -503,7 +504,7 @@ public class State {
 //			}
 		  state.speed_status |= (1 << SPEED_NED_I);
 	  }
-	  if (enu_speed.notequals0()) {
+	  if (enu_speed!= null) {
 	    INT32_VECT3_COPY(state.enu_speed_i, enu_speed);
 //		  {			\
 //			    (state.enu_speed_i).x = enu_speed.x ;			\
@@ -560,7 +561,7 @@ public class State {
 	     EnuCoor_f enu_speed) {
 	  /* clear all status bit */
 	  state.speed_status = 0;
-	  if (ecef_speed.notequals0()) {
+	  if (ecef_speed != null) {
 		  Pprz_algebra_float.VECT3_COPY(state.ecef_speed_f, ecef_speed);
 //		  {			\
 //			    (state.ecef_speed_f).x = ecef_speed.x ;			\
@@ -569,7 +570,7 @@ public class State {
 //			}
 		  state.speed_status |= (1 << SPEED_ECEF_F);
 	  }
-	  if (ned_speed.notequals0()) {
+	  if (ned_speed != null) {
 		  Pprz_algebra_float.VECT3_COPY(state.ned_speed_f, ned_speed);
 //		  {			\
 //			    (state.ned_speed_f).x = ned_speed.x ;			\
@@ -578,7 +579,7 @@ public class State {
 //			}
 		  state.speed_status |= (1 << SPEED_NED_F);
 	  }
-	  if (enu_speed.notequals0()) {
+	  if (enu_speed != null) {
 		  Pprz_algebra_float.VECT3_COPY(state.enu_speed_f, enu_speed);
 //		  {			\
 //			    (state.enu_speed_f).x = enu_speed.x ;			\
@@ -818,7 +819,7 @@ public class State {
 	}
 
 	/// Get vehicle body attitude euler angles (float).
-	public static   FloatEulers* stateGetNedToBodyEulers_f(void) {
+	public static   FloatEulers stateGetNedToBodyEulers_f() {
 	  return orientationGetEulers_f(state.ned_to_body_orientation);
 	}
 
@@ -1110,7 +1111,7 @@ public class State {
 		else { /* ned coordinate system not initialized,  set errno */
 			errno = 3;
 		}
-		if (errno) {
+		if (errno != 0) {
 			//struct NedCoor_i _ned_zero = {0};
 			//return _ned_zero;
 		}
@@ -1202,7 +1203,7 @@ public class State {
 		else { /* ned coordinate system not initialized,  set errno */
 			errno = 3;
 		}
-		if (errno) {
+		if (errno!=0) {
 			//struct EnuCoor_i _enu_zero = {0};
 			//return _enu_zero;
 		}
@@ -1397,7 +1398,7 @@ public class State {
 		else { /* ned coordinate system not initialized,  set errno */
 			errno = 3;
 		}
-		if (errno) {
+		if (errno!=0) {
 			//struct NedCoor_f _ned_zero = {0.0f};
 			//return _ned_zero;
 		}
@@ -1482,7 +1483,7 @@ public class State {
 		else { /* ned coordinate system not initialized,  set errno */
 			errno = 3;
 		}
-		if (errno) {
+		if (errno!=0) {
 			//struct EnuCoor_f _enu_zero = {0.0f};
 			//return _enu_zero;
 		}
@@ -1581,7 +1582,7 @@ public class State {
 		else { /* ned coordinate system not initialized,  set errno */
 			errno = 3;
 		}
-		if (errno) {
+		if (errno != 0) {
 			//struct NedCoor_i _ned_zero = {0};
 			//return _ned_zero;
 		}
@@ -1638,7 +1639,7 @@ public class State {
 		else { /* ned coordinate system not initialized,  set errno */
 			errno = 3;
 		}
-		if (errno) {
+		if (errno != 0) {
 			//struct EnuCoor_i _enu_zero = {0};
 			//return _enu_zero;
 		}
@@ -1681,20 +1682,58 @@ public class State {
 		else if (bit_is_set(state.speed_status, SPEED_NED_I)) {
 			int n2 = (state.ned_speed_i.x*state.ned_speed_i.x +
 					state.ned_speed_i.y*state.ned_speed_i.y) >> INT32_SPEED_FRAC;
-	  INT32_SQRT(state.h_speed_norm_i, n2);
+	  //INT32_SQRT(state.h_speed_norm_i, n2);
+	  int _in = n2;
+	  if ((_in) == 0)                                             
+		  (state.h_speed_norm_i) = 0;                                               
+	  else {                                                      
+		  int s1, s2;                                          
+		  int iter = 0;                                         
+		  s2 = _in;                                                 
+		  do {                                                      
+			  s1 = s2;                                                
+			  s2 = (_in) / s1;                                        
+			  s2 += s1;                                               
+			  s2 /= 2;                                                
+			  iter++;                                                 
+		  }                                                         
+		  while( ( (s1-s2) > 1) && (iter < INT32_SQRT_MAX_ITER));   
+		  (state.h_speed_norm_i) = s2;                                              
+	  }                                                           
 		}
 		else if (bit_is_set(state.speed_status, SPEED_NED_F)) {
-			FLOAT_VECT2_NORM(state.h_speed_norm_f, state.ned_speed_f);
+			//FLOAT_VECT2_NORM(state.h_speed_norm_f, state.ned_speed_f);
+			state.h_speed_norm_f = (float) Math.sqrt(FLOAT_VECT2_NORM2(state.ned_speed_f));
 			SetBit(state.speed_status, SPEED_HNORM_F);
 			state.h_speed_norm_i = SPEED_BFP_OF_REAL(state.h_speed_norm_f);
 		}
 		else if (bit_is_set(state.speed_status, SPEED_ENU_I)) {
 			int n2 = (state.enu_speed_i.x*state.enu_speed_i.x +
 					state.enu_speed_i.y*state.enu_speed_i.y) >> INT32_SPEED_FRAC;
-	  INT32_SQRT(state.h_speed_norm_i, n2);
+	  //INT32_SQRT(state.h_speed_norm_i, n2);
+	  
+	  int _in = n2;
+	  if ((_in) == 0)                                             
+		  (state.h_speed_norm_i) = 0;                                               
+	  else {                                                      
+		  int s1, s2;                                          
+		  int iter = 0;                                         
+		  s2 = _in;                                                 
+		  do {                                                      
+			  s1 = s2;                                                
+			  s2 = (_in) / s1;                                        
+			  s2 += s1;                                               
+			  s2 /= 2;                                                
+			  iter++;                                                 
+		  }                                                         
+		  while( ( (s1-s2) > 1) && (iter < INT32_SQRT_MAX_ITER));   
+		  (state.h_speed_norm_i) = s2;                                              
+	  }                                          
+	  
 		}
 		else if (bit_is_set(state.speed_status, SPEED_ENU_F)) {
-			FLOAT_VECT2_NORM(state.h_speed_norm_f, state.enu_speed_f);
+			//FLOAT_VECT2_NORM(state.h_speed_norm_f, state.enu_speed_f);
+			state.h_speed_norm_f = (float) Math.sqrt(FLOAT_VECT2_NORM2(state.enu_speed_f));
 			SetBit(state.speed_status, SPEED_HNORM_F);
 			state.h_speed_norm_i = SPEED_BFP_OF_REAL(state.h_speed_norm_f);
 		}
@@ -1704,12 +1743,31 @@ public class State {
 			SetBit(state.speed_status, SPEED_NED_I);
 			int n2 = (state.ned_speed_i.x*state.ned_speed_i.x +
 					state.ned_speed_i.y*state.ned_speed_i.y) >> INT32_SPEED_FRAC;
-	  INT32_SQRT(state.h_speed_norm_i, n2);
+	 // INT32_SQRT(state.h_speed_norm_i, n2);
+	  
+	  int _in = n2;
+	  if ((_in) == 0)                                             
+		  (state.h_speed_norm_i) = 0;                                               
+	  else {                                                      
+		  int s1, s2;                                          
+		  int iter = 0;                                         
+		  s2 = _in;                                                 
+		  do {                                                      
+			  s1 = s2;                                                
+			  s2 = (_in) / s1;                                        
+			  s2 += s1;                                               
+			  s2 /= 2;                                                
+			  iter++;                                                 
+		  }                                                         
+		  while( ( (s1-s2) > 1) && (iter < INT32_SQRT_MAX_ITER));   
+		  (state.h_speed_norm_i) = s2;                                              
+	  }            
 		}
 		else if (bit_is_set(state.speed_status, SPEED_ECEF_F)) {
 			ned_of_ecef_vect_f(state.ned_speed_f, state.ned_origin_f, state.ecef_speed_f);
 			SetBit(state.speed_status, SPEED_NED_F);
-			FLOAT_VECT2_NORM(state.h_speed_norm_f, state.ned_speed_f);
+			//FLOAT_VECT2_NORM(state.h_speed_norm_f, state.ned_speed_f);
+			state.h_speed_norm_f = (float) Math.sqrt(FLOAT_VECT2_NORM2(state.ned_speed_f));
 			SetBit(state.speed_status, SPEED_HNORM_F);
 			state.h_speed_norm_i = SPEED_BFP_OF_REAL(state.h_speed_norm_f);
 		}
@@ -1729,24 +1787,96 @@ public class State {
 			state.h_speed_dir_i = SPEED_BFP_OF_REAL(state.h_speed_dir_f);
 		}
 		else if (bit_is_set(state.speed_status, SPEED_NED_I)) {
-			INT32_ATAN2(state.h_speed_dir_i, state.ned_speed_i.y, state.ned_speed_i.x);
-			INT32_COURSE_NORMALIZE(state.h_speed_dir_i);
+			//INT32_ATAN2(state.h_speed_dir_i, state.ned_speed_i.y, state.ned_speed_i.x);
+			int _y = state.ned_speed_i.y, _x = state.ned_speed_i.x;
+			int c1 = INT32_ANGLE_PI_4;        
+		    int c2 = 3 * INT32_ANGLE_PI_4;        
+		    int abs_y = Math.abs(_y) + 1;          
+		    int r;                      
+		    if ( (_x) >= 0) {                               
+		      r = (((_x)-abs_y)<<R_FRAC) / ((_x)+abs_y);    
+		      (state.h_speed_dir_i) = c1 - ((c1 * r)>>R_FRAC);               
+		    }                          
+		    else {                      
+		      r = (((_x)+abs_y)<<R_FRAC) / (abs_y-(_x));    
+		      (state.h_speed_dir_i) = c2 - ((c1 * r)>>R_FRAC);           
+		    }                           
+		    if ((_y)<0)                     
+		      (state.h_speed_dir_i) = -(state.h_speed_dir_i);                 
+		  
+			//INT32_COURSE_NORMALIZE(state.h_speed_dir_i);
+		    while ((state.h_speed_dir_i) < 0) (state.h_speed_dir_i) += INT32_ANGLE_2_PI;                  
+		    while ((state.h_speed_dir_i) >= INT32_ANGLE_2_PI)  (state.h_speed_dir_i) -= INT32_ANGLE_2_PI; 
+		   
 		}
 		else if (bit_is_set(state.speed_status, SPEED_ENU_I)) {
-			INT32_ATAN2(state.h_speed_dir_i, state.enu_speed_i.x, state.enu_speed_i.y);
-			INT32_COURSE_NORMALIZE(state.h_speed_dir_i);
+			//INT32_ATAN2(state.h_speed_dir_i, state.enu_speed_i.x, state.enu_speed_i.y);
+			int _y = state.enu_speed_i.x, _x = state.enu_speed_i.y;
+			int c1 = INT32_ANGLE_PI_4;        
+		    int c2 = 3 * INT32_ANGLE_PI_4;        
+		    int abs_y = Math.abs(_y) + 1;          
+		    int r;                      
+		    if ( (_x) >= 0) {                               
+		      r = (((_x)-abs_y)<<R_FRAC) / ((_x)+abs_y);    
+		      (state.h_speed_dir_i) = c1 - ((c1 * r)>>R_FRAC);               
+		    }                          
+		    else {                      
+		      r = (((_x)+abs_y)<<R_FRAC) / (abs_y-(_x));    
+		      (state.h_speed_dir_i) = c2 - ((c1 * r)>>R_FRAC);           
+		    }                           
+		    if ((_y)<0)                     
+		      (state.h_speed_dir_i) = -(state.h_speed_dir_i);   
+			//INT32_COURSE_NORMALIZE(state.h_speed_dir_i);
+		    while ((state.h_speed_dir_i) < 0) (state.h_speed_dir_i) += INT32_ANGLE_2_PI;                  
+		    while ((state.h_speed_dir_i) >= INT32_ANGLE_2_PI)  (state.h_speed_dir_i) -= INT32_ANGLE_2_PI; 
+		    
 		}
 		else if (bit_is_set(state.speed_status, SPEED_NED_F)) {
 			SPEEDS_BFP_OF_REAL(state.ned_speed_i, state.ned_speed_f);
 			SetBit(state.speed_status, SPEED_NED_I);
-			INT32_ATAN2(state.h_speed_dir_i, state.ned_speed_i.y, state.ned_speed_i.x);
-			INT32_COURSE_NORMALIZE(state.h_speed_dir_i);
+			//INT32_ATAN2(state.h_speed_dir_i, state.ned_speed_i.y, state.ned_speed_i.x);
+			int _y = state.ned_speed_i.y, _x = state.ned_speed_i.x;
+			int c1 = INT32_ANGLE_PI_4;        
+		    int c2 = 3 * INT32_ANGLE_PI_4;        
+		    int abs_y = Math.abs(_y) + 1;          
+		    int r;                      
+		    if ( (_x) >= 0) {                               
+		      r = (((_x)-abs_y)<<R_FRAC) / ((_x)+abs_y);    
+		      (state.h_speed_dir_i) = c1 - ((c1 * r)>>R_FRAC);               
+		    }                          
+		    else {                      
+		      r = (((_x)+abs_y)<<R_FRAC) / (abs_y-(_x));    
+		      (state.h_speed_dir_i) = c2 - ((c1 * r)>>R_FRAC);           
+		    }                           
+		    if ((_y)<0)                     
+		      (state.h_speed_dir_i) = -(state.h_speed_dir_i);                 
+		  
+			//INT32_COURSE_NORMALIZE(state.h_speed_dir_i);
+		    while ((state.h_speed_dir_i) < 0) (state.h_speed_dir_i) += INT32_ANGLE_2_PI;                  
+		    while ((state.h_speed_dir_i) >= INT32_ANGLE_2_PI)  (state.h_speed_dir_i) -= INT32_ANGLE_2_PI; 
 		}
 		else if (bit_is_set(state.speed_status, SPEED_ENU_F)) {
 			SPEEDS_BFP_OF_REAL(state.enu_speed_i, state.enu_speed_f);
 			SetBit(state.speed_status, SPEED_ENU_I);
-			INT32_ATAN2(state.h_speed_dir_i, state.enu_speed_i.x, state.enu_speed_i.y);
-			INT32_COURSE_NORMALIZE(state.h_speed_dir_i);
+			//INT32_ATAN2(state.h_speed_dir_i, state.enu_speed_i.x, state.enu_speed_i.y);
+			int _y = state.enu_speed_i.x, _x = state.enu_speed_i.y;
+			int c1 = INT32_ANGLE_PI_4;        
+		    int c2 = 3 * INT32_ANGLE_PI_4;        
+		    int abs_y = Math.abs(_y) + 1;          
+		    int r;                      
+		    if ( (_x) >= 0) {                               
+		      r = (((_x)-abs_y)<<R_FRAC) / ((_x)+abs_y);    
+		      (state.h_speed_dir_i) = c1 - ((c1 * r)>>R_FRAC);               
+		    }                          
+		    else {                      
+		      r = (((_x)+abs_y)<<R_FRAC) / (abs_y-(_x));    
+		      (state.h_speed_dir_i) = c2 - ((c1 * r)>>R_FRAC);           
+		    }                           
+		    if ((_y)<0)                     
+		      (state.h_speed_dir_i) = -(state.h_speed_dir_i);   
+			//INT32_COURSE_NORMALIZE(state.h_speed_dir_i);
+		    while ((state.h_speed_dir_i) < 0) (state.h_speed_dir_i) += INT32_ANGLE_2_PI;                  
+		    while ((state.h_speed_dir_i) >= INT32_ANGLE_2_PI)  (state.h_speed_dir_i) -= INT32_ANGLE_2_PI; 
 		}
 		/* set bit to indicate this representation is computed */
 		SetBit(state.speed_status, SPEED_HDIR_I);
@@ -1801,7 +1931,7 @@ public class State {
 		else { /* ned coordinate system not initialized,  set errno */
 			errno = 3;
 		}
-		if (errno) {
+		if (errno !=0) {
 			//struct NedCoor_f _ned_zero = {0.0f};
 			//return _ned_zero;
 		}
@@ -1858,7 +1988,7 @@ public class State {
 		else { /* ned coordinate system not initialized,  set errno */
 			errno = 3;
 		}
-		if (errno) {
+		if (errno != 0) {
 			//struct EnuCoor_f _enu_zero = {0};
 			//return _enu_zero;
 		}
@@ -1899,20 +2029,24 @@ public class State {
 			state.h_speed_norm_f = SPEED_FLOAT_OF_BFP(state.h_speed_norm_i);
 		}
 		else if (bit_is_set(state.speed_status, SPEED_NED_F)) {
-			FLOAT_VECT2_NORM(state.h_speed_norm_f, state.ned_speed_f);
+			//FLOAT_VECT2_NORM(state.h_speed_norm_f, state.ned_speed_f);
+			state.h_speed_norm_f = (float) Math.sqrt(FLOAT_VECT2_NORM2(state.ned_speed_f));
 		}
 		else if (bit_is_set(state.speed_status, SPEED_ENU_F)) {
-			FLOAT_VECT2_NORM(state.h_speed_norm_f, state.enu_speed_f);
+			//FLOAT_VECT2_NORM(state.h_speed_norm_f, state.enu_speed_f);
+			state.h_speed_norm_f = (float) Math.sqrt(FLOAT_VECT2_NORM2(state.enu_speed_f));
 		}
 		else if (bit_is_set(state.speed_status, SPEED_NED_I)) {
 			SPEEDS_FLOAT_OF_BFP(state.ned_speed_f, state.ned_speed_i);
 			SetBit(state.speed_status, SPEED_NED_F);
-			FLOAT_VECT2_NORM(state.h_speed_norm_f, state.ned_speed_f);
+			//FLOAT_VECT2_NORM(state.h_speed_norm_f, state.ned_speed_f);
+			state.h_speed_norm_f = (float) Math.sqrt(FLOAT_VECT2_NORM2(state.ned_speed_f));
 		}
 		else if (bit_is_set(state.speed_status, SPEED_ENU_I)) {
 			SPEEDS_FLOAT_OF_BFP(state.enu_speed_f, state.enu_speed_i);
 			SetBit(state.speed_status, SPEED_ENU_F);
-			FLOAT_VECT2_NORM(state.h_speed_norm_f, state.enu_speed_f);
+			//FLOAT_VECT2_NORM(state.h_speed_norm_f, state.enu_speed_f);
+			state.h_speed_norm_f = (float) Math.sqrt(FLOAT_VECT2_NORM2(state.enu_speed_f));
 		}
 		/* set bit to indicate this representation is computed */
 		SetBit(state.speed_status, SPEED_HNORM_F);
