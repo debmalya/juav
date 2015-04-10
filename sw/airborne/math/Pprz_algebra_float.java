@@ -31,12 +31,7 @@ public class Pprz_algebra_float {
 	    (_vo).y = (_v1).z*(_v2).x - (_v1).x*(_v2).z;            
 	    (_vo).z = (_v1).x*(_v2).y - (_v1).y*(_v2).x;            
 	  }
-<<<<<<< HEAD
-	public static float FLOAT_VECT2_NORM2(FloatVect2 _v){ 
-		return ((_v).x*(_v).x + (_v).y*(_v).y);}
 
-}
-=======
 	
 	
 	public static float FLOAT_VECT2_NORM2(NedCoor_f _v){
@@ -242,4 +237,3 @@ public class Pprz_algebra_float {
 
 	}
 }
->>>>>>> 65ad43c4be6b974b70b2263b992fc2bd6257f4c4

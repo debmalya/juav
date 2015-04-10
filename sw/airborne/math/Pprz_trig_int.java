@@ -5,20 +5,21 @@ package sw.airborne.math;
 import static sw.airborne.math.Pprz_algebra_int.*;
 
 public class Pprz_trig_int {
-	public static void PPRZ_ITRIG_SIN(int _s ,int _a){
-		int an = _a;							
-	    INT32_ANGLE_NORMALIZE(an);		
-		  
-	    if (an > INT32_ANGLE_PI_2) an = INT32_ANGLE_PI - an;		
-	    else if (an < -INT32_ANGLE_PI_2) an = -INT32_ANGLE_PI - an;		
-	    if (an >= 0) _s= pprz_trig_int[an];				
-	    else _s= -pprz_trig_int[-an];					
-	}
-	
-	public static void PPRZ_ITRIG_COS(int _c,int a) {					
-	     PPRZ_ITRIG_SIN( _c,a + INT32_ANGLE_PI_2);				
 
-	  }
+			public static int PPRZ_ITRIG_SIN(int _a){
+				int an = _a;							
+			    //INT32_ANGLE_NORMALIZE(an);		
+				while ((an) > INT32_ANGLE_PI)  (an) -= INT32_ANGLE_2_PI;    
+			    while ((an) < -INT32_ANGLE_PI) (an) += INT32_ANGLE_2_PI;    
+			    if (an > INT32_ANGLE_PI_2) an = INT32_ANGLE_PI - an;		
+			    else if (an < -INT32_ANGLE_PI_2) an = -INT32_ANGLE_PI - an;		
+			    if (an >= 0) return pprz_trig_int[an];				
+			    else return -pprz_trig_int[-an];					
+			}
+			
+			public static int PPRZ_ITRIG_COS(int a) {					
+			    return PPRZ_ITRIG_SIN( a + INT32_ANGLE_PI_2);				
+			  }
 
 	
 	public static final int[] pprz_trig_int = {    0,

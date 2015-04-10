@@ -4,27 +4,9 @@ import static sw.airborne.math.Pprz_algebra.*;
 import static sw.airborne.math.Pprz_trig_int.*;
 
 public class Pprz_algebra_int {
-<<<<<<< HEAD
-	//public static final int INT32_POS_FRAC= 8;
-	public static final double INT32_POS_OF_CM =2.56;
-	public static final int INT32_POS_OF_CM_NUM =64;
-	public static final int INT32_POS_OF_CM_DEN= 25;
-
-	//public static final int INT32_SPEED_FRAC= 19;
-	public static final double INT32_SPEED_OF_CM_S =5242.88;
-	public static final int INT32_SPEED_OF_CM_S_NUM =41943;
-	public static final int INT32_SPEED_OF_CM_S_DEN =8;
-
-	//#define INT32_ACCEL_FRAC 10
-	//#define INT32_MAG_FRAC 11
-
-	public static final int INT32_PERCENTAGE_FRAC =10;
-
-=======
 	public static int INT_MULT_RSHIFT(int _a,int _b,int _r) {
 		return (((_a)*(_b))>>(_r));
 	}
->>>>>>> 65ad43c4be6b974b70b2263b992fc2bd6257f4c4
 	
 	public static void INT32_VECT3_COPY(Int32Vect3 _a,Int32Vect3 _b){
 		(_a).x = (_b).x;				
@@ -123,11 +105,6 @@ public class Pprz_algebra_int {
 	    (_o).y = ((_i).y >> (_r));       
 	    (_o).z = ((_i).z >> (_r));       
 	  }
-	public static void  INT32_VECT2_RSHIFT(Int32Vect2 _o,Int32Vect2 _i,int _r) { 
-	    (_o).x = ((_i).x >> (_r));       
-	    (_o).y = ((_i).y >> (_r));       
-	    //(_o).z = ((_i).z >> (_r));       
-	  }
 	public static void INT32_COURSE_NORMALIZE(int _a) {                
 	    while ((_a) < 0) (_a) += INT32_ANGLE_2_PI;                  
 	    while ((_a) >= INT32_ANGLE_2_PI)  (_a) -= INT32_ANGLE_2_PI; 
@@ -136,8 +113,6 @@ public class Pprz_algebra_int {
 		while ((_a) > INT32_ANGLE_PI)  (_a) -= INT32_ANGLE_2_PI;    
 	    while ((_a) < -INT32_ANGLE_PI) (_a) += INT32_ANGLE_2_PI;  
 	  }
-	public static int INT_MULT_RSHIFT(int _a, int _b,int _r) {
-		return (((_a)*(_b))>>(_r));}
 	
 	public static void INT_RATES_ZERO(Int32Rates e){
 		RATES_ASSIGN(e, 0,0,0);
@@ -145,21 +120,6 @@ public class Pprz_algebra_int {
 	public static void INT_VECT3_ZERO(Int32Vect3 e){
 		RATES_ASSIGN(e, 0,0,0);
 	}
-<<<<<<< HEAD
-	public static void INT32_QUAT_ZERO( Int32Quat _q) {                       
-	    (_q).qi = QUAT1_BFP_OF_REAL(1);                 
-	    (_q).qx = 0;                            
-	    (_q).qy = 0;                            
-	    (_q).qz = 0;}
-	public static void INT_EULERS_ZERO(Int32Eulers _e){ EULERS_ASSIGN(_e, 0, 0, 0);
-	}
-	public static void INT32_VECT2_NORM(int n,Int32Vect2 v) {            
-	    int n2 = (v).x*(v).x + (v).y*(v).y; 
-	    INT32_SQRT(n, n2);                  
-	  }
-	public static void INT32_SQRT(int _out, int _in) {                                  
-	    if ((_in) == 0)                                             
-=======
 	
 	public static void VECT3_ENU_OF_NED(EnuCoor_f _o, NedCoor_f _i){
 		(_o).x = (_i).y;                    
@@ -327,7 +287,6 @@ public class Pprz_algebra_int {
 	      //INT32_SQRT(two_qi, (two_qi_two<<INT32_TRIG_FRAC));
 	      int _in = (two_qi_two<<INT32_TRIG_FRAC),_out;
 	      if ((_in) == 0)                                             
->>>>>>> 65ad43c4be6b974b70b2263b992fc2bd6257f4c4
 	      (_out) = 0;                                               
 	    else {                                                      
 	      int s1, s2;                                          
@@ -340,60 +299,6 @@ public class Pprz_algebra_int {
 	        s2 /= 2;                                                
 	        iter++;                                                 
 	      }                                                         
-<<<<<<< HEAD
-	      while( ( (s1-s2) > 1) && (iter < 40));   
-	      (_out) = s2;                                              
-	    }                                                           
-	  }
-	public static void INT32_QUAT_WRAP_SHORTEST(Int32Quat q) {                   
-	    if ((q).qi < 0)                         
-	      QUAT_EXPLEMENTARY(q,q);                       
-	  }
-	public static void INT32_QUAT_INV_COMP(Int32Quat _b2c, Int32Quat _a2b, Int32Quat _a2c) {             
-	    (_b2c).qi = ((_a2b).qi*(_a2c).qi + (_a2b).qx*(_a2c).qx + (_a2b).qy*(_a2c).qy + (_a2b).qz*(_a2c).qz)>>INT32_QUAT_FRAC; 
-	    (_b2c).qx = ((_a2b).qi*(_a2c).qx - (_a2b).qx*(_a2c).qi - (_a2b).qy*(_a2c).qz + (_a2b).qz*(_a2c).qy)>>INT32_QUAT_FRAC; 
-	    (_b2c).qy = ((_a2b).qi*(_a2c).qy + (_a2b).qx*(_a2c).qz - (_a2b).qy*(_a2c).qi - (_a2b).qz*(_a2c).qx)>>INT32_QUAT_FRAC; 
-	    (_b2c).qz = ((_a2b).qi*(_a2c).qz - (_a2b).qx*(_a2c).qy + (_a2b).qy*(_a2c).qx - (_a2b).qz*(_a2c).qi)>>INT32_QUAT_FRAC; 
-	  }
-	public static void INT32_QUAT_NORMALIZE(Int32Quat q) {                   
-	    int n = 0;                                      
-	    INT32_QUAT_NORM(n, q);                          
-	    if (n > 0) {                                    
-	      (q).qi = (q).qi * QUAT1_BFP_OF_REAL(1) / n;   
-	      (q).qx = (q).qx * QUAT1_BFP_OF_REAL(1) / n;   
-	      (q).qy = (q).qy * QUAT1_BFP_OF_REAL(1) / n;   
-	      (q).qz = (q).qz * QUAT1_BFP_OF_REAL(1) / n;  
-	    }                                              
-	  }
-	public static void INT32_QUAT_NORM(int n, Int32Quat q) {                                 
-	    int n2 = (q).qi*(q).qi + (q).qx*(q).qx + (q).qy*(q).qy + (q).qz*(q).qz; 
-	    INT32_SQRT(n, n2);                          
-	  }
-	 public static void INT32_QUAT_COMP(Int32Quat _a2c, Int32Quat _a2b, Int32Quat _b2c) {             
-		    (_a2c).qi = ((_a2b).qi*(_b2c).qi - (_a2b).qx*(_b2c).qx - (_a2b).qy*(_b2c).qy - (_a2b).qz*(_b2c).qz)>>INT32_QUAT_FRAC; 
-		    (_a2c).qx = ((_a2b).qi*(_b2c).qx + (_a2b).qx*(_b2c).qi + (_a2b).qy*(_b2c).qz - (_a2b).qz*(_b2c).qy)>>INT32_QUAT_FRAC; 
-		    (_a2c).qy = ((_a2b).qi*(_b2c).qy - (_a2b).qx*(_b2c).qz + (_a2b).qy*(_b2c).qi + (_a2b).qz*(_b2c).qx)>>INT32_QUAT_FRAC; 
-		    (_a2c).qz = ((_a2b).qi*(_b2c).qz + (_a2b).qx*(_b2c).qy - (_a2b).qy*(_b2c).qx + (_a2b).qz*(_b2c).qi)>>INT32_QUAT_FRAC; 
-		  }
-	public static void  INT32_EULERS_OF_QUAT(Int32Eulers _e,Int32Quat _q) {                  
-         
-     final int qx2  = INT_MULT_RSHIFT((_q).qx,(_q).qx, INT32_QUAT_FRAC); 
- final int qy2  = INT_MULT_RSHIFT((_q).qy,(_q).qy, INT32_QUAT_FRAC); 
- final int qz2  = INT_MULT_RSHIFT((_q).qz,(_q).qz, INT32_QUAT_FRAC); 
-  final int qiqx = INT_MULT_RSHIFT((_q).qi,(_q).qx, INT32_QUAT_FRAC); 
- final int qiqy = INT_MULT_RSHIFT((_q).qi,(_q).qy, INT32_QUAT_FRAC); 
- final int qiqz = INT_MULT_RSHIFT((_q).qi,(_q).qz, INT32_QUAT_FRAC); 
- final int qxqy = INT_MULT_RSHIFT((_q).qx,(_q).qy, INT32_QUAT_FRAC); 
- final int qxqz = INT_MULT_RSHIFT((_q).qx,(_q).qz, INT32_QUAT_FRAC); 
- final int qyqz = INT_MULT_RSHIFT((_q).qy,(_q).qz, INT32_QUAT_FRAC); 
- final int one = TRIG_BFP_OF_REAL( 1);               
- final int two = TRIG_BFP_OF_REAL( 2);   }   
-	public static void INT32_VECT2_LSHIFT(Int32Vect2 _o,Int32Vect2 _i,int _l) { 
-		  (_o).x = ((_i).x << (_l)); 
-		  (_o).y = ((_i).y << (_l)); 
-		}
-	public static void INT_VECT2_ZERO(Int32Vect2 _v) {VECT2_ASSIGN(_v, 0, 0);}
-=======
 	      while( ( (s1-s2) > 1) && (iter < INT32_SQRT_MAX_ITER));   
 	      (_out) = s2;                                              
 	    }        
@@ -557,5 +462,4 @@ public class Pprz_algebra_int {
 	    (_q).qz = INT_MULT_RSHIFT( c_phi2, c_th_s_ps, INT32_TRIG_FRAC + INT32_TRIG_FRAC - INT32_QUAT_FRAC) + 
 	              INT_MULT_RSHIFT(-s_phi2, s_th_c_ps, INT32_TRIG_FRAC + INT32_TRIG_FRAC - INT32_QUAT_FRAC);  
 	  }
->>>>>>> 65ad43c4be6b974b70b2263b992fc2bd6257f4c4
 }

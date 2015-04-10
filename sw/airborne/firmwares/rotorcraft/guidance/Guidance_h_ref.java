@@ -1,11 +1,4 @@
 package sw.airborne.firmwares.rotorcraft.guidance;
-
-<<<<<<< HEAD
-import sw.airborne.math.*;
-import static sw.airborne.math.Pprz_algebra.*;
-import static sw.airborne.math.Pprz_algebra_int.*;
-
-=======
 import sw.airborne.math.*; 
 import sw.include.Std;
 import static sw.airborne.math.Pprz_algebra_int.*;
@@ -17,7 +10,6 @@ import static sw.airborne.math.Pprz_geodetic_int.*;
 import static sw.airborne.math.Pprz_geodetic_float.*;
 import static sw.airborne.math.Pprz_algebra_float.*;
 import static sw.airborne.math.Pprz_trig_int.*;
->>>>>>> 65ad43c4be6b974b70b2263b992fc2bd6257f4c4
 
 public class Guidance_h_ref {
 	
