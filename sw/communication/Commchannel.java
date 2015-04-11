@@ -1,5 +1,6 @@
 package sw.communication;
 import fr.dgac.ivy.* ;
+import devices.GpsState;
 
 public class Commchannel implements IvyMessageListener {
 	private Ivy bus;
@@ -8,7 +9,7 @@ public class Commchannel implements IvyMessageListener {
 
 	public void CommChannel() throws IvyException {
 		 bus = new Ivy("JUAV","JUAV Ready",null);
-		 bus.bindMsg("^GPS(.*)",new IvyMessageListener() {
+		 bus.bindMsg("NPS_SEN_NICE_GPS(.*)",new IvyMessageListener() {
 		      public void receive(IvyClient client, String[] args) {
 			// Process GPS
 		        
