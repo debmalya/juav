@@ -273,16 +273,17 @@ public class Main {
 
 	}
 
-	/*public static void on_accel_event( ) {
+	public static void on_accel_event( ) {
+		//ImuScaleAccel not completed please complete this --vasanth
 		ImuScaleAccel(imu);
 
 		if (ahrs.status != AHRS_UNINIT) {
 			ahrs_update_accel();
 		}
-	}*/
+	}
 
-/*	public static void on_gyro_event() {
-
+	public static void on_gyro_event() {
+		//ImuScaleGyro not completed please complete this --vasanth
 		ImuScaleGyro(imu);
 
 		if (ahrs.status == AHRS_UNINIT) {
@@ -300,7 +301,7 @@ public class Main {
 		if(USE_VEHICLE_INTERFACE_DEFINED)
 		vi_notify_imu_available();
 	
-	}*/
+	}
 
 	public static void on_gps_event() {
 		ahrs_update_gps();
