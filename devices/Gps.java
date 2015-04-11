@@ -12,7 +12,7 @@ public class Gps {
 	
 	public static GpsState gps;
 	public boolean gps_has_fix;
-	public static boolean gps_available;
+	public boolean gps_available;
 	
 	public Gps(){
 		gps = new GpsState();
@@ -30,8 +30,23 @@ public class Gps {
 		gps.last_msg_ticks = 0;
 		gps.last_msg_time = 0;
 		
-
+//		#ifdef GPS_POWER_GPIO
+//		  gpio_setup_output(GPS_POWER_GPIO);
+//		  GPS_POWER_GPIO_ON(GPS_POWER_GPIO);
+//		#endif
+//		#ifdef GPS_LED
+//		  LED_OFF(GPS_LED);
+//		#endif
+//		#ifdef GPS_TYPE_H
 		gps_impl_init();
+//		#endif
+//
+//		#if PERIODIC_TELEMETRY
+//		  register_periodic_telemetry(DefaultPeriodic, "GPS", send_gps);
+//		  register_periodic_telemetry(DefaultPeriodic, "GPS_INT", send_gps_int);
+//		  register_periodic_telemetry(DefaultPeriodic, "GPS_LLA", send_gps_lla);
+//		  register_periodic_telemetry(DefaultPeriodic, "GPS_SOL", send_gps_sol);
+//		#endif
 	}
 	
 	/** Periodic GPS check.
@@ -46,7 +61,7 @@ public class Gps {
 	
 	//void parse_gps_datalink(uint8_t numsv, int32_t ecef_x, int32_t ecef_y, int32_t ecef_z, int32_t lat, int32_t lon, int32_t alt,
 	//int32_t hmsl, int32_t ecef_xd, int32_t ecef_yd, int32_t ecef_zd, uint32_t tow, int32_t course);
-	public static void parse_data_link(int numsv, int ecef_x, int ecef_y, int ecef_z, int lat, 
+	public void parse_data_link(int numsv, int ecef_x, int ecef_y, int ecef_z, int lat, 
 			int lon, int alt,int hmsl, int ecef_xd, int ecef_yd, int ecef_zd, int tow, int course){
 		 gps.lla_pos.lat = RadOfDeg(lat);
 		  gps.lla_pos.lon = RadOfDeg(lon);

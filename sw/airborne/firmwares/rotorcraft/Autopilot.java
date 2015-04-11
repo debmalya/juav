@@ -1,7 +1,24 @@
 package sw.airborne.firmwares.rotorcraft;
-
+import static sw.airborne.State.*;
+import static sw.airborne.subsystems.Ahrs.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_euler_float.*;
 import sw.airborne.math.*;
+import sw.airborne.mcu_periph.Sys_time;
+import sw.airborne.subsystems.AhrsState;
+import sw.airborne.subsystems.Gps;
+import sw.airborne.subsystems.actuators.motor_mixing.Motor_mixing;
+import sw.airborne.subsystems.datalink.telemetry;
+//import static sw.airborne.subsystems.datalink.telemetry;
+//import sw.airborne.subsystems.datalink.telemetry;
 import static sw.airborne.math.Pprz_algebra_int.*;
+import static sw.airborne.firmwares.rotorcraft.guidance.Guidance_v.*;
+import static sw.airborne.firmwares.rotorcraft.guidance.Guidance_h.*;
+import static sw.airborne.firmwares.rotorcraft.Stabilization.*;
+import static sw.airborne.firmwares.rotorcraft.Autopilot_arming_switch.*;
+import static sw.airborne.firmwares.rotorcraft.Navigation.*;
+import static sw.airborne.subsystems.datalink.telemetry.*;
+import static sw.airborne.firmwares.rotorcraft.Main.*;
+
 
 public class Autopilot {
 	
@@ -22,6 +39,11 @@ public class Autopilot {
 	public static final int AP_MODE_RC_DIRECT       =   14;	// Safety Pilot Direct Commands for helicopter direct control
 	public static final int AP_MODE_CARE_FREE_DIRECT  = 15;
 	public static final int AP_MODE_FORWARD         =   16;
+	private static boolean MODE_MANUAL_DEFINED = false;
+	private static boolean MODE_AUTO1_DEFINED = false;
+	private static boolean MODE_AUTO2_DEFINED = false;
+	private static boolean THRESHOLD_GROUND_DETECT_DEFINED = false;
+	private static final int MIN_PPRZ = -9600;
 	
 	static int MODE_MANUAL;
 	static int MODE_AUTO1;
@@ -49,7 +71,28 @@ public class Autopilot {
 	}
 		
 	public static final int THRESHOLD_1_PPRZ = MIN_PPRZ / 2;
+	private static final int MAX_PPRZ =9600;
 	public static final int THRESHOLD_2_PPRZ = MAX_PPRZ / 2;
+	private static boolean ROTORCRAFT_COMMANDS_YAW_ALWAYS_ENABLED_DEFINED = false;
+	private static final int COMMAND_YAW = 0;
+	private static final int COMMAND_THRUST = 1;
+	private static final int COMMAND_PITCH = 2;
+	private static final int COMMAND_ROLL = 3;
+	private static boolean AUTOPILOT_DISABLE_AHRS_KILL_DEFINED = false;
+	//private static  boolean USE_GPS = false;
+	private static final boolean USE_MOTOR_MIXING = false;
+	private static final String DefaultChannel = null;
+	private static final String DefaultDevice = null;
+	private static final String MD5SUM = null;
+	private static final int GPS_FIX_NONE = 0;
+	private static final int PERIODIC_FREQUENCY = 20;
+	private static boolean UNLOCKED_HOME_MODE_DEFINED = false;
+	private static  boolean SetAutoCommandsFromRC_DEFINED = false;
+	private static  boolean SetCommandsFromRC_DEFINED = false;
+	private static  boolean KILL_AS_FAILSAFE_DEFINED = false;
+	private static  boolean FAILSAFE_GROUND_DETECT = false;
+	private static boolean ACTUATORS_DEFINED = false;
+	public static telemetry DefaultPeriodic = new telemetry();
 	
 	public static int autopilot_mode;
 	public static int autopilot_mode_auto2;
@@ -61,6 +104,7 @@ public class Autopilot {
 	public static boolean autopilot_ground_detected;
 	public static boolean autopilot_detect_ground_once;
 	public static int autopilot_flight_time;
+	private static int[] commands;
 	
 	public static void AP_MODE_OF_PPRZ (int _rc, int _mode){
 		 if      (_rc > THRESHOLD_2_PPRZ)     
@@ -80,10 +124,10 @@ public class Autopilot {
 	
 	public static void autopilot_SetPowerSwitch(boolean _v){
 		autopilot_power_switch = _v;
-		if(POWER_SWITCH_GPIO_DEFINED){
-			if (_v) { gpio_set(POWER_SWITCH_GPIO); }  
-			else { gpio_clear(POWER_SWITCH_GPIO); }   
-		}
+//		if(POWER_SWITCH_GPIO_DEFINED){
+//			if (_v) { gpio_set(POWER_SWITCH_GPIO); }  
+//			else { gpio_clear(POWER_SWITCH_GPIO); }   
+//		}
 	}
 	
 	public static void SetRotorcraftCommands(int _cmd[], boolean _in_flight, boolean _motor_on ){
@@ -93,7 +137,8 @@ public class Autopilot {
 			  commands[COMMAND_ROLL] = _cmd[COMMAND_ROLL];                
 			  commands[COMMAND_PITCH] = _cmd[COMMAND_PITCH];              
 			  commands[COMMAND_YAW] = _cmd[COMMAND_YAW];                  
-			  commands[COMMAND_THRUST] = _cmd[COMMAND_THRUST];            
+			  commands[COMMAND_THRUST] = _cmd[COMMAND_THRUST];  
+			  ROTORCRAFT_COMMANDS_YAW_ALWAYS_ENABLED_DEFINED=true;
 		}else{
 			 if (!(_motor_on)) { _cmd[COMMAND_THRUST] = 0; }             
 			  commands[COMMAND_ROLL] = _cmd[COMMAND_ROLL];                
@@ -115,7 +160,8 @@ public class Autopilot {
 	}
 	
 	// ---------------- Beginning of autopilot.c------------------------
-	
+	//public static Gps gps;
+	public static Motor_mixing motor_mixing;
 	public static boolean autopilot_in_flight;
 	public static int autopilot_in_flight_counter;
 	
@@ -133,7 +179,8 @@ public class Autopilot {
 	
 	public static boolean ahrs_is_aligned(){
 		if(!AUTOPILOT_DISABLE_AHRS_KILL_DEFINED)
-			return (ahrs.status == AHRS_RUNNING);
+			{AUTOPILOT_DISABLE_AHRS_KILL_DEFINED=true;
+			return (AhrsState.status == AHRS_RUNNING);}
 		else return true;
 	}
 	
@@ -157,18 +204,18 @@ public class Autopilot {
 	#endif
 	 */
 	public static int MODE_STARTUP;
-	public static Autopilot_arming autopilot_arming;
-	static{
-		if(USE_KILL_SWITCH_FOR_MOTOR_ARMING)
-			autopilot_arming = new Autopilot_arming_switch();
-		else if (USE_THROTTLE_FOR_MOTOR_ARMING)
-			autopilot_arming = new Autopilot_arming_throttle();
-		else 
-			autopilot_arming = new Autopilot_arming_yaw();
-		
-		if(!MODE_STARTUP_DEFINED)
-			MODE_STARTUP = AP_MODE_KILL;
-	}
+//	public static Autopilot_arming autopilot_arming;
+//	static{
+//		if(USE_KILL_SWITCH_FOR_MOTOR_ARMING)
+//			autopilot_arming = new Autopilot_arming_switch();
+//		else if (USE_THROTTLE_FOR_MOTOR_ARMING)
+//			autopilot_arming = new Autopilot_arming_throttle();
+//		else 
+//			autopilot_arming = new Autopilot_arming_yaw();
+//		
+//		if(!MODE_STARTUP_DEFINED)
+//			MODE_STARTUP = AP_MODE_KILL;
+//	}、、？？？？？？？？？？？？？？？？？？？？？？？`
 	
 	
 	public static void send_alive(){
@@ -177,22 +224,28 @@ public class Autopilot {
 	
 	public static void send_status(){
 		int imu_nb_err = 0;
+		int fix;
+		int _motor_nb_err;
+		//Object _motor_nb_err;
 		if(USE_MOTOR_MIXING)
-			int _motor_nb_err = motor_mixing.nb_saturation + motor_mixing.nb_failure * 10;
+			 _motor_nb_err = motor_mixing.nb_saturation + motor_mixing.nb_failure * 10;
 		else 
-			int _motor_nb_err = 0;
+			 _motor_nb_err = 0;
+		USE_MOTOR_MIXING=true;
 		
-		if(USE_GPS) int fix = gps.fix;
-		else int fix = GPS_FIX_NONE;
 		
-		int time_sec = sys_time.nb_sec;
+		if(USE_GPS)  fix = Gps.gps.fix;
+		else fix = GPS_FIX_NONE;
+		
+		int time_sec = Sys_time.nb_sec;
 		DOWNLINK_SEND_ROTORCRAFT_STATUS(DefaultChannel, DefaultDevice,
 		      imu_nb_err, _motor_nb_err,
-		      radio_control.status, radio_control.frame_rate,
+		    //  radio_control.status, radio_control.frame_rate,
 		      fix, autopilot_mode,
 		      autopilot_in_flight, autopilot_motors_on,
 		      guidance_h_mode, guidance_v_mode,
-		      electrical.vsupply, time_sec);
+		     // electrical.vsupply,
+		      time_sec);
 	}
 	
 //	public static void send_energy(){
@@ -241,7 +294,7 @@ public class Autopilot {
 			      _kill_switch,
 			      radio_control.status);
 	}
-	
+	*/
 	public static void send_actuators() {
 		  DOWNLINK_SEND_ACTUATORS(DefaultChannel, DefaultDevice , ACTUATORS_NB, actuators);
 	}
@@ -250,14 +303,14 @@ public class Autopilot {
 		  PeriodicSendDlValue(DefaultChannel, DefaultDevice);
 	}
 	
-	static void send_rotorcraft_cmd() {
+	public static void send_rotorcraft_cmd() {
 		  DOWNLINK_SEND_ROTORCRAFT_CMD(DefaultChannel, DefaultDevice,
 		      stabilization_cmd[COMMAND_ROLL],
 		      stabilization_cmd[COMMAND_PITCH],
 		      stabilization_cmd[COMMAND_YAW],
 		      stabilization_cmd[COMMAND_THRUST]);
 	}
-	*/
+
 	
 	public static void autopilot_init(){
 		  /* mode is finally set at end of init if MODE_STARTUP is not KILL */
@@ -279,7 +332,7 @@ public class Autopilot {
 		  //}
 		  
 
-		  autopilot_arming_init();
+		  autopilot_arming_init();//???????????????????????????????????????
 
 		  nav_init();
 		  guidance_h_init();
@@ -288,22 +341,22 @@ public class Autopilot {
 
 		  /* set startup mode, propagates through to guidance h/v */
 		  autopilot_set_mode(MODE_STARTUP);
-
-		  register_periodic_telemetry(DefaultPeriodic, "ALIVE", send_alive);
-		  register_periodic_telemetry(DefaultPeriodic, "ROTORCRAFT_STATUS", send_status);
-		  register_periodic_telemetry(DefaultPeriodic, "ENERGY", send_energy);
-		  register_periodic_telemetry(DefaultPeriodic, "ROTORCRAFT_FP", send_fp);
-		  register_periodic_telemetry(DefaultPeriodic, "ROTORCRAFT_CMD", send_rotorcraft_cmd);
-		  register_periodic_telemetry(DefaultPeriodic, "DL_VALUE", send_dl_value);
+		 // telemetry DefaultPeriodic=new telemetry();
+		  register_periodic_telemetry(DefaultPeriodic, "ALIVE", 1);
+		  register_periodic_telemetry(DefaultPeriodic, "ROTORCRAFT_STATUS", 2);
+		  register_periodic_telemetry(DefaultPeriodic, "ENERGY", 3);
+		  register_periodic_telemetry(DefaultPeriodic, "ROTORCRAFT_FP", 4);
+		  register_periodic_telemetry(DefaultPeriodic, "ROTORCRAFT_CMD", 5);
+		  register_periodic_telemetry(DefaultPeriodic, "DL_VALUE", 6);
 		  
-		  if(ACTUATORS_DEFINED) register_periodic_telemetry(DefaultPeriodic, "ACTUATORS", send_actuators);
-		  if(RADIO_CONTROL_DEFINED){
-			  register_periodic_telemetry(DefaultPeriodic, "RC", send_rc);
-			  register_periodic_telemetry(DefaultPeriodic, "ROTORCRAFT_RADIO_CONTROL", send_rotorcraft_rc);
+		  if(ACTUATORS_DEFINED) register_periodic_telemetry(DefaultPeriodic, "ACTUATORS", 7);
+		  //if(RADIO_CONTROL_DEFINED){
+			//  register_periodic_telemetry(DefaultPeriodic, "RC", send_rc);
+			 // register_periodic_telemetry(DefaultPeriodic, "ROTORCRAFT_RADIO_CONTROL", send_rotorcraft_rc);
 		  }
-	}
 	
-	public static double NAV_PRESCALER = (PERIODIC_FREQUENCY / NAV_FREQ);
+	
+	public  static double  NAV_PRESCALER = (PERIODIC_FREQUENCY / NAV_FREQ);
 	
 	
 	
@@ -369,8 +422,8 @@ public class Autopilot {
 		/* Reset ground detection _after_ running flight plan
 		 */
 		if (!autopilot_in_flight || autopilot_ground_detected) {
-			autopilot_ground_detected = FALSE;
-			autopilot_detect_ground_once = FALSE;
+			autopilot_ground_detected = false;
+			autopilot_detect_ground_once = false;
 		}
 
 		/* Set fixed "failsafe" commands from airframe file if in KILL mode.
@@ -381,8 +434,8 @@ public class Autopilot {
 			//SetCommands(commands_failsafe);
 		}
 		else {
-			Guidance_v.guidance_v_run( autopilot_in_flight );
-			Guidance_h.guidance_h_run( autopilot_in_flight );
+			guidance_v_run( autopilot_in_flight );
+			guidance_h_run( autopilot_in_flight );
 			//SetRotorcraftCommands(stabilization_cmd, autopilot_in_flight, autopilot_motors_on);
 		}
 
@@ -400,13 +453,13 @@ public class Autopilot {
 			case AP_MODE_FAILSAFE:
 				if(!KILL_AS_FAILSAFE_DEFINED){
 					stabilization_attitude_set_failsafe_setpoint();
-					Guidance_h.guidance_h_mode_changed(GUIDANCE_H_MODE_ATTITUDE);
+					guidance_h_mode_changed(GUIDANCE_H_MODE_ATTITUDE);
 					break;
 				}
 			case AP_MODE_KILL:
-				autopilot_in_flight = FALSE;
+				autopilot_in_flight =false;
 				autopilot_in_flight_counter = 0;
-				Guidance.guidance_h_mode_changed(GUIDANCE_H_MODE_KILL);
+				guidance_h_mode_changed(GUIDANCE_H_MODE_KILL);
 				break;
 			case AP_MODE_RC_DIRECT:
 				guidance_h_mode_changed(GUIDANCE_H_MODE_RC_DIRECT);
@@ -444,11 +497,11 @@ public class Autopilot {
 			case AP_MODE_FAILSAFE:
 				if(KILL_AS_FAILSAFE_DEFINED){
 					guidance_v_mode_changed(GUIDANCE_V_MODE_CLIMB);
-					guidance_v_zd_sp = SPEED_BFP_OF_REAL(FAILSAFE_DESCENT_SPEED);
+					guidance_v_zd_sp = SPEED_BFP_OF_REAL((float)FAILSAFE_DESCENT_SPEED);
 					break;
 				}
 			case AP_MODE_KILL:
-				autopilot_set_motors_on(FALSE);
+				autopilot_set_motors_on(false);
 				stabilization_cmd[COMMAND_THRUST] = 0;
 				guidance_v_mode_changed(GUIDANCE_V_MODE_KILL);
 				break;
@@ -490,12 +543,12 @@ public class Autopilot {
 			if (autopilot_in_flight_counter > 0) {
 				/* probably in_flight if thrust, speed and accel above IN_FLIGHT_MIN thresholds */
 				if ((stabilization_cmd[COMMAND_THRUST] <= AUTOPILOT_IN_FLIGHT_MIN_THRUST) &&
-						(abs(stateGetSpeedNed_f().z) < AUTOPILOT_IN_FLIGHT_MIN_SPEED) &&
-						(abs(stateGetAccelNed_f().z) < AUTOPILOT_IN_FLIGHT_MIN_ACCEL))
+						(Math.abs(stateGetSpeedNed_f().z) < AUTOPILOT_IN_FLIGHT_MIN_SPEED) &&
+						(Math.abs(stateGetAccelNed_f().z) < AUTOPILOT_IN_FLIGHT_MIN_ACCEL))
 				{
 					autopilot_in_flight_counter--;
 					if (autopilot_in_flight_counter == 0) {
-						autopilot_in_flight = FALSE;
+						autopilot_in_flight = false;
 					}
 				}
 				else {  /* thrust, speed or accel not above min threshold, reset counter */
@@ -513,7 +566,7 @@ public class Autopilot {
 				if (stabilization_cmd[COMMAND_THRUST] > AUTOPILOT_IN_FLIGHT_MIN_THRUST) {
 					autopilot_in_flight_counter++;
 					if (autopilot_in_flight_counter == AUTOPILOT_IN_FLIGHT_TIME)
-						autopilot_in_flight = TRUE;
+						autopilot_in_flight = true;
 				}
 				else { /* currently not in_flight and thrust below threshold, reset counter */
 					autopilot_in_flight_counter = 0;
@@ -522,7 +575,7 @@ public class Autopilot {
 		}
 	}
 
-	public static void autopilot_set_motors_on(boolean motors_on) {
+	public static void autopilot_set_motors_on(boolean motors_on){
 		if (ahrs_is_aligned() && motors_on)
 			autopilot_motors_on = true;
 		else
@@ -531,7 +584,7 @@ public class Autopilot {
 		autopilot_arming_set(autopilot_motors_on);
 	}
 
-	public static void autopilot_on_rc_frame() {
+	public static void autopilot_on_rc_frame(){
 
 		if (kill_switch_is_on()) {
 			autopilot_set_mode(AP_MODE_KILL);
@@ -539,7 +592,7 @@ public class Autopilot {
 		else if ((autopilot_mode != AP_MODE_HOME) || (UNLOCKED_HOME_MODE_DEFINED && !too_far_from_home))
 		{
 			int new_autopilot_mode = 0;
-			AP_MODE_OF_PPRZ(radio_control.values[RADIO_MODE], new_autopilot_mode);
+			//AP_MODE_OF_PPRZ(radio_control.values[RADIO_MODE], new_autopilot_mode);
 
 			
 			/* don't enter NAV mode if GPS is lost (this also prevents mode oscillations) */

@@ -1,5 +1,7 @@
 package sw.airborne.firmwares.rotorcraft;
 
+import static sw.airborne.Paparazzi.*;
+
 public class Autopilot_rc_helpers {
 
 	public static final double AUTOPILOT_THROTTLE_THRESHOLD    = (MAX_PPRZ / 20);

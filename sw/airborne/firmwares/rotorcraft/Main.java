@@ -1,36 +1,59 @@
 package sw.airborne.firmwares.rotorcraft;
 
+import static sw.airborne.State.*;
+import static sw.airborne.subsystems.Imu.*;
+import static sw.airborne.subsystems.ImuFloat.*;
+import static sw.airborne.subsystems.Gps.*;
+import static sw.airborne.firmwares.rotorcraft.Autopilot.*;
+import static sw.airborne.subsystems.Ins.*;
+import static sw.airborne.subsystems.Ahrs.*;
+import static sw.airborne.subsystems.Ahrs_Aligner.*;
+import static sw.airborne.subsystems.Setting.*;
+import static sw.airborne.mcu_periph.Sys_time.*;
+import static sw.airborne.subsystems.datalink.Datalink.*;
+//import static sw.airborne.subsystems.Setting.*;
+//import static sw.airborne.subsystems.Setting.*;
+//import static sw.airborne.subsystems.Setting.*;
+import static devices.Gps.*;
 //These have been left in C++ standard lets agree to replace them as imports when the interfaces or abstract classes have been written
-#include "subsystems/commands.h"
-#include "subsystems/actuators.h"
-
-
-#include "subsystems/imu.h"
-#include "subsystems/gps.h"
-#include "subsystems/air_data.h"
-
-
-#include "subsystems/electrical.h"
-
-#include "firmwares/rotorcraft/autopilot.h"
-
-
-#include "firmwares/rotorcraft/stabilization.h"
-#include "firmwares/rotorcraft/guidance.h"
-
-#include "subsystems/ahrs.h"
-#include "subsystems/ahrs/ahrs_aligner.h"
-#include "subsystems/ins.h"
-
-#include "state.h"
-
-#include "firmwares/rotorcraft/main.h"
+//#include "subsystems/commands.h"
+//#include "subsystems/actuators.h"
+//
+//
+//#include "subsystems/imu.h"
+//#include "subsystems/gps.h"
+//#include "subsystems/air_data.h"
+//
+//
+//#include "subsystems/electrical.h"
+//
+//#include "firmwares/rotorcraft/autopilot.h"
+//
+//
+//#include "firmwares/rotorcraft/stabilization.h"
+//#include "firmwares/rotorcraft/guidance.h"
+//
+//#include "subsystems/ahrs.h"
+//#include "subsystems/ahrs/ahrs_aligner.h"
+//#include "subsystems/ins.h"
+//
+//#include "state.h"
+//
+//#include "firmwares/rotorcraft/main.h"
+import sw.airborne.mcu_periph.Sys_time;
 
 
 public class Main {
 
 	public static final int BARO_PERIODIC_FREQUENCY = 50;
-
+	public static final int PERIODIC_FREQUENCY = 512;
+	public static final int MODULES_FREQUENCY = 512;
+	public static final int TELEMETRY_FREQUENCY = 512;
+	private static boolean USE_BARO_BOARD = false;
+	private static boolean USE_IMU_FLOAT = false;
+	//public static final int PERIODIC_FREQUENCY = 512;
+	//public static final int PERIODIC_FREQUENCY = 512;
+	public static int datalink_time=0;
 	public static int main_periodic_tid; ///< id for main_periodic() timer
 	public static int modules_tid;       ///< id for modules_periodic_task() timer
 	public static int failsafe_tid;      ///< id for failsafe_check() timer
@@ -40,14 +63,14 @@ public class Main {
 
 	public static int baro_tid;          ///< id for baro_periodic() timer
 
-	public static int main() {
+	public static void main() {
 		main_init();
 
 		while(true) {
 			handle_periodic_tasks();
 			main_event();
 		}
-		return 0;
+		//return 0;
 	}
 
 	public static void main_init() {
@@ -68,8 +91,8 @@ public class Main {
 		if(USE_BARO_BOARD) baro_init();
 	*/	
 		imu_init();
-		if(USE_IMU_FLOAT) imu_float_init();
-		*/
+		if(USE_IMU_FLOAT) {imu_float_init();USE_IMU_FLOAT=true;}
+	
 		ahrs_aligner_init();
 		ahrs_init();
 
@@ -92,14 +115,15 @@ public class Main {
 		udp_init();*/     // ????
 		
 		// register the timers for the periodic functions
-		main_periodic_tid = sys_time_register_timer((1./PERIODIC_FREQUENCY), null);
-		modules_tid = sys_time_register_timer(1./MODULES_FREQUENCY, null);
-		radio_control_tid = sys_time_register_timer((1./60.), null);
-		failsafe_tid = sys_time_register_timer(0.05, null);
-		electrical_tid = sys_time_register_timer(0.1, null);
-		telemetry_tid = sys_time_register_timer((1./TELEMETRY_FREQUENCY), null);
+		main_periodic_tid = sys_time_register_timer((float)(1./PERIODIC_FREQUENCY),null);
+		modules_tid = sys_time_register_timer((float)1./MODULES_FREQUENCY, null);
+		radio_control_tid = sys_time_register_timer((float)(1./60.), null);
+		failsafe_tid = sys_time_register_timer((float)0.05, null);
+		electrical_tid = sys_time_register_timer((float)0.1, null);
+		telemetry_tid = sys_time_register_timer((float)(1./TELEMETRY_FREQUENCY), null);
 		if(USE_BARO_BOARD)
-		baro_tid = sys_time_register_timer(1./BARO_PERIODIC_FREQUENCY, null);
+		{		baro_tid = sys_time_register_timer((float)(1./BARO_PERIODIC_FREQUENCY), null);
+		USE_BARO_BOARD=true;}
 		
 	}
 
@@ -129,7 +153,7 @@ public class Main {
 		//imu_periodic();
 
 		/* run control loops */
-		Autopilot.autopilot_periodic();
+		autopilot_periodic();
 		/* set actuators     */
 		//actuators_set(autopilot_motors_on);
 	//	SetActuatorsFromCommands(commands, autopilot_mode);
@@ -139,7 +163,10 @@ public class Main {
 			PERIODIC_FREQUENCY_MAIN_PERIODIC++;					
 			if (PERIODIC_FREQUENCY_MAIN_PERIODIC >= PERIODIC_FREQUENCY) {			
 				PERIODIC_FREQUENCY_MAIN_PERIODIC = 0;					
-				{ autopilot_flight_time++; datalink_time++; }						
+				{ autopilot_flight_time++; 
+				
+				datalink_time++;           // ???????
+				}						
 			}	
 		}
 
@@ -155,8 +182,17 @@ public class Main {
 //		periodic_telemetry_send_Main();
 //	}
 
+	private static void LED_PERIODIC() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/* mode to enter when RC is lost while using a mode with RC input (not AP_MODE_NAV) */
 	public static final int RC_LOST_MODE = AP_MODE_FAILSAFE;
+	public static boolean USE_GPS = false;
+	public static final boolean FAILSAFE_GROUND_DETECT = false;
+	public static final boolean KILL_ON_GROUND_DETECT = false;
+	public static final boolean USE_VEHICLE_INTERFACE_DEFINED = false;
 	
 
 /*	public static void failsafe_check() {
@@ -201,7 +237,7 @@ public class Main {
 
 	public static void main_event() {
 
-		i2c_event();      //?
+		//i2c_event();      //????????????????????????????
 
 		DatalinkEvent();
 /*
@@ -209,16 +245,26 @@ public class Main {
 			RadioControlEvent(autopilot_on_rc_frame);
 		}
 
-		ImuEvent(on_gyro_event, on_accel_event, on_mag_event);
+		ImuEvent(on_gyro_event, on_accel_event, on_mag_event);?????????????????
 
 		if(USE_BARO_BOARD)
 		BaroEvent();*/
 		
 
-		if(USE_GPS)
-		GpsEvent(on_gps_event);
-		
-
+		if(USE_GPS){
+		//GpsEvent(on_gps_event);
+		if (gps_available) {                            
+		      gps.last_msg_ticks = Sys_time.nb_sec_rem;     
+		      gps.last_msg_time = Sys_time.nb_sec;          
+		      if (gps.fix == 3) {                  
+		        gps.last_3dfix_ticks = Sys_time.nb_sec_rem; 
+		        gps.last_3dfix_time = Sys_time.nb_sec;      
+		      }                                             
+		      on_gps_event();                    
+		      gps_available = false;  
+		      //USE_GPS=true;
+		    }                       
+		}
 		if( FAILSAFE_GROUND_DETECT || KILL_ON_GROUND_DETECT)
 		DetectGroundEvent();
 		
@@ -260,7 +306,7 @@ public class Main {
 		ahrs_update_gps();
 		ins_update_gps();
 		if(USE_VEHICLE_INTERFACE_DEFINED)
-		if (gps.fix == GPS_FIX_3D)
+		if (gps.fix == 3)
 			vi_notify_gps_available();
 		
 	}
@@ -278,5 +324,10 @@ public class Main {
 		vi_notify_mag_available();
 		
 	}*/
+
+	private static void vi_notify_gps_available() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

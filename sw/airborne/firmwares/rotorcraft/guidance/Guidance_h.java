@@ -1,20 +1,54 @@
 package sw.airborne.firmwares.rotorcraft.guidance;
+import static sw.airborne.firmwares.rotorcraft.guidance.Guidance_h_ref.*;
+import static sw.airborne.firmwares.rotorcraft.guidance.Guidance_v_ref.*;
+import static sw.airborne.firmwares.rotorcraft.guidance.Guidance_v.*;
+
 
 import sw.airborne.math.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_none.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_rate.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_rc_setpoint.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_quat_int.*;
+import static sw.airborne.math.Pprz_algebra_int.*;
+import static sw.airborne.math.Pprz_geodetic_int.*;
+import static sw.airborne.firmwares.rotorcraft.Stabilization.*;
+import static sw.airborne.math.Pprz_algebra.*;
+import static sw.airborne.firmwares.rotorcraft.Navigation.*;
+import static sw.airborne.State.*;
+
+//import sw.airborne.math.*; 
+import sw.include.Std;
+//import static sw.airborne.math.Pprz_algebra_int.*;
+//import static sw.airborne.math.Pprz_algebra.*;
+import static sw.include.Std.*;
+import static sw.airborne.math.Pprz_geodetic.*;
+import static sw.airborne.math.Pprz_orientation_conversion.*;
+//import static sw.airborne.math.Pprz_geodetic_int.*;
+import static sw.airborne.math.Pprz_geodetic_float.*;
+import static sw.airborne.math.Pprz_algebra_float.*;
+import static sw.airborne.math.Pprz_trig_int.*;
+//import static sw.airborne.State.*;
+//import static sw.airborne.firmwares.rotorcraft.guidance.Guidance_h_ref.*;
+
+//import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_none.*;
+//import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_rate.*;
+//import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_rc_setpoint.*;
+//import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_euler_int.*;
+
 
 public class Guidance_h {
 
 	public static boolean GUIDANCE_H_USE_REF = true;
 	public static boolean GUIDANCE_H_USE_SPEED_REF = true;
 
-	public static int GUIDANCE_H_MODE_KILL       = 0;
-	public static int GUIDANCE_H_MODE_RATE      =  1;
-	public static int GUIDANCE_H_MODE_ATTITUDE   = 2;
-	public static int GUIDANCE_H_MODE_HOVER      = 3;
-	public static int GUIDANCE_H_MODE_NAV       =  4;
-	public static int GUIDANCE_H_MODE_RC_DIRECT =  5;
-	public static int GUIDANCE_H_MODE_CARE_FREE =  6;
-	public static int GUIDANCE_H_MODE_FORWARD   =  7;
+	public final static int GUIDANCE_H_MODE_KILL       = 0;
+	public final static int GUIDANCE_H_MODE_RATE      =  1;
+	public final static int GUIDANCE_H_MODE_ATTITUDE   = 2;
+	public final static int GUIDANCE_H_MODE_HOVER      = 3;
+	public final static int GUIDANCE_H_MODE_NAV       =  4;
+	public final static int GUIDANCE_H_MODE_RC_DIRECT =  5;
+	public final static int GUIDANCE_H_MODE_CARE_FREE =  6;
+	public final static int GUIDANCE_H_MODE_FORWARD   =  7;
 
 	public static void guidance_h_SetKi(int _val) {            
 		guidance_h_igain = _val;                
@@ -25,7 +59,7 @@ public class Guidance_h {
 	 * but not enabled if GUIDANCE_H_USE_REF was defined to false.
 	 */
 	public static void guidance_h_SetUseRef(int _val) {                    
-		guidance_h_use_ref = _val && GUIDANCE_H_USE_REF;    
+		guidance_h_use_ref = (_val!=0) && GUIDANCE_H_USE_REF;    
 	}
 
 	public static void guidance_h_SetMaxSpeed(int _val) {          
@@ -37,9 +71,10 @@ public class Guidance_h {
 	public static final int GUIDANCE_H_AGAIN =0;
 	public static final int GUIDANCE_H_VGAIN =0;
 
-	public static final double GUIDANCE_H_MAX_BANK =RadOfDeg(20);
+	public static final double GUIDANCE_H_MAX_BANK =(20)*(3.1415926)/180.0;
 
 	public static final boolean GUIDANCE_H_APPROX_FORCE_BY_THRUST= false;
+	private static final boolean NO_ATTITUDE_RESET_ON_MODE_CHANGE = false;
 
 
 	public static int guidance_h_mode;
@@ -133,9 +168,9 @@ public class Guidance_h {
 		INT_VECT2_ZERO(guidance_h_trim_att_integrator);
 		INT_EULERS_ZERO(guidance_h_rc_sp);
 		guidance_h_heading_sp = 0;
-		guidance_h_pgain = GUIDANCE_H_PGAIN;
-		guidance_h_igain = GUIDANCE_H_IGAIN;
-		guidance_h_dgain = GUIDANCE_H_DGAIN;
+		guidance_h_pgain = GUIDANCE_H_PGAIN;//hardcode TODO
+		guidance_h_igain = GUIDANCE_H_IGAIN;//hardcode TODO
+		guidance_h_dgain = GUIDANCE_H_DGAIN;//hardcode TODO
 		guidance_h_again = GUIDANCE_H_AGAIN;
 		guidance_h_vgain = GUIDANCE_H_VGAIN;
 		transition_percentage = 0;
@@ -314,7 +349,7 @@ public class Guidance_h {
 				guidance_h_nav_enter();
 
 			if (horizontal_mode == HORIZONTAL_MODE_ATTITUDE) {
-				 Int32Eulers sp_cmd_i;
+				 Int32Eulers sp_cmd_i = new Int32Eulers();
 				sp_cmd_i.phi = nav_roll;
 				sp_cmd_i.theta = nav_pitch;
 				
@@ -349,18 +384,18 @@ public class Guidance_h {
 		if(GUIDANCE_H_USE_REF){
 			if(GUIDANCE_H_USE_SPEED_REF){
 				if(guidance_h_mode == GUIDANCE_H_MODE_HOVER)
-					gh_update_ref_from_speed_sp(guidance_h_speed_sp);
+					Guidance_h_ref.gh_update_ref_from_speed_sp(guidance_h_speed_sp);
 				else
-					gh_update_ref_from_pos_sp(guidance_h_pos_sp);
+					Guidance_h_ref.gh_update_ref_from_pos_sp(guidance_h_pos_sp);
 			}else
-				gh_update_ref_from_pos_sp(guidance_h_pos_sp);
+				Guidance_h_ref.gh_update_ref_from_pos_sp(guidance_h_pos_sp);
 		}
 
 		/* either use the reference or simply copy the pos setpoint */
 		if (guidance_h_use_ref) {
 			/* convert our reference to generic representation */
-			INT32_VECT2_RSHIFT(guidance_h_pos_ref,   gh_pos_ref,   (GH_POS_REF_FRAC - INT32_POS_FRAC));
-			INT32_VECT2_LSHIFT(guidance_h_speed_ref, gh_speed_ref, (INT32_SPEED_FRAC - GH_SPEED_REF_FRAC));
+			INT32_VECT2_RSHIFT(guidance_h_pos_ref,   gh_pos_ref,  (int) (GH_POS_REF_FRAC - INT32_POS_FRAC));
+			INT32_VECT2_LSHIFT(guidance_h_speed_ref, gh_speed_ref, (int)(INT32_SPEED_FRAC - GH_SPEED_REF_FRAC));
 			INT32_VECT2_LSHIFT(guidance_h_accel_ref, gh_accel_ref, (INT32_ACCEL_FRAC - GH_ACCEL_REF_FRAC));
 		} else {
 			VECT2_COPY(guidance_h_pos_ref, guidance_h_pos_sp);
@@ -376,8 +411,8 @@ public class Guidance_h {
 	}
 
 
-	public static final double MAX_POS_ERR =  POS_BFP_OF_REAL(16.);
-	public static final double MAX_SPEED_ERR = SPEED_BFP_OF_REAL(16.);
+	public static final double MAX_POS_ERR =  POS_BFP_OF_REAL((float)16.0);
+	public static final double MAX_SPEED_ERR = SPEED_BFP_OF_REAL((float)16.0);
 
 	public static final int GUIDANCE_H_THRUST_CMD_FILTER = 10;
 	
@@ -385,25 +420,26 @@ public class Guidance_h {
 	/* with a pgain of 100 and a scale of 2,
 	 * you get an angle of 5.6 degrees for 1m pos error */
 	public static final int GH_GAIN_SCALE = 2;
+	private static final int TRANSITION_MAX_OFFSET = 10;// ?????
 
 	private static int  traj_max_bank;
 	private static int total_max_bank;
 	private static int thrust_cmd_filt;
 	public static void guidance_h_traj_run(boolean in_flight) {
 		/* maximum bank angle: default 20 deg, max 40 deg*/
-		traj_max_bank = Math.max(BFP_OF_REAL(GUIDANCE_H_MAX_BANK, INT32_ANGLE_FRAC),
-				BFP_OF_REAL(RadOfDeg(40), INT32_ANGLE_FRAC));
-		total_max_bank = BFP_OF_REAL(RadOfDeg(45), INT32_ANGLE_FRAC);
+		traj_max_bank = Math.max(BFP_OF_REAL((float)GUIDANCE_H_MAX_BANK, INT32_ANGLE_FRAC),
+				BFP_OF_REAL((float)(40*3.14159/180.0), INT32_ANGLE_FRAC));
+		total_max_bank = BFP_OF_REAL((float)(45*3.14159/180.0), INT32_ANGLE_FRAC);
 
 		/* compute position error    */
 		VECT2_DIFF(guidance_h_pos_err, guidance_h_pos_ref, stateGetPositionNed_i());
 		/* saturate it               */
-		VECT2_STRIM(guidance_h_pos_err, -MAX_POS_ERR, MAX_POS_ERR);
+		VECT2_STRIM(guidance_h_pos_err, (int)-MAX_POS_ERR, (int)MAX_POS_ERR);
 
 		/* compute speed error    */
 		VECT2_DIFF(guidance_h_speed_err, guidance_h_speed_ref, stateGetSpeedNed_i());
 		/* saturate it               */
-		VECT2_STRIM(guidance_h_speed_err, -MAX_SPEED_ERR, MAX_SPEED_ERR);
+		VECT2_STRIM(guidance_h_speed_err, (int)-MAX_SPEED_ERR, (int)MAX_SPEED_ERR);
 
 		/* run PID */
 		int pd_x =
@@ -446,8 +482,8 @@ public class Guidance_h {
 			//static int thrust_cmd_filt;
 			int vertical_thrust = (stabilization_cmd[COMMAND_THRUST] * guidance_v_thrust_coeff) >> INT32_TRIG_FRAC;
 			thrust_cmd_filt = (thrust_cmd_filt * GUIDANCE_H_THRUST_CMD_FILTER + vertical_thrust) / (GUIDANCE_H_THRUST_CMD_FILTER + 1);
-			guidance_h_cmd_earth.x = ANGLE_BFP_OF_REAL(atan2f((guidance_h_cmd_earth.x * MAX_PPRZ / INT32_ANGLE_PI_2), thrust_cmd_filt));
-			guidance_h_cmd_earth.y = ANGLE_BFP_OF_REAL(atan2f((guidance_h_cmd_earth.y * MAX_PPRZ / INT32_ANGLE_PI_2), thrust_cmd_filt));
+			guidance_h_cmd_earth.x = ANGLE_BFP_OF_REAL((float)Math.atan2((guidance_h_cmd_earth.x * MAX_PPRZ / INT32_ANGLE_PI_2), thrust_cmd_filt));
+			guidance_h_cmd_earth.y = ANGLE_BFP_OF_REAL((float)Math.atan2((guidance_h_cmd_earth.y * MAX_PPRZ / INT32_ANGLE_PI_2), thrust_cmd_filt));
 		}
 
 		VECT2_STRIM(guidance_h_cmd_earth, -total_max_bank, total_max_bank);
@@ -477,7 +513,7 @@ public class Guidance_h {
 		//Add 0.00625%
 		transition_percentage += 1<<(INT32_PERCENTAGE_FRAC-4);
 
-		if(TRANSITION_MAX_OFFSET){
+		if(TRANSITION_MAX_OFFSET!=0){
 			int max_offset = ANGLE_BFP_OF_REAL(TRANSITION_MAX_OFFSET);
 			transition_theta_offset = INT_MULT_RSHIFT((transition_percentage<<(INT32_ANGLE_FRAC-INT32_PERCENTAGE_FRAC))/100, max_offset, INT32_ANGLE_FRAC);
 		}
@@ -503,8 +539,8 @@ public class Guidance_h {
 			/* Rotate from body to NED frame by negative psi angle */
 			int psi = -stateGetNedToBodyEulers_i().psi;
 			int s_psi, c_psi;
-			PPRZ_ITRIG_SIN(s_psi, psi);
-			PPRZ_ITRIG_COS(c_psi, psi);
+			s_psi = PPRZ_ITRIG_SIN(psi);
+			c_psi = PPRZ_ITRIG_COS(psi);
 			speed_sp.x = (int)(( (int)c_psi * rc_x + (int)s_psi * rc_y) >> INT32_TRIG_FRAC);
 			speed_sp.y = (int)((-(int)s_psi * rc_x + (int)c_psi * rc_y) >> INT32_TRIG_FRAC);
 		}

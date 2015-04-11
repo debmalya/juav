@@ -1,8 +1,8 @@
 package sw.airborne.math;
 
 public class FloatVect2 {
-	float x;
-	float y;
+	public float x;
+	public float y;
 	public boolean equals(FloatVect2 _a){
 		if(this.x==_a.x) return false;
 		if(this.y==_a.y) return false;

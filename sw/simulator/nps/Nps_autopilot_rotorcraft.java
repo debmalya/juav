@@ -1,5 +1,6 @@
 package sw.simulator.nps;
-
+import static sw.airborne.firmwares.rotorcraft.Main.*;
+import sw.airborne.subsystems.actuators.motor_mixing.Motor_mixing;
 public class Nps_autopilot_rotorcraft 
 {
 	void nps_autopilot_run_step(double time) 
@@ -21,7 +22,7 @@ public class Nps_autopilot_rotorcraft
 
 		  /* scale final motor commands to 0-1 for feeding the fdm */
 		  for (uint8_t i=0; i < NPS_COMMANDS_NB; i++)
-		    autopilot.commands[i] = (double)motor_mixing.commands[i]/MAX_PPRZ;
+		    autopilot.commands[i] = (double)Motor_mixing.commands[i]/MAX_PPRZ;
 
 		}
 	

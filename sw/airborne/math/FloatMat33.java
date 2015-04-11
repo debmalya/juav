@@ -1,5 +1,5 @@
 package sw.airborne.math;
 
 public class FloatMat33 {
-	float[] m;
+	public float[] m = new float[3*3];
 }

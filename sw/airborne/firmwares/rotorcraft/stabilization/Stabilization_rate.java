@@ -1,6 +1,26 @@
 package sw.airborne.firmwares.rotorcraft.stabilization;
 
-import sw.airborne.math.*;
+
+
+import sw.airborne.math.*; 
+import sw.include.Std;
+import static sw.airborne.math.Pprz_algebra_int.*;
+import static sw.airborne.math.Pprz_algebra.*;
+import static sw.include.Std.*;
+import static sw.airborne.math.Pprz_geodetic.*;
+import static sw.airborne.math.Pprz_orientation_conversion.*;
+import static sw.airborne.math.Pprz_geodetic_int.*;
+import static sw.airborne.math.Pprz_geodetic_float.*;
+import static sw.airborne.math.Pprz_algebra_float.*;
+import static sw.airborne.math.Pprz_trig_int.*;
+import static sw.airborne.State.*;
+import static sw.airborne.firmwares.rotorcraft.guidance.Guidance_h_ref.*;
+import static sw.airborne.firmwares.rotorcraft.Stabilization.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_none.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_rate.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_rc_setpoint.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_euler_int.*;
+
 
 public class Stabilization_rate {
 	
@@ -39,6 +59,7 @@ public class Stabilization_rate {
 	public static final int STABILIZATION_RATE_DEADBAND_P =0;
 	public static final int STABILIZATION_RATE_DEADBAND_Q =0;
 	public static final int STABILIZATION_RATE_DEADBAND_R =200;
+	public static final int MAX_PPRZ = 9600;
 	
 	public static boolean ROLL_RATE_DEADBAND_EXCEEDED() {
 		
@@ -164,10 +185,12 @@ public class Stabilization_rate {
 		  RATES_DIFF(_r, stabilization_rate_sp, stabilization_rate_ref);
 		  RATES_SDIV(stabilization_rate_refdot, _r, STABILIZATION_RATE_REF_TAU);
 		  /* integrate ref */
-		    Int32Rates _delta_ref = {
-		    stabilization_rate_refdot.p >> ( F_UPDATE_RES + REF_DOT_FRAC - REF_FRAC),
-		    stabilization_rate_refdot.q >> ( F_UPDATE_RES + REF_DOT_FRAC - REF_FRAC),
-		    stabilization_rate_refdot.r >> ( F_UPDATE_RES + REF_DOT_FRAC - REF_FRAC)};
+
+		    Int32Rates _delta_ref = new Int32Rates();
+		   _delta_ref.p= stabilization_rate_refdot.p >> ( F_UPDATE_RES + REF_DOT_FRAC - REF_FRAC);
+		_delta_ref.q= stabilization_rate_refdot.q >> ( F_UPDATE_RES + REF_DOT_FRAC - REF_FRAC);
+		_delta_ref.r=stabilization_rate_refdot.r >> ( F_UPDATE_RES + REF_DOT_FRAC - REF_FRAC);
+
 		  RATES_ADD(stabilization_rate_ref, _delta_ref);
 
 		  /* compute feed-forward command */
@@ -176,10 +199,16 @@ public class Stabilization_rate {
 
 		  /* compute feed-back command */
 		  /* error for feedback */
-		    Int32Rates _ref_scaled = {
-		    OFFSET_AND_ROUND(stabilization_rate_ref.p, (REF_FRAC - INT32_RATE_FRAC)),
-		    OFFSET_AND_ROUND(stabilization_rate_ref.q, (REF_FRAC - INT32_RATE_FRAC)),
-		    OFFSET_AND_ROUND(stabilization_rate_ref.r, (REF_FRAC - INT32_RATE_FRAC)) };
+
+//		    Int32Rates _ref_scaled = {
+//	    OFFSET_AND_ROUND(stabilization_rate_ref.p, (REF_FRAC - INT32_RATE_FRAC)),
+//		    OFFSET_AND_ROUND(stabilization_rate_ref.q, (REF_FRAC - INT32_RATE_FRAC)),
+//		    OFFSET_AND_ROUND(stabilization_rate_ref.r, (REF_FRAC - INT32_RATE_FRAC)) };
+		  Int32Rates _ref_scaled =  new Int32Rates();
+		  _ref_scaled.p=OFFSET_AND_ROUND(stabilization_rate_ref.p, (REF_FRAC - INT32_RATE_FRAC));
+		  _ref_scaled.q=OFFSET_AND_ROUND(stabilization_rate_ref.q, (REF_FRAC - INT32_RATE_FRAC));
+		  _ref_scaled.r = OFFSET_AND_ROUND(stabilization_rate_ref.r, (REF_FRAC - INT32_RATE_FRAC));
+
 		   Int32Rates _error;
 		   Int32Rates body_rate = stateGetBodyRates_i();
 		  RATES_DIFF(_error, _ref_scaled, (body_rate));

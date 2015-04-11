@@ -5,7 +5,7 @@ import static sw.airborne.subsystems.Gps.*;
 public class Gps_datalink {
 		
 	public static boolean gps_available; 
-	
+	//TODO: find RadOfDeg;
 	public void parse_data_link(int numsv, int ecef_x, int ecef_y, int ecef_z, int lat, 
 			int lon, int alt,int hmsl, int ecef_xd, int ecef_yd, int ecef_zd, int tow, int course){
 		 gps.lla_pos.lat = RadOfDeg(lat);

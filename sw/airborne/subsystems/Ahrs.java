@@ -6,6 +6,7 @@ public class Ahrs {
 	public static final int AHRS_RUNNING = 1;
 	
 	public static AhrsState ahrs = new AhrsState();
+	public static void ahrs_init(){}
 	
 	public static void ahrs_update_accel(){
 		
