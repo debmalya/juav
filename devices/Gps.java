@@ -11,8 +11,8 @@ public class Gps {
 	public static final int GPS_NB_CHANNELS = 1;
 	
 	public static GpsState gps;
-	public boolean gps_has_fix;
-	public boolean gps_available;
+	public static boolean gps_has_fix;
+	public static boolean gps_available;
 	
 	public Gps(){
 		gps = new GpsState();
@@ -83,7 +83,7 @@ public class Gps {
 //		  gps_available = true;
 //		  
 //	}
-	void  gps_feed_value(Long[] values) {
+	public static void gps_feed_value(Long[] values) {
 		  gps.ecef_pos.x = values[1];
 		  gps.ecef_pos.y = values[2];
 		  gps.ecef_pos.z = values[3];

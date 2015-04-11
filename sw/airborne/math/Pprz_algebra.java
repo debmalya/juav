@@ -4,7 +4,7 @@ import static sw.airborne.math.Pprz_algebra_int.*;
 public class Pprz_algebra {
 	
 	
-	public static void VECT2_ASSIGN(Int32Vect2 _a,int _x,int _y) {		
+	public static void VECT2_ASSIGN(Int32Vect2 _a,Long _x,Long _y) {		
 	    (_a).x = (_x);				
 	    (_a).y = (_y);				
 	  }
@@ -128,7 +128,7 @@ public class Pprz_algebra {
 		(_vo).x =  (_vi).x * (_s);			
 		(_vo).y =  (_vi).y * (_s);			
 	}
-	public static void VECT2_SMUL(Int32Vect2 _vo, EnuCoor_i _vi, int _s) {		
+	public static void VECT2_SMUL(Int32Vect2 _vo, EnuCoor_i _vi, Long _s) {		
 		(_vo).x =  (_vi).x * (_s);			
 		(_vo).y =  (_vi).y * (_s);			
 	}
@@ -170,7 +170,7 @@ public class Pprz_algebra {
 		(_a).y = (_y);				
 		(_a).z = (_z);				
 	}
-	public static void VECT3_ASSIGN(Int32Vect3 _a,int _x,int _y,int _z) {		
+	public static void VECT3_ASSIGN(Int32Vect3 _a,long _x,long _y,long _z) {		
 		(_a).x = (_x);				
 		(_a).y = (_y);				
 		(_a).z = (_z);				
@@ -440,7 +440,7 @@ public class Pprz_algebra {
 	    (_ra).q = (_q);				
 	    (_ra).r = (_r);				
 	  }
-	public static void RATES_ASSIGN(Int32Rates _ra, int _p, int _q, int _r) {		
+	public static void RATES_ASSIGN(Int32Rates _ra, Long _p, Long _q, Long _r) {		
 		(_ra).p = (_p);				
 		(_ra).q = (_q);				
 		(_ra).r = (_r);				
