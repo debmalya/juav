@@ -219,7 +219,12 @@ public class Pprz_algebra {
 	    (_a).y = (_b).y;				
 	    (_a).z = (_b).z;				
 	  }
-	
+	public static void VECT3_COPY(Int32Vect3 _a,Int32Vect3 _b) {        
+	    (_a).x = (_b).x;				
+	    (_a).y = (_b).y;				
+	    (_a).z = (_b).z;				
+	  }
+
 	public static void VECT3_COPY(NedCoor_f _a,NedCoor_d _b) {        
 	    (_a).x = (float) (_b).x;				
 	    (_a).y = (float) (_b).y;				
@@ -524,6 +529,7 @@ public class Pprz_algebra {
 		(_ra).y = (_q);				
 		(_ra).z = (_r);				
 	}
+	
 
 	/* a = b */
 	public static void RATES_COPY(DoubleRates _a,DoubleRates _b) {			
@@ -1089,9 +1095,9 @@ public class Pprz_algebra {
 	  }
 	
 	public static void RATES_FLOAT_OF_BFP(FloatVect3 _rf, Int32Rates _ri) {			
-	    (_rf).p = RATE_FLOAT_OF_BFP((_ri).p);		
-	    (_rf).q = RATE_FLOAT_OF_BFP((_ri).q);		
-	    (_rf).r = RATE_FLOAT_OF_BFP((_ri).r);		
+	    (_rf).x = RATE_FLOAT_OF_BFP((_ri).p);		
+	    (_rf).y = RATE_FLOAT_OF_BFP((_ri).q);		
+	    (_rf).z = RATE_FLOAT_OF_BFP((_ri).r);		
 	  }
 	
 	public static void RATES_FLOAT_OF_BFP(FloatRates _rf, FloatRates _ri) {			

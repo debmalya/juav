@@ -3,7 +3,7 @@ package sw.airborne.firmwares.rotorcraft;
 import static sw.airborne.State.*;
 import static sw.airborne.subsystems.Imu.*;
 import static sw.airborne.subsystems.ImuFloat.*;
-import static sw.airborne.subsystems.Gps.*;
+//import static sw.airborne.subsystems.Gps.*;
 import static sw.airborne.firmwares.rotorcraft.Autopilot.*;
 import static sw.airborne.subsystems.ahrs.arhs_gx3.*;
 import static sw.airborne.subsystems.ins.Ins.*;
@@ -25,7 +25,7 @@ import static sw.simulator.nps.Nps_autopilot_rotorcraft.*;
 import static sw.airborne.subsystems.ins.ins_float_invariant.*;
 import static sw.airborne.subsystems.ins.ins_int.*;
 import static sw.airborne.modules.vehicle_interface.vi_overo_link.*;
-import static sw.airborne.modules.vehicle_interface.vi_overo_link.*;
+//import static sw.airborne.modules.vehicle_interface.vi_overo_link.*;
 
 public class Main {
 
@@ -264,13 +264,13 @@ public class Main {
 
 	}
 
-	/*public static void on_accel_event( ) {
+	public static void on_accel_event( ) {
 		ImuScaleAccel(imu);
 
 		if (ahrs.status != AHRS_UNINIT) {
 			ahrs_update_accel();
 		}
-	}*/
+	}
 
 	public static void on_gyro_event() {
 
@@ -324,6 +324,7 @@ public class Main {
 		
 	}*/
 
+	
 	
 
 }

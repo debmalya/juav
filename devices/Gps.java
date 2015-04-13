@@ -19,7 +19,7 @@ public class Gps {
 	}
 	
 	/** initialize the global GPS state */
-	public void gps_init(){
+	public static void gps_init(){
 		gps.fix = GPS_FIX_NONE;
 		gps.week = 0;
 		gps.tow = 0;

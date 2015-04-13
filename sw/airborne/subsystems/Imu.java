@@ -2,7 +2,7 @@ package sw.airborne.subsystems;
 
 import static sw.airborne.math.Pprz_algebra.*;
 import static sw.airborne.math.Pprz_algebra_int.*;
-
+//import static sw.airborne.subsystems.imu.Imu_nps.*;
 public class Imu {
 	
 	public static ImuState imu = new ImuState();
@@ -25,6 +25,16 @@ public class Imu {
 	private static final long IMU_GYRO_P_SENS_DEN = 1000;
 	private static final long IMU_GYRO_Q_SENS_DEN = 1000;
 	private static final long IMU_GYRO_R_SENS_DEN = 1000;
+	public static double IMU_ACCEL_X_SENS =37.91;
+	public static int IMU_ACCEL_X_SENS_NUM= 3791;
+	public static int IMU_ACCEL_X_SENS_DEN= 100;
+	public static double IMU_ACCEL_Y_SENS =37.91;
+	public static int IMU_ACCEL_Y_SENS_NUM =3791;
+	public static int IMU_ACCEL_Y_SENS_DEN =100;
+	public static double IMU_ACCEL_Z_SENS =39.24;
+	public static int IMU_ACCEL_Z_SENS_NUM =3924;
+	public static int IMU_ACCEL_Z_SENS_DEN =100;
+	
 	public static boolean accel_available;
 	public static boolean gyro_available;
 	
@@ -57,10 +67,10 @@ public class Imu {
 		}
 	
 	public static void ImuScaleAccel(ImuState imu){
-//		 VECT3_COPY(imu.accel_prev, imu.accel);				
-//		    imu.accel.x = ((imu.accel_unscaled.x - imu.accel_neutral.x)*IMU_ACCEL_X_SIGN*IMU_ACCEL_X_SENS_NUM)/IMU_ACCEL_X_SENS_DEN; 
-//		    imu.accel.y = ((imu.accel_unscaled.y - imu.accel_neutral.y)*IMU_ACCEL_Y_SIGN*IMU_ACCEL_Y_SENS_NUM)/IMU_ACCEL_Y_SENS_DEN; 
-//		    imu.accel.z = ((imu.accel_unscaled.z - imu.accel_neutral.z)*IMU_ACCEL_Z_SIGN*IMU_ACCEL_Z_SENS_NUM)/IMU_ACCEL_Z_SENS_DEN; 
+		 VECT3_COPY(imu.accel_prev, imu.accel);				
+		    imu.accel.x = ((imu.accel_unscaled.x - imu.accel_neutral.x)*IMU_ACCEL_X_SENS_NUM)/IMU_ACCEL_X_SENS_DEN; 
+		    imu.accel.y = ((imu.accel_unscaled.y - imu.accel_neutral.y)*IMU_ACCEL_Y_SENS_NUM)/IMU_ACCEL_Y_SENS_DEN; 
+		    imu.accel.z = ((imu.accel_unscaled.z - imu.accel_neutral.z)*IMU_ACCEL_Z_SENS_NUM)/IMU_ACCEL_Z_SENS_DEN; 
 	}
 	
 	public static void ImuScaleGyro(){

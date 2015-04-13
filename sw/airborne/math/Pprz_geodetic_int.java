@@ -9,6 +9,7 @@ import static sw.airborne.math.Pprz_geodetic.*;
 public class Pprz_geodetic_int {
 	
 	public static final int HIGH_RES_TRIG_FRAC  = 20;
+	private static final boolean USE_DOUBLE_PRECISION_TRIG = false;
 	
 	public static double M_OF_CM(double cm){
 		return cm/1e2;
@@ -77,6 +78,47 @@ public class Pprz_geodetic_int {
 		out.alt = (int)MM_OF_M(out_d.alt);
 
 	}
+	public static void ltp_def_from_ecef_i( LtpDef_i def,  EcefCoor_i ecef) {
+
+		  /* store the origin of the tangeant plane */
+		  VECT3_COPY(def.ecef, ecef);
+		  /* compute the lla representation of the origin */
+		  lla_of_ecef_i(def.lla, def.ecef);
+		  /* store the rotation matrix                    */
+		  ltp_of_ecef_rmat_from_lla_i(def.ltp_of_ecef, def.lla);
+
+		}
+	public static void ltp_of_ecef_rmat_from_lla_i( Int32Mat33 ltp_of_ecef,  LlaCoor_i lla) {
+		int cos_lat;
+		int sin_lon;
+		int cos_lon;
+		 int sin_lat;
+		if( USE_DOUBLE_PRECISION_TRIG)
+		
+		  { sin_lat = (int)(BFP_OF_REAL(Math.sin(RAD_OF_EM7RAD((double)lla.lat)), HIGH_RES_TRIG_FRAC));
+		   cos_lat = (int)(BFP_OF_REAL(Math.cos(RAD_OF_EM7RAD((double)lla.lat)), HIGH_RES_TRIG_FRAC));
+		   sin_lon = (int)(BFP_OF_REAL(Math.sin(RAD_OF_EM7RAD((double)lla.lon)), HIGH_RES_TRIG_FRAC));
+		   cos_lon = (int)(BFP_OF_REAL(Math.cos(RAD_OF_EM7RAD((double)lla.lon)), HIGH_RES_TRIG_FRAC));
+		  }else
+		  { sin_lat = (int)(BFP_OF_REAL(Math.sin(RAD_OF_EM7RAD((float)lla.lat)), HIGH_RES_TRIG_FRAC));
+		   cos_lat = (int)(BFP_OF_REAL(Math.cos(RAD_OF_EM7RAD((float)lla.lat)), HIGH_RES_TRIG_FRAC));
+		   sin_lon = (int)(BFP_OF_REAL(Math.sin(RAD_OF_EM7RAD((float)lla.lon)), HIGH_RES_TRIG_FRAC));
+		   cos_lon = (int)(BFP_OF_REAL(Math.cos(RAD_OF_EM7RAD((float)lla.lon)), HIGH_RES_TRIG_FRAC));
+		  }
+
+		  
+		ltp_of_ecef.m[0] = -sin_lon;
+		  
+		ltp_of_ecef.m[1] =  cos_lon;
+		  ltp_of_ecef.m[2] =  0; /* this element is always zero http://en.wikipedia.org/wiki/Geodetic_system#From_ECEF_to_ENU */
+		  ltp_of_ecef.m[3] = (int)((-(float)sin_lat*(float)cos_lon))>>HIGH_RES_TRIG_FRAC;
+		  ltp_of_ecef.m[4] = (int)((-(float)sin_lat*(float)sin_lon))>>HIGH_RES_TRIG_FRAC;
+		  
+		ltp_of_ecef.m[5] =  cos_lat;
+		  ltp_of_ecef.m[6] = (int)(( (float)cos_lat*(float)cos_lon))>>HIGH_RES_TRIG_FRAC;
+		  ltp_of_ecef.m[7] = (int)(( (float)cos_lat*(float)sin_lon))>>HIGH_RES_TRIG_FRAC;
+		  ltp_of_ecef.m[8] =  sin_lat;
+		}
 
 	public static void ecef_of_lla_i( EcefCoor_i out,  LlaCoor_i in) {
 
