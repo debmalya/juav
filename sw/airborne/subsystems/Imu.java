@@ -8,9 +8,9 @@ public class Imu {
 	public static ImuState imu = new ImuState();
 	public static ImuFloat imuf = new ImuFloat();
 	
-	public static final long IMU_BODY_TO_IMU_PHI = 0;
-	public static final long IMU_BODY_TO_IMU_THETA = 0;
-	public static final long IMU_BODY_TO_IMU_PSI = 0;
+	public static final long IMU_BODY_TOimu_PHI = 0;
+	public static final long IMU_BODY_TOimu_THETA = 0;
+	public static final long IMU_BODY_TOimu_PSI = 0;
 	
 	public static final long IMU_GYRO_P_NEUTRAL = 0;
 	public static final long IMU_GYRO_Q_NEUTRAL = 0;
@@ -19,6 +19,12 @@ public class Imu {
 	public static final long IMU_ACCEL_X_NEUTRAL = 0;
 	public static final long IMU_ACCEL_Y_NEUTRAL = 0;
 	public static final long IMU_ACCEL_Z_NEUTRAL = 0;
+	private static final long IMU_GYRO_P_SENS_NUM = 4359;
+	private static final long IMU_GYRO_Q_SENS_NUM = 4359;
+	private static final long IMU_GYRO_R_SENS_NUM = 4359;
+	private static final long IMU_GYRO_P_SENS_DEN = 1000;
+	private static final long IMU_GYRO_Q_SENS_DEN = 1000;
+	private static final long IMU_GYRO_R_SENS_DEN = 1000;
 	public static boolean accel_available;
 	public static boolean gyro_available;
 	
@@ -50,18 +56,19 @@ public class Imu {
 
 		}
 	
-	public static void ImuScaleAccel(ImuState _imu){
-//		 VECT3_COPY(_imu.accel_prev, _imu.accel);				
-//		    _imu.accel.x = ((_imu.accel_unscaled.x - _imu.accel_neutral.x)*IMU_ACCEL_X_SIGN*IMU_ACCEL_X_SENS_NUM)/IMU_ACCEL_X_SENS_DEN; 
-//		    _imu.accel.y = ((_imu.accel_unscaled.y - _imu.accel_neutral.y)*IMU_ACCEL_Y_SIGN*IMU_ACCEL_Y_SENS_NUM)/IMU_ACCEL_Y_SENS_DEN; 
-//		    _imu.accel.z = ((_imu.accel_unscaled.z - _imu.accel_neutral.z)*IMU_ACCEL_Z_SIGN*IMU_ACCEL_Z_SENS_NUM)/IMU_ACCEL_Z_SENS_DEN; 
+	public static void ImuScaleAccel(ImuState imu){
+//		 VECT3_COPY(imu.accel_prev, imu.accel);				
+//		    imu.accel.x = ((imu.accel_unscaled.x - imu.accel_neutral.x)*IMU_ACCEL_X_SIGN*IMU_ACCEL_X_SENS_NUM)/IMU_ACCEL_X_SENS_DEN; 
+//		    imu.accel.y = ((imu.accel_unscaled.y - imu.accel_neutral.y)*IMU_ACCEL_Y_SIGN*IMU_ACCEL_Y_SENS_NUM)/IMU_ACCEL_Y_SENS_DEN; 
+//		    imu.accel.z = ((imu.accel_unscaled.z - imu.accel_neutral.z)*IMU_ACCEL_Z_SIGN*IMU_ACCEL_Z_SENS_NUM)/IMU_ACCEL_Z_SENS_DEN; 
 	}
 	
-	public static void ImuScaleGyro(ImuState _imu){
-//		 RATES_COPY(_imu.gyro_prev, _imu.gyro);				
-//		    _imu.gyro.p = ((_imu.gyro_unscaled.p - _imu.gyro_neutral.p)*IMU_GYRO_P_SIGN*IMU_GYRO_P_SENS_NUM)/IMU_GYRO_P_SENS_DEN; 
-//		    _imu.gyro.q = ((_imu.gyro_unscaled.q - _imu.gyro_neutral.q)*IMU_GYRO_Q_SIGN*IMU_GYRO_Q_SENS_NUM)/IMU_GYRO_Q_SENS_DEN; 
-//		    _imu.gyro.r = ((_imu.gyro_unscaled.r - _imu.gyro_neutral.r)*IMU_GYRO_R_SIGN*IMU_GYRO_R_SENS_NUM)/IMU_GYRO_R_SENS_DEN; 
+	public static void ImuScaleGyro(){
+		RATES_COPY(imu.gyro_prev, imu.gyro);                              
+	    imu.gyro.p = ((imu.gyro_unscaled.p - imu.gyro_neutral.p) * IMU_GYRO_P_SENS_NUM) / IMU_GYRO_P_SENS_DEN; 
+	    imu.gyro.q = ((imu.gyro_unscaled.q - imu.gyro_neutral.q) * IMU_GYRO_Q_SENS_NUM) / IMU_GYRO_Q_SENS_DEN; 
+	    imu.gyro.r = ((imu.gyro_unscaled.r - imu.gyro_neutral.r) * IMU_GYRO_R_SENS_NUM) / IMU_GYRO_R_SENS_DEN; 
+	  
 	}
 	
 	public static void ImuScaleMag(){

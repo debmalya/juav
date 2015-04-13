@@ -5,9 +5,12 @@ import static sw.airborne.subsystems.Imu.*;
 import static sw.airborne.subsystems.ImuFloat.*;
 import static sw.airborne.subsystems.Gps.*;
 import static sw.airborne.firmwares.rotorcraft.Autopilot.*;
-import static sw.airborne.subsystems.Ins.*;
+import static sw.airborne.subsystems.ahrs.arhs_gx3.*;
+import static sw.airborne.subsystems.ins.Ins.*;
 import static sw.airborne.subsystems.Ahrs.*;
-import static sw.airborne.subsystems.Ahrs_Aligner.*;
+import static sw.airborne.subsystems.ahrs.Ahrs_aligner.*;
+import static sw.airborne.subsystems.ahrs.Ahrs_sim.*;
+//import sw.airborne.subsystems.ahrs.Ahrs_aligner.*;
 import static sw.airborne.subsystems.Setting.*;
 import static sw.airborne.mcu_periph.Sys_time.*;
 import static sw.airborne.subsystems.datalink.Datalink.*;
@@ -15,33 +18,14 @@ import static sw.airborne.subsystems.datalink.Datalink.*;
 //import static sw.airborne.subsystems.Setting.*;
 //import static sw.airborne.subsystems.Setting.*;
 import static devices.Gps.*;
-//These have been left in C++ standard lets agree to replace them as imports when the interfaces or abstract classes have been written
-//#include "subsystems/commands.h"
-//#include "subsystems/actuators.h"
-//
-//
-//#include "subsystems/imu.h"
-//#include "subsystems/gps.h"
-//#include "subsystems/air_data.h"
-//
-//
-//#include "subsystems/electrical.h"
-//
-//#include "firmwares/rotorcraft/autopilot.h"
-//
-//
-//#include "firmwares/rotorcraft/stabilization.h"
-//#include "firmwares/rotorcraft/guidance.h"
-//
-//#include "subsystems/ahrs.h"
-//#include "subsystems/ahrs/ahrs_aligner.h"
-//#include "subsystems/ins.h"
-//
-//#include "state.h"
-//
-//#include "firmwares/rotorcraft/main.h"
+import sw.airborne.math.*;
 import sw.airborne.mcu_periph.Sys_time;
-
+import sw.airborne.subsystems.*;
+import static sw.simulator.nps.Nps_autopilot_rotorcraft.*;
+import static sw.airborne.subsystems.ins.ins_float_invariant.*;
+import static sw.airborne.subsystems.ins.ins_int.*;
+import static sw.airborne.modules.vehicle_interface.vi_overo_link.*;
+import static sw.airborne.modules.vehicle_interface.vi_overo_link.*;
 
 public class Main {
 
@@ -61,8 +45,12 @@ public class Main {
 	public static int electrical_tid;    ///< id for electrical_periodic() timer
 	public static int telemetry_tid;     ///< id for telemetry_periodic() timer
 
-	public static int baro_tid;          ///< id for baro_periodic() timer
-
+	public static int baro_tid; 
+	
+	//public static ImuState imu = new ImuState();
+	//public static Pprz_algebra pprz_algebra = new Pprz_algebra();
+	//public static Ahrs_aligner ahrs_aligner = new Ahrs_aligner();
+	
 	public static void main() {
 		main_init();
 
@@ -85,8 +73,8 @@ public class Main {
 		//if(USE_MOTOR_MIXING) motor_mixing_init();
 		
 
-		//radio_control_init();
-/*
+		
+		/*
 		air_data_init();
 		if(USE_BARO_BOARD) baro_init();
 	*/	
@@ -153,7 +141,7 @@ public class Main {
 		//imu_periodic();
 
 		/* run control loops */
-		autopilot_periodic();
+		Autopilot.autopilot_periodic();
 		/* set actuators     */
 		//actuators_set(autopilot_motors_on);
 	//	SetActuatorsFromCommands(commands, autopilot_mode);
@@ -193,6 +181,9 @@ public class Main {
 	public static final boolean FAILSAFE_GROUND_DETECT = false;
 	public static final boolean KILL_ON_GROUND_DETECT = false;
 	public static final boolean USE_VEHICLE_INTERFACE_DEFINED = false;
+	//private static final boolean SITL_DEFINED = false;
+	public static final boolean SITL = false;
+	public static final boolean USE_VEHICLE_INTERFACE = false;
 	
 
 /*	public static void failsafe_check() {
@@ -273,35 +264,42 @@ public class Main {
 
 	}
 
-	public static void on_accel_event( ) {
-		//ImuScaleAccel not completed please complete this --vasanth
+	/*public static void on_accel_event( ) {
 		ImuScaleAccel(imu);
 
 		if (ahrs.status != AHRS_UNINIT) {
 			ahrs_update_accel();
 		}
-	}
+	}*/
 
 	public static void on_gyro_event() {
-		//ImuScaleGyro not completed please complete this --vasanth
-		ImuScaleGyro(imu);
 
-		if (ahrs.status == AHRS_UNINIT) {
+		ImuScaleGyro();
+		
+		if(ahrs.status == AHRS_UNINIT) {
 			ahrs_aligner_run();
-			if (ahrs_aligner.status == AHRS_ALIGNER_LOCKED)
+			if(ahrs_aligner.status == AHRS_ALIGNER_LOCKED){
 				ahrs_align();
+			}
 		}
-		else {
-			ahrs_propagate();
-			if(SITL_DEFINED)
-				if (nps_bypass_ahrs) sim_overwrite_ahrs();
-			
-			ins_propagate();
+		else{
+		    ahrs_propagate();
+		    if(SITL){//????value
+		    	if(nps_bypass_ahrs){
+		    		sim_overwrite_ahrs();
+		    	}
+		    }
+		    else{
+		        ins_propagate();
+		    }
+		    
+		    if(USE_VEHICLE_INTERFACE){
+		    	  vi_notify_imu_available();
+		    }
 		}
-		if(USE_VEHICLE_INTERFACE_DEFINED)
-		vi_notify_imu_available();
-	
 	}
+	
+	
 
 	public static void on_gps_event() {
 		ahrs_update_gps();
@@ -326,9 +324,6 @@ public class Main {
 		
 	}*/
 
-	private static void vi_notify_gps_available() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 }

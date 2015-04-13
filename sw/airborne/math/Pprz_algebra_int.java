@@ -1,6 +1,7 @@
 package sw.airborne.math;
 
 import static sw.airborne.math.Pprz_algebra.*;
+import static sw.airborne.math.Pprz_algebra_int.INT32_TRIG_FRAC;
 import static sw.airborne.math.Pprz_trig_int.*;
 
 public class Pprz_algebra_int {
@@ -48,8 +49,10 @@ public class Pprz_algebra_int {
 	public static int BFP_OF_REAL(float _vr, int _frac) {  return (int)((_vr)*(1<<(_frac)));}
 	public static int BFP_OF_REAL(double _vr, int _frac) {  return (int)((_vr)*(1<<(_frac)));}
 	public static float FLOAT_OF_BFP( int _vbfp,int _frac){ return (float)(_vbfp)/(1<<(_frac));}
+	public static float FLOAT_OF_BFP( float _vbfp,int _frac){ return (float)(_vbfp)/(1<<(_frac));}
 	public static int RATE_BFP_OF_REAL(float _af)   {return BFP_OF_REAL((_af), INT32_RATE_FRAC);}
 	public static float RATE_FLOAT_OF_BFP(int _ai)  {return FLOAT_OF_BFP((_ai), INT32_RATE_FRAC);}
+	public static float RATE_FLOAT_OF_BFP(float _ai)  {return FLOAT_OF_BFP((_ai), INT32_RATE_FRAC);}
 	public static int ANGLE_BFP_OF_REAL(float _af)  {return BFP_OF_REAL((_af), INT32_ANGLE_FRAC);}
 	public static float ANGLE_FLOAT_OF_BFP(int _ai){return FLOAT_OF_BFP((_ai), INT32_ANGLE_FRAC);}
 	public static int TRIG_BFP_OF_REAL(float _tf) { return BFP_OF_REAL((_tf), INT32_TRIG_FRAC);}
@@ -66,9 +69,13 @@ public class Pprz_algebra_int {
 	public static int  SPEED_BFP_OF_REAL(double _af) {return BFP_OF_REAL((_af), INT32_SPEED_FRAC);}
 	public static float SPEED_FLOAT_OF_BFP(int _ai){return FLOAT_OF_BFP((_ai), INT32_SPEED_FRAC);}
 	public static int  ACCEL_BFP_OF_REAL(float _af) { return BFP_OF_REAL((_af), INT32_ACCEL_FRAC);}
+	public static int  ACCEL_BFP_OF_REAL(double _af) { return BFP_OF_REAL((_af), INT32_ACCEL_FRAC);}
 	public static float ACCEL_FLOAT_OF_BFP(int _ai) {return FLOAT_OF_BFP((_ai), INT32_ACCEL_FRAC);}
+	public static float ACCEL_FLOAT_OF_BFP(long _ai) {return FLOAT_OF_BFP((_ai), INT32_ACCEL_FRAC);}
+	
 	public static int  MAG_BFP_OF_REAL(float _af)   { return BFP_OF_REAL((_af), INT32_MAG_FRAC);}
 	public static float MAG_FLOAT_OF_BFP(int _ai)  {return FLOAT_OF_BFP((_ai), INT32_MAG_FRAC);}
+	
 	
 	public static int R_FRAC = 14;
 	public static int INT32_SQRT_MAX_ITER = 40;
@@ -462,4 +469,19 @@ public class Pprz_algebra_int {
 	    (_q).qz = INT_MULT_RSHIFT( c_phi2, c_th_s_ps, INT32_TRIG_FRAC + INT32_TRIG_FRAC - INT32_QUAT_FRAC) + 
 	              INT_MULT_RSHIFT(-s_phi2, s_th_c_ps, INT32_TRIG_FRAC + INT32_TRIG_FRAC - INT32_QUAT_FRAC);  
 	  }
+	
+	public static void INT32_RMAT_TRANSP_RATEMULT(Int32Rates _vb, Int32RMat _m_b2a, Int32Rates _va){
+		(_vb).p = ( (_m_b2a).m[0]*(_va).p + (_m_b2a).m[3]*(_va).q + (_m_b2a).m[6]*(_va).r)>>INT32_TRIG_FRAC; 
+	    (_vb).q = ( (_m_b2a).m[1]*(_va).p + (_m_b2a).m[4]*(_va).q + (_m_b2a).m[7]*(_va).r)>>INT32_TRIG_FRAC; 
+	    (_vb).r = ( (_m_b2a).m[2]*(_va).p + (_m_b2a).m[5]*(_va).q + (_m_b2a).m[8]*(_va).r)>>INT32_TRIG_FRAC; 
+	  
+		
+	}
+	
+	public static void INT32_RMAT_TRANSP_VMULT(Int32Vect3 _vb, Int32RMat _m_b2a, Int32Vect3 _va){
+		(_vb).x = ( (_m_b2a).m[0]*(_va).x + (_m_b2a).m[3]*(_va).y + (_m_b2a).m[6]*(_va).z)>>INT32_TRIG_FRAC; 
+	    (_vb).y = ( (_m_b2a).m[1]*(_va).x + (_m_b2a).m[4]*(_va).y + (_m_b2a).m[7]*(_va).z)>>INT32_TRIG_FRAC; 
+	    (_vb).z = ( (_m_b2a).m[2]*(_va).x + (_m_b2a).m[5]*(_va).y + (_m_b2a).m[8]*(_va).z)>>INT32_TRIG_FRAC; 
+		
+	}
 }

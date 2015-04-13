@@ -15,8 +15,7 @@ public class Imu_nps {
 		
 	}
 	
-	public static void ImuScaleGyro(){
-		
+	public static void ImuScaleGyro() {                                            
 	}
 	
 	public static void ImuScaleMag(){
