@@ -1,5 +1,7 @@
 package sw.airborne.math;
 
+import static sw.include.Std.*;
+
 public class Pprz_geodetic_utm {
 	public static final double E = 0.08181919106;
 	public static final double K0 = 0.9996;

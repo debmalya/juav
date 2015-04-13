@@ -392,6 +392,11 @@ public class Pprz_algebra {
 	    (_a).theta += (_b).theta;				
 	    (_a).psi   += (_b).psi;				
 	  }
+	public static void EULERS_ADD(Int32Eulers _a, Int32Eulers _b) {				
+		(_a).phi   += (_b).phi;				
+		(_a).theta += (_b).theta;				
+		(_a).psi   += (_b).psi;				
+	}
 
 	/* a += b */
 	public static void EULERS_SUB(DoubleEulers _a, DoubleEulers _b) {				
@@ -406,6 +411,12 @@ public class Pprz_algebra {
 	    (_c).theta = (_a).theta - (_b).theta;	
 	    (_c).psi   = (_a).psi   - (_b).psi;		
 	  }
+	/* c = a - b */
+	public static void EULERS_DIFF(Int32Eulers _c, Int32Eulers _a, Int32Eulers _b) {		
+		(_c).phi   = (_a).phi   - (_b).phi;		
+		(_c).theta = (_a).theta - (_b).theta;	
+		(_c).psi   = (_a).psi   - (_b).psi;		
+	}
 
 	/* _vo =  _vi * _s */
 	public static void EULERS_SMUL(DoubleEulers _eo, DoubleEulers _ei,double _s) {				
@@ -427,6 +438,12 @@ public class Pprz_algebra {
 	    (_v).theta = (_v).theta < (_min) ? (_min) : (_v).theta > (_max) ? (_max) : (_v).theta; 
 	    (_v).psi   = (_v).psi   < (_min) ? (_min) : (_v).psi   > (_max) ? (_max) : (_v).psi;   
 	  }
+	/* _v = Bound(_v, _min, _max) */
+	public static void EULERS_BOUND_CUBE(Int32Eulers _v, int _min, int _max) {				           
+		(_v).phi   = (_v).phi   < (_min) ? (_min) : (_v).phi   > (_max) ? (_max) : (_v).phi; 
+		(_v).theta = (_v).theta < (_min) ? (_min) : (_v).theta > (_max) ? (_max) : (_v).theta; 
+		(_v).psi   = (_v).psi   < (_min) ? (_min) : (_v).psi   > (_max) ? (_max) : (_v).psi;   
+	}
 
 	//
 	//

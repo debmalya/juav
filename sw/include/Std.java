@@ -20,6 +20,10 @@ public class Std {
 		return ((x >> b) & 0x1) == 1;
 	}
 	
+	public static double RadOfDeg(int x){
+		return ((x) * (M_PI/180.));
+	}
+	
 	public static int _BV(int bit){
 		return (1 << (bit));
 	}
