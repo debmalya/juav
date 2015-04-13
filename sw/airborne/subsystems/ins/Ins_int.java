@@ -1,4 +1,5 @@
 package sw.airborne.subsystems.ins;
+
 import sw.airborne.math.*;
 import static sw.airborne.subsystems.Imu.*;
 import static sw.airborne.math.Pprz_algebra_int.*;
@@ -7,7 +8,8 @@ import static sw.airborne.subsystems.ins.vf_float.*;
 import static sw.airborne.subsystems.ins.hf_float.*;
 import static sw.simulator.nps.Nps_autopilot_rotorcraft.*;
 import static sw.airborne.firmwares.rotorcraft.Main.*;
-public class ins_int {
+
+public class Ins_int {
 	public static  boolean USE_HFF = false;//?????
 	public static boolean USE_NPS = false;
 	public static InsInt ins_impl = new InsInt();
@@ -68,6 +70,4 @@ public class ins_int {
 
 		  ins_ned_to_state();
 		}
-
-	
 }

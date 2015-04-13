@@ -5,8 +5,8 @@ import static sw.airborne.subsystems.Imu.*;
 import static sw.airborne.subsystems.ImuFloat.*;
 import static sw.airborne.subsystems.Gps.*;
 import static sw.airborne.firmwares.rotorcraft.Autopilot.*;
-import static sw.airborne.subsystems.ahrs.arhs_gx3.*;
-import static sw.airborne.subsystems.ins.Ins.*;
+//import static sw.airborne.subsystems.ahrs.arhs_gx3.*;
+import static sw.airborne.subsystems.ins.Ins_int.*;
 import static sw.airborne.subsystems.Ahrs.*;
 import static sw.airborne.subsystems.ahrs.Ahrs_aligner.*;
 import static sw.airborne.subsystems.ahrs.Ahrs_sim.*;
@@ -17,15 +17,18 @@ import static sw.airborne.subsystems.datalink.Datalink.*;
 //import static sw.airborne.subsystems.Setting.*;
 //import static sw.airborne.subsystems.Setting.*;
 //import static sw.airborne.subsystems.Setting.*;
-import static devices.Gps.*;
+import static sw.airborne.subsystems.gps.Gps_sim_nps.*;
+import static sw.airborne.subsystems.Gps.*;
 import sw.airborne.math.*;
 import sw.airborne.mcu_periph.Sys_time;
 import sw.airborne.subsystems.*;
 import static sw.simulator.nps.Nps_autopilot_rotorcraft.*;
 import static sw.airborne.subsystems.ins.ins_float_invariant.*;
-import static sw.airborne.subsystems.ins.ins_int.*;
-import static sw.airborne.modules.vehicle_interface.vi_overo_link.*;
-import static sw.airborne.modules.vehicle_interface.vi_overo_link.*;
+//import static sw.airborne.subsystems.ins.ins_int.*;
+//import static sw.airborne.modules.vehicle_interface.vi_overo_link.*; //TODO: do we need vehicle interface
+//import static sw.airborne.modules.vehicle_interface.vi_overo_link.*;
+import static sw.airborne.subsystems.Ins.*;
+import static sw.airborne.subsystems.ahrs.Ahrs_aligner.*;
 
 public class Main {
 
@@ -243,7 +246,7 @@ public class Main {
 		
 
 		if(USE_GPS){
-		//GpsEvent(on_gps_event);
+		//GpsEvent(on_gps_event); //TODO why?
 		if (gps_available) {                            
 		      gps.last_msg_ticks = Sys_time.nb_sec_rem;     
 		      gps.last_msg_time = Sys_time.nb_sec;          
@@ -264,13 +267,13 @@ public class Main {
 
 	}
 
-	/*public static void on_accel_event( ) {
+	public static void on_accel_event( ) {
 		ImuScaleAccel(imu);
 
 		if (ahrs.status != AHRS_UNINIT) {
 			ahrs_update_accel();
 		}
-	}*/
+	}
 
 	public static void on_gyro_event() {
 
@@ -279,11 +282,11 @@ public class Main {
 		if(ahrs.status == AHRS_UNINIT) {
 			ahrs_aligner_run();
 			if(ahrs_aligner.status == AHRS_ALIGNER_LOCKED){
-				ahrs_align();
+				sw.airborne.subsystems.ahrs.Ahrs_sim.ahrs_align();
 			}
 		}
 		else{
-		    ahrs_propagate();
+			sw.airborne.subsystems.ahrs.Ahrs_sim.ahrs_propagate();
 		    if(SITL){//????value
 		    	if(nps_bypass_ahrs){
 		    		sim_overwrite_ahrs();
@@ -293,9 +296,9 @@ public class Main {
 		        ins_propagate();
 		    }
 		    
-		    if(USE_VEHICLE_INTERFACE){
-		    	  vi_notify_imu_available();
-		    }
+//		    if(USE_VEHICLE_INTERFACE){
+//		    	  vi_notify_imu_available();
+//		    }
 		}
 	}
 	
@@ -304,9 +307,9 @@ public class Main {
 	public static void on_gps_event() {
 		ahrs_update_gps();
 		ins_update_gps();
-		if(USE_VEHICLE_INTERFACE_DEFINED)
-		if (gps.fix == 3)
-			vi_notify_gps_available();
+//		if(USE_VEHICLE_INTERFACE_DEFINED)
+//		if (gps.fix == 3)
+//			vi_notify_gps_available();
 		
 	}
 /*
