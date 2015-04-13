@@ -1,12 +1,22 @@
 package sw.airborne.math;
 
 import static sw.airborne.math.Pprz_algebra.*;
+import static sw.airborne.subsystems.Parameters.*;
+import sw.airborne.subsystems.ins.*;
 
 public class Pprz_algebra_float {
 	
 	public static final double M_SQRT2 =   1.41421356237309504880;
 	
 	public static  void FLOAT_VECT3_ZERO(DoubleVect3 _v) {
+		VECT3_ASSIGN(_v, 0., 0., 0.);
+	}
+	
+	public static  void FLOAT_VECT3_ZERO(FloatVect3 _v) {
+		VECT3_ASSIGN(_v, 0., 0., 0.);
+	}
+	
+	public static  void FLOAT_VECT3_ZERO(NedCoor_f _v) {
 		VECT3_ASSIGN(_v, 0., 0., 0.);
 	}
 	
@@ -235,5 +245,271 @@ public class Pprz_algebra_float {
 		(_q).qy =  c_phi2 * s_theta2 * c_psi2 + s_phi2 * c_theta2 * s_psi2; 
 		(_q).qz =  c_phi2 * c_theta2 * s_psi2 - s_phi2 * s_theta2 * c_psi2; 
 
+	}
+	
+	public static void FLOAT_VECT3_NORMALIZE(FloatVect3 _v){
+		float n = FLOAT_VECT3_NORM(_v);   
+	    FLOAT_VECT3_SMUL(_v, _v, 1./n);     
+	  
+	}
+	
+	public static float FLOAT_VECT3_NORM(FloatVect3 _v) {
+		return (float) Math.sqrt(FLOAT_VECT3_NORM2(_v));
+		}
+	
+	public static float FLOAT_VECT3_NORM2(FloatVect3 _v){
+		return (_v).x*(_v).x + (_v).y*(_v).y + (_v).z*(_v).z;
+		
+	}
+
+	public static void FLOAT_VECT3_SMUL(FloatVect3 _vo, FloatVect3 _vi, double _s){
+		VECT3_SMUL(_vo, _vi, _s);
+	}
+	public static void FLOAT_VECT3_SMUL(NedCoor_f _vo, NedCoor_f _vi, double _s){
+		VECT3_SMUL(_vo, _vi, _s);
+	}
+
+	public static void FLOAT_QUAT_NORMALIZE(FloatQuat _q) {        
+	    float qnorm = FLOAT_QUAT_NORM(_q);    
+	    if (qnorm > FLT_MIN) {                
+	      (_q).qi = (_q).qi / qnorm;          
+	      (_q).qx = (_q).qx / qnorm;          
+	      (_q).qy = (_q).qy / qnorm;          
+	      (_q).qz = (_q).qz / qnorm;          
+	    }                                     
+	  }
+	
+	public static float FLOAT_QUAT_NORM(FloatQuat _q) {
+		return (float) Math.sqrt(SQUARE((_q).qi) + SQUARE((_q).qx)+SQUARE((_q).qy) + SQUARE((_q).qz));
+    }
+	
+	public static void FLOAT_RMAT_VECT3_TRANSP_MUL(FloatVect3 _vout,
+			FloatRMat _rmat, FloatVect3 _vin){
+		RMAT_VECT3_TRANSP_MUL(_vout, _rmat, _vin);
+		
+	}
+	
+	 public static void FLOAT_QUAT_COMP_NORM_SHORTEST(FloatQuat _a2c, FloatQuat _a2b, FloatQuat _b2c) {       
+		    FLOAT_QUAT_COMP(_a2c, _a2b, _b2c);                  
+		    FLOAT_QUAT_WRAP_SHORTEST(_a2c);                 
+		    FLOAT_QUAT_NORMALIZE(_a2c);                     
+		  }
+
+	public static void FLOAT_QUAT_WRAP_SHORTEST(FloatQuat _q) {
+		// TODO Auto-generated method stub
+		
+		 if ((_q).qi < 0.)                                   
+	      QUAT_EXPLEMENTARY(_q,_q);                     
+		
+	}
+
+	public static void FLOAT_QUAT_COMP(FloatQuat _a2c, FloatQuat _a2b,
+			FloatQuat _b2c) {
+		// TODO Auto-generated method stub
+		
+		(_a2c).qi = (_a2b).qi*(_b2c).qi - (_a2b).qx*(_b2c).qx - (_a2b).qy*(_b2c).qy - (_a2b).qz*(_b2c).qz; 
+	    (_a2c).qx = (_a2b).qi*(_b2c).qx + (_a2b).qx*(_b2c).qi + (_a2b).qy*(_b2c).qz - (_a2b).qz*(_b2c).qy; 
+	    (_a2c).qy = (_a2b).qi*(_b2c).qy - (_a2b).qx*(_b2c).qz + (_a2b).qy*(_b2c).qi + (_a2b).qz*(_b2c).qx; 
+	    (_a2c).qz = (_a2b).qi*(_b2c).qz + (_a2b).qx*(_b2c).qy - (_a2b).qy*(_b2c).qx + (_a2b).qz*(_b2c).qi; 
+		
+	}
+	
+	public static void QUAT_EXPLEMENTARY(FloatQuat b, FloatQuat a) {    
+	    (b).qi = -(a).qi;               
+	    (b).qx = -(a).qx;               
+	    (b).qy = -(a).qy;               
+	    (b).qz = -(a).qz;               
+	  }
+	
+	public static void FLOAT_QUAT_ZERO(FloatQuat _q){
+		QUAT_ASSIGN(_q, 1., 0., 0., 0.);
+	}
+	
+	public static void FLOAT_RATES_ZERO(FloatRates _r) {          
+	    RATES_ASSIGN(_r, 0., 0., 0.);       
+	  }
+	
+	public static void FLOAT_QUAT_EXTRACT(FloatVect3 _vo, FloatQuat _qi){ 
+		QUAT_EXTRACT_Q(_vo, _qi);
+		
+	}
+	
+	public static float FLOAT_VECT3_DOT_PRODUCT(FloatVect3 _v1, FloatVect3 _v2){
+		return (_v1).x*(_v2).x + (_v1).y*(_v2).y + (_v1).z*(_v2).z;
+	}
+	
+	public static void FLOAT_VECT3_CROSS_PRODUCT(FloatVect3 _vo, FloatVect3 _v1, FloatVect3 _v2){
+		(_vo).x = (_v1).y*(_v2).z - (_v1).z*(_v2).y;            
+	    (_vo).y = (_v1).z*(_v2).x - (_v1).x*(_v2).z;            
+	    (_vo).z = (_v1).x*(_v2).y - (_v1).y*(_v2).x; 
+	}
+	
+	public static void FLOAT_VECT3_CROSS_PRODUCT(NedCoor_f _vo, FloatVect3 _v1, FloatVect3 _v2){
+		(_vo).x = (_v1).y*(_v2).z - (_v1).z*(_v2).y;            
+	    (_vo).y = (_v1).z*(_v2).x - (_v1).x*(_v2).z;            
+	    (_vo).z = (_v1).x*(_v2).y - (_v1).y*(_v2).x; 
+	}
+	
+	public static void FLOAT_VECT3_ADD(FloatVect3 _a, FloatVect3 _b){
+		VECT3_ADD(_a, _b);
+	}
+	
+	public static void FLOAT_VECT3_ADD(NedCoor_f _a, FloatVect3 _b){
+		VECT3_ADD(_a, _b);
+	}
+	
+	public static void FLOAT_QUAT_RMAT_N2B(FloatVect3 _n2b, FloatQuat _qi, FloatVect3 _vi){    
+        FloatQuat quatinv = new FloatQuat();                     
+        FloatVect3 quat3 = new FloatVect3();
+        FloatVect3 v1 = new FloatVect3();
+        FloatVect3 v2 = new FloatVect3();              
+        float qi;                                     
+        
+        FLOAT_QUAT_INVERT(quatinv, _qi);              
+        FLOAT_QUAT_NORMALIZE(quatinv);                
+        
+        FLOAT_QUAT_EXTRACT(quat3, quatinv);           
+        qi = - FLOAT_VECT3_DOT_PRODUCT(quat3, _vi);   
+        FLOAT_VECT3_CROSS_PRODUCT(v1, quat3, _vi);    
+        FLOAT_VECT3_SMUL(v2, _vi, (quatinv.qi)) ;     
+        FLOAT_VECT3_ADD(v2, v1);                      
+        
+        FLOAT_QUAT_EXTRACT(quat3, _qi);               
+        FLOAT_VECT3_CROSS_PRODUCT(_n2b, v2, quat3);   
+        FLOAT_VECT3_SMUL(v1, v2, (_qi).qi);           
+        FLOAT_VECT3_ADD(_n2b,v1);                     
+        FLOAT_VECT3_SMUL(v1, quat3, qi);              
+        FLOAT_VECT3_ADD(_n2b,v1);                     
+}
+	
+	public static void FLOAT_QUAT_RMAT_N2B(NedCoor_f _n2b, FloatQuat _qi, FloatVect3 _vi){    
+        FloatQuat quatinv = new FloatQuat();                     
+        FloatVect3 quat3 = new FloatVect3();
+        FloatVect3 v1 = new FloatVect3();
+        FloatVect3 v2 = new FloatVect3();              
+        float qi;                                     
+        
+        FLOAT_QUAT_INVERT(quatinv, _qi);              
+        FLOAT_QUAT_NORMALIZE(quatinv);                
+        
+        FLOAT_QUAT_EXTRACT(quat3, quatinv);           
+        qi = - FLOAT_VECT3_DOT_PRODUCT(quat3, _vi);   
+        FLOAT_VECT3_CROSS_PRODUCT(v1, quat3, _vi);    
+        FLOAT_VECT3_SMUL(v2, _vi, (quatinv.qi)) ;     
+        FLOAT_VECT3_ADD(v2, v1);                      
+        
+        FLOAT_QUAT_EXTRACT(quat3, _qi);               
+        FLOAT_VECT3_CROSS_PRODUCT(_n2b, v2, quat3);   
+        FLOAT_VECT3_SMUL(v1, v2, (_qi).qi);           
+        FLOAT_VECT3_ADD(_n2b,v1);                     
+        FLOAT_VECT3_SMUL(v1, quat3, qi);              
+        FLOAT_VECT3_ADD(_n2b,v1);                     
+}
+	
+	public static void FLOAT_QUAT_RMAT_B2N(FloatVect3 _b2n, FloatQuat _qi, FloatVect3 _vi){  
+        FloatQuat _quatinv = new FloatQuat();                
+        FLOAT_QUAT_INVERT(_quatinv, _qi);         
+        FLOAT_QUAT_NORMALIZE(_quatinv);           
+        FLOAT_QUAT_RMAT_N2B(_b2n, _quatinv, _vi); 
+        
+	}
+	
+	public static void FLOAT_QUAT_RMAT_B2N(NedCoor_f _b2n, FloatQuat _qi, FloatVect3 _vi){  
+        FloatQuat _quatinv = new FloatQuat();                
+        FLOAT_QUAT_INVERT(_quatinv, _qi);         
+        FLOAT_QUAT_NORMALIZE(_quatinv);           
+        FLOAT_QUAT_RMAT_N2B(_b2n, _quatinv, _vi); 
+        
+	}
+	
+	public static void FLOAT_QUAT_INVERT(FloatQuat _qo, FloatQuat _qi) 
+	{
+		QUAT_INVERT(_qo, _qi);
+		}
+	
+	public static void FLOAT_VECT3_DIFF(FloatVect3 _c, FloatVect3 _a, FloatVect3 _b){
+		VECT3_DIFF(_c, _a, _b);
+	}
+	
+	public static void FLOAT_VECT3_DIFF(FloatVect3 _c, NedCoor_f _a, NedCoor_f _b){
+		VECT3_DIFF(_c, _a, _b);
+	}
+	
+	public static void FLOAT_VECT3_COPY(FloatVect3 _a, FloatVect3 _b){
+		VECT3_COPY(_a, _b);
+	}
+	
+	public static void float_vect_zero(inv_state a, int n) {
+		a = new inv_state();
+	}
+	
+	public static void FLOAT_VECT3_ASSIGN(FloatVect3 _a, float _x, float _y, float _z){ 
+		VECT3_ASSIGN(_a, _x, _y, _z);
+	}
+	
+	public static void FLOAT_QUAT_ASSIGN(FloatQuat _qi, float _i, float _x, float _y, float _z){ 
+		QUAT_ASSIGN(_qi, _i, _x, _y, _z);
+	}
+	
+	public static void FLOAT_QUAT_SMUL(FloatQuat _qo, FloatQuat _qi, double _s) {
+		QUAT_SMUL(_qo, _qi, _s);
+	}
+	
+	public static void FLOAT_QUAT_VMUL_RIGHT(FloatQuat _mright, FloatQuat _qi, FloatVect3 _vi){ 
+        FloatVect3 quat3 = new FloatVect3();
+        FloatVect3 v1 = new FloatVect3();
+        FloatVect3 v2 = new FloatVect3();
+                  
+        float qi;                                     
+          
+        FLOAT_QUAT_EXTRACT(quat3, _qi);               
+        qi = - FLOAT_VECT3_DOT_PRODUCT(_vi, quat3);   
+        FLOAT_VECT3_CROSS_PRODUCT(v1, _vi, quat3);    
+        FLOAT_VECT3_SMUL(v2, _vi, (_qi.qi));          
+        FLOAT_VECT3_ADD(v2, v1);                      
+        FLOAT_QUAT_ASSIGN(_mright, qi, v2.x, v2.y, v2.z);
+	}
+	
+	public static void FLOAT_QUAT_VMUL_LEFT(FloatQuat _mleft, FloatQuat _qi, FloatVect3 _vi){ 
+        FloatVect3 quat3 = new FloatVect3();
+        FloatVect3 v1 = new FloatVect3();
+        FloatVect3 v2 = new FloatVect3();
+               
+        float qi;                                   
+        FLOAT_QUAT_EXTRACT(quat3, _qi);             
+        qi = - FLOAT_VECT3_DOT_PRODUCT(quat3, _vi); 
+        FLOAT_VECT3_CROSS_PRODUCT(v1, quat3, _vi);  
+        FLOAT_VECT3_SMUL(v2, _vi, (_qi.qi));        
+        FLOAT_VECT3_ADD(v2, v1);                    
+        FLOAT_QUAT_ASSIGN(_mleft, qi, v2.x, v2.y, v2.z);
+	}
+	
+	public static void FLOAT_QUAT_ADD(FloatQuat _qo, FloatQuat _qi) {QUAT_ADD(_qo, _qi);}
+	
+	public static void FLOAT_VECT3_SUM(NedCoor_f _a, NedCoor_f _b, FloatVect3 _c) {
+		// TODO Auto-generated method stub
+		VECT3_SUM(_a, _b, _c);
+		
+	}
+	
+	//
+	public static void float_vect_smul(inv_state o, inv_state a, double s,
+			int n) {
+		// TODO Auto-generated method stub
+		o = a;//*s;???
+		
+	}
+	
+	public static void float_vect_add(inv_state a, inv_state b, double n) {
+		// TODO Auto-generated method stub
+		a = b;//a+b;
+		
+	}
+	
+	public static void float_vect_sum(inv_state o, inv_state a, inv_state s,
+			int n) {
+		// TODO Auto-generated method stub
+		o = a;//*s;???
+		
 	}
 }

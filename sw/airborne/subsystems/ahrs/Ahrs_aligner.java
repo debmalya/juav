@@ -5,11 +5,14 @@ import static sw.airborne.math.Pprz_algebra_int.*;
 
 public class Ahrs_aligner {
 	
-	public static final int AHRS_UNINIT = 0;
-	public static final int AHRS_RUNNING = 1;
-	public static final int AHRS_LOCKED = 2;
+	//public static final int AHRS_UNINIT = 0;
+	//public static final int AHRS_RUNNING = 1;
+	//public static final int AHRS_LOCKED = 2;
 	
 	public static final int AHRS_ALIGNER_RUNNING = 1;
+	public static final int AHRS_ALIGNER_UNINIT = 0;
+	public static final int AHRS_ALIGNER_LOCKED = 2;
+
 	public static AhrsAligner ahrs_aligner = new AhrsAligner();
 
 	public static Int32Rates gyro_sum = new Int32Rates();

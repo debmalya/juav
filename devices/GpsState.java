@@ -6,12 +6,12 @@ public class GpsState {
 	public EcefCoor_i ecef_pos;    ///< position in ECEF in cm
 	public LlaCoor_i lla_pos;      ///< position in LLA (lat,lon: rad*1e7; alt: mm over ellipsoid)
 	public UtmCoor_i utm_pos;      ///< position in UTM (north,east: cm; alt: mm over ellipsoid)
-	public int hmsl;                  ///< height above mean sea level in mm
+	public long hmsl;                  ///< height above mean sea level in mm
 	public EcefCoor_i ecef_vel;    ///< speed ECEF in cm/s
 	public NedCoor_i ned_vel;      ///< speed NED in cm/s
-	public int gspeed;                ///< norm of 2d ground speed in cm/s
-	public int speed_3d;              ///< norm of 3d speed in cm/s
-	public int course;                ///< GPS course over ground in rad*1e7, [0, 2*Pi]*1e7 (CW/north)
+	public Long gspeed;                ///< norm of 2d ground speed in cm/s
+	public Long speed_3d;              ///< norm of 3d speed in cm/s
+	public Long course;                ///< GPS course over ground in rad*1e7, [0, 2*Pi]*1e7 (CW/north)
 	public int pacc;                 ///< position accuracy in cm
 	public int sacc;                 ///< speed accuracy in cm/s
 	public int cacc;                 ///< course accuracy in rad*1e7

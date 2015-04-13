@@ -255,5 +255,4 @@ public class Pprz_geodetic_float {
 		  ned_of_ecef_point_f(ned,def,ecef);
 		}
 	
-
-}
+	}

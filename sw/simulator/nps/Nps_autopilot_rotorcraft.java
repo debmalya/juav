@@ -1,83 +1,71 @@
 package sw.simulator.nps;
+
+import sw.airborne.math.FloatQuat;
+import sw.airborne.math.FloatRates;
+import sw.airborne.math.NedCoor_f;
+import static sw.airborne.math.Pprz_algebra.*;
+import static sw.airborne.State.*;
+
 import static sw.airborne.firmwares.rotorcraft.Main.*;
+import devices.Gps;
+import sw.airborne.subsystems.Imu;
 import sw.airborne.subsystems.actuators.motor_mixing.Motor_mixing;
+import static sw.simulator.nps.nps_fdm_jsbsim.*;
+
 public class Nps_autopilot_rotorcraft 
 {
+	public static boolean nps_bypass_ahrs;
+	public static boolean nps_bypass_ins;
+	//public static NpsFdm fdm = new NpsFdm();
+	
 	void nps_autopilot_run_step(double time) 
 	{
-		  if (nps_sensors_gps_available()) {
-		    gps_feed_value();
-		    main_event();
+		if (Imu.gyro_available) {
+			//we were using main_event() which in turn called gyro and accel event removed the extra step and called gyro and accel event directly
+			on_gyro_event();
+			on_accel_event();
 		  }
-
-		  if (nps_bypass_ahrs) {
-		    sim_overwrite_ahrs();
-		  }
-
-		  if (nps_bypass_ins) {
-		    sim_overwrite_ins();
+		  if (Gps.gps_available) {
+			  //we were using main_event() which in turn called gps event removed the extra step and called gps event directly
+			  on_gps_event();
 		  }
 
 		 handle_periodic_tasks();
 
-		  /* scale final motor commands to 0-1 for feeding the fdm */
-		  for (uint8_t i=0; i < NPS_COMMANDS_NB; i++)
-		    autopilot.commands[i] = (double)Motor_mixing.commands[i]/MAX_PPRZ;
+		  //We'll be using this compare the output between c and java autopilot
+		 int MAX_PPRZ = 9600;
+		  for (int  i=0; i < nps_autopilot.NPS_COMMANDS_NB; i++)
+			  nps_autopilot.commands[i] = (double)Motor_mixing.commands[i]/MAX_PPRZ;
+
+		}
+
+	
+	public static void sim_overwrite_ahrs() {
+
+		  FloatQuat quat_f = new FloatQuat();
+		  QUAT_COPY(quat_f, fdm.ltp_to_body_quat);
+		  stateSetNedToBodyQuat_f(quat_f);
+
+		  FloatRates rates_f = new FloatRates();
+		  RATES_COPY(rates_f, fdm.body_ecef_rotvel);
+		  stateSetBodyRates_f(rates_f);
 
 		}
 	
-	/*void main_period(){
-		this.autopilot_periodic();
-		if(){
-			static uint16_t prescaler = 0;			
-		    prescaler++;					
-		    if (prescaler >= 512) {			
-		      prescaler = 0;					
-		      { autopilot_flight_time++; datalink_time++; }						\
-		    }							
-		  
-		}
-		  static uint16_t prescaler = 0;			
-		    prescaler++;					
-		    if (prescaler >= 10) {			
-		      prescaler = 0;					
-		      {};						
-		    }							
-		  
+	public static void sim_overwrite_ins() {
+
+		  NedCoor_f ltp_pos = new NedCoor_f();
+		  VECT3_COPY(ltp_pos, fdm.ltpprz_pos);
+		  stateSetPositionNed_f(ltp_pos);
+
+		  NedCoor_f ltp_speed = new NedCoor_f();
+		  VECT3_COPY(ltp_speed, fdm.ltpprz_ecef_vel);
+		  stateSetSpeedNed_f(ltp_speed);
+
+		  NedCoor_f ltp_accel = new NedCoor_f();
+		  VECT3_COPY(ltp_accel, fdm.ltpprz_ecef_accel);
+		  stateSetAccelNed_f(ltp_accel);
+
 	}
-	void autopilot_periodic(){
-			
-		    static uint16_t prescaler = 0;			
-		    prescaler++;					
-		    if (prescaler >= (512 / 16)) {			
-		      prescaler = 0;					
-		     Navigation.compute_dist2_to_home();						
-		    }							
-		  }
-	 if (autopilot_in_flight) {
-		    if (too_far_from_home) {
-		      if (dist2_to_home > failsafe_mode_dist2)
-		       Autopilot.autopilot_set_mode(FAILSAFE_MODE_TOO_FAR_FROM_HOME);
-		      else
-		       Autopilot.autopilot_set_mode(AP_MODE_HOME);
-		    }
-	 	}
-	 if (autopilot_mode == AP_MODE_HOME) {
-		    RunOnceEvery(NAV_PRESCALER, nav_home());
-		  }
-		  else {
-		    // otherwise always call nav_periodic_task so that carrot is always updated in GCS for other modes
-		    RunOnceEvery(NAV_PRESCALER, nav_periodic_task());
-		  }
-	 Guidance_v.guidance_v_run( autopilot_in_flight );
-	  Guidance_h.guidance_h_run( autopilot_in_flight );
-	    }
-	//void compute_dist2_to_home(){
-		
-	//}
-void handle_periodic_tasks(){
-	if (sys_time_check_and_ack_timer(main_periodic_tid))
-	    this.main_periodic();
-}*/
 
 }

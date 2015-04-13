@@ -12,22 +12,22 @@ public class Ahrs_sim {
 		  ahrs_sim_available = false;
 	}
 	
-	public static void ahrs_align(){
-		/* Currently not really simulated
-		   * body and imu have the same frame and always set to true value from sim
-		   */
-
-		  update_ahrs_from_sim();
-
-		  ahrs.status = AHRS_RUNNING;
-	}
+//	public static void ahrs_align(){
+//		/* Currently not really simulated
+//		   * body and imu have the same frame and always set to true value from sim
+//		   */
+//
+//		  update_ahrs_from_sim();
+//
+//		  ahrs.status = AHRS_RUNNING;
+//	}
 	
-	public static void ahrs_propagate(){
-		  if (ahrs_sim_available) {
-			    update_ahrs_from_sim();
-			    ahrs_sim_available = false;
-			  }
-	}
+//	public static void ahrs_propagate(){
+//		  if (ahrs_sim_available) {
+//			    update_ahrs_from_sim();
+//			    ahrs_sim_available = false;
+//			  }
+//	}
 	
 	public static void update_ahrs_from_sim(){
 //		  struct FloatEulers ltp_to_imu_euler = { sim_phi, sim_theta, sim_psi };

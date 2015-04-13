@@ -282,4 +282,6 @@ public class Pprz_geodetic_int {
 	    (_o).alt = (int)MM_OF_M((_i).alt);       
 
 	  }
+	
+	
 }

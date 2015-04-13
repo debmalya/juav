@@ -4,7 +4,7 @@ import static sw.airborne.math.Pprz_algebra_int.*;
 public class Pprz_algebra {
 	
 	
-	public static void VECT2_ASSIGN(Int32Vect2 _a,int _x,int _y) {		
+	public static void VECT2_ASSIGN(Int32Vect2 _a,Long _x,Long _y) {		
 	    (_a).x = (_x);				
 	    (_a).y = (_y);				
 	  }
@@ -16,6 +16,10 @@ public class Pprz_algebra {
 	}
 	
 	public static int SQUARE(int _a){
+		return ((_a)*(_a));
+	}
+	
+	public static float SQUARE(float _a){
 		return ((_a)*(_a));
 	}
 
@@ -128,7 +132,7 @@ public class Pprz_algebra {
 		(_vo).x =  (_vi).x * (_s);			
 		(_vo).y =  (_vi).y * (_s);			
 	}
-	public static void VECT2_SMUL(Int32Vect2 _vo, EnuCoor_i _vi, int _s) {		
+	public static void VECT2_SMUL(Int32Vect2 _vo, EnuCoor_i _vi, Long _s) {		
 		(_vo).x =  (_vi).x * (_s);			
 		(_vo).y =  (_vi).y * (_s);			
 	}
@@ -170,7 +174,20 @@ public class Pprz_algebra {
 		(_a).y = (_y);				
 		(_a).z = (_z);				
 	}
-	public static void VECT3_ASSIGN(Int32Vect3 _a,int _x,int _y,int _z) {		
+	
+	public static void VECT3_ASSIGN(FloatVect3 _a,double _x,double _y,double _z) {		
+		(_a).x = (float) (_x);				
+		(_a).y = (float) (_y);				
+		(_a).z = (float) (_z);				
+	}
+	
+	public static void VECT3_ASSIGN(NedCoor_f _a,double _x,double _y,double _z) {		
+		(_a).x = (float) (_x);				
+		(_a).y = (float) (_y);				
+		(_a).z = (float) (_z);				
+	}
+	
+	public static void VECT3_ASSIGN(Int32Vect3 _a,long _x,long _y,long _z) {		
 		(_a).x = (_x);				
 		(_a).y = (_y);				
 		(_a).z = (_z);				
@@ -202,6 +219,12 @@ public class Pprz_algebra {
 	    (_a).y = (_b).y;				
 	    (_a).z = (_b).z;				
 	  }
+	
+	public static void VECT3_COPY(NedCoor_f _a,NedCoor_d _b) {        
+	    (_a).x = (float) (_b).x;				
+	    (_a).y = (float) (_b).y;				
+	    (_a).z = (float) (_b).z;				
+	  }
 	public static void VECT3_COPY(EcefCoor_i _a,EcefCoor_i _b) {        
 		(_a).x = (_b).x;				
 		(_a).y = (_b).y;				
@@ -215,6 +238,18 @@ public class Pprz_algebra {
 	    (_a).z += (_b).z;				
 	  }
 
+	public static void VECT3_ADD(FloatVect3 _a,FloatVect3 _b) {			
+	    (_a).x += (_b).x;				
+	    (_a).y += (_b).y;				
+	    (_a).z += (_b).z;				
+	  }
+	
+	public static void VECT3_ADD(NedCoor_f _a,FloatVect3 _b) {			
+	    (_a).x += (_b).x;				
+	    (_a).y += (_b).y;				
+	    (_a).z += (_b).z;				
+	  }
+	
 	public static void VECT3_ADD(EcefCoor_i _a, EcefCoor_i _b) {			
 		(_a).x += (_b).x;				
 		(_a).y += (_b).y;				
@@ -230,6 +265,12 @@ public class Pprz_algebra {
 
 	/* c = a + b */
 	public static void VECT3_SUM(DoubleVect3 _c,DoubleVect3 _a,DoubleVect3 _b) {                 
+	    (_c).x = (_a).x + (_b).x;			
+	    (_c).y = (_a).y + (_b).y;			
+	    (_c).z = (_a).z + (_b).z;			
+	  }
+	
+	public static void VECT3_SUM(NedCoor_f _c,NedCoor_f _a,FloatVect3 _b) {                 
 	    (_c).x = (_a).x + (_b).x;			
 	    (_c).y = (_a).y + (_b).y;			
 	    (_c).z = (_a).z + (_b).z;			
@@ -255,6 +296,19 @@ public class Pprz_algebra {
 	    (_c).y = (_a).y - (_b).y;			
 	    (_c).z = (_a).z - (_b).z;			
 	  }
+	
+	public static void VECT3_DIFF(FloatVect3 _c,FloatVect3 _a,FloatVect3 _b) {                
+	    (_c).x = (_a).x - (_b).x;			
+	    (_c).y = (_a).y - (_b).y;			
+	    (_c).z = (_a).z - (_b).z;			
+	  }
+	
+	public static void VECT3_DIFF(FloatVect3 _c,NedCoor_f _a,NedCoor_f _b) {                
+	    (_c).x = (_a).x - (_b).x;			
+	    (_c).y = (_a).y - (_b).y;			
+	    (_c).z = (_a).z - (_b).z;			
+	  }
+	
 	/* c = a - b */
 	public static void VECT3_DIFF(EcefCoor_i _c,EcefCoor_i _a,EcefCoor_i _b) {                
 		(_c).x = (_a).x - (_b).x;			
@@ -273,6 +327,19 @@ public class Pprz_algebra {
 	    (_vo).y =  (_vi).y * (_s);				
 	    (_vo).z =  (_vi).z * (_s);				
 	  }
+	
+	public static void VECT3_SMUL(FloatVect3 _vo,FloatVect3 _vi,double _s) {			
+	    (_vo).x =  (float) ((_vi).x * (_s));				
+	    (_vo).y =  (float) ((_vi).y * (_s));				
+	    (_vo).z =  (float) ((_vi).z * (_s));				
+	  }
+
+	public static void VECT3_SMUL(NedCoor_f _vo, NedCoor_f _vi,double _s) {			
+	    (_vo).x =  (float) ((_vi).x * (_s));				
+	    (_vo).y =  (float) ((_vi).y * (_s));				
+	    (_vo).z =  (float) ((_vi).z * (_s));				
+	  }
+
 	
 	public static void VECT3_SMUL(EnuCoor_i _vo,EnuCoor_i _vi,int _s) {			
 	    (_vo).x =  (_vi).x * (_s);				
@@ -457,7 +524,14 @@ public class Pprz_algebra {
 	    (_ra).q = (_q);				
 	    (_ra).r = (_r);				
 	  }
-	public static void RATES_ASSIGN(Int32Rates _ra, int _p, int _q, int _r) {		
+	
+	public static void RATES_ASSIGN(FloatRates _ra, double _p, double _q, double _r) {		
+	    (_ra).p = (float) (_p);				
+	    (_ra).q = (float) (_q);				
+	    (_ra).r = (float) (_r);				
+	  }
+	
+	public static void RATES_ASSIGN(Int32Rates _ra, Long _p, Long _q, Long _r) {		
 		(_ra).p = (_p);				
 		(_ra).q = (_q);				
 		(_ra).r = (_r);				
@@ -474,11 +548,25 @@ public class Pprz_algebra {
 	    (_a).q = (_b).q;				
 	    (_a).r = (_b).r;				
 	  }
+	
+	public static void RATES_COPY(FloatRates _a,DoubleRates _b) {			
+	    (_a).p = (float) (_b).p;				
+	    (_a).q = (float) (_b).q;				
+	    (_a).r = (float) (_b).r;				
+	  }
+	
 	public static void RATES_COPY(FloatRates _a,FloatRates _b) {			
 		(_a).p = (_b).p;				
 		(_a).q = (_b).q;				
 		(_a).r = (_b).r;				
 	}
+	
+	public static void RATES_COPY(FloatRates _a,Int32Rates _b) {			
+		(_a).p = (_b).p;				
+		(_a).q = (_b).q;				
+		(_a).r = (_b).r;				
+	}
+	
 	public static void RATES_COPY(Int32Rates _a,Int32Rates _b) {			
 		(_a).p = (_b).p;				
 		(_a).q = (_b).q;				
@@ -524,6 +612,13 @@ public class Pprz_algebra {
 	    (_c).q = (_a).q - (_b).q;			
 	    (_c).r = (_a).r - (_b).r;			
 	  }
+	
+	public static void RATES_DIFF(FloatRates _c, FloatRates _a, FloatRates  _b) {                
+	    (_c).p = (_a).p - (_b).p;			
+	    (_c).q = (_a).q - (_b).q;			
+	    (_c).r = (_a).r - (_b).r;			
+	  }
+	
 	public static void RATES_DIFF(Int32Rates _c, Int32Rates _a, Int32Rates  _b) {                
 		(_c).p = (_a).p - (_b).p;			
 		(_c).q = (_a).q - (_b).q;			
@@ -708,6 +803,13 @@ public class Pprz_algebra {
 	    (_q).qz = (_z);			    
 	  }
 
+	public static void QUAT_ASSIGN(FloatQuat _q, double _i,double _x, double _y,double _z) {   
+	    (_q).qi = (float) (_i);			    
+	    (_q).qx = (float) (_x);			    
+	    (_q).qy = (float) (_y);			    
+	    (_q).qz = (float) (_z);			    
+	  }
+	
 	/* _qc = _qa - _qc */
 	public static void QUAT_DIFF(DoubleQuat _qc,DoubleQuat  _qa,DoubleQuat _qb) {	    
 	    (_qc).qi = (_qa).qi - (_qb).qi;	    
@@ -722,6 +824,13 @@ public class Pprz_algebra {
 	    (_qo).qx = (_qi).qx;		    
 	    (_qo).qy = (_qi).qy;		    
 	    (_qo).qz = (_qi).qz;		    
+	  }
+	
+	public static void QUAT_COPY(FloatQuat _qo, DoubleQuat _qi) {	    
+	    (_qo).qi = (float) (_qi).qi;		    
+	    (_qo).qx = (float) (_qi).qx;		    
+	    (_qo).qy = (float) (_qi).qy;		    
+	    (_qo).qz = (float) (_qi).qz;		    
 	  }
 
 	public static void QUAT_COPY(FloatQuat _qo, FloatQuat _qi) {	    
@@ -757,9 +866,23 @@ public class Pprz_algebra {
 	    (_qo).qy = (_qi).qy * (_s);		    
 	    (_qo).qz = (_qi).qz * (_s);		    
 	  }
+	
+	public static void QUAT_SMUL(FloatQuat _qo, FloatQuat _qi, double _s) {	    
+	    (_qo).qi = (float) ((_qi).qi * (_s));		    
+	    (_qo).qx = (float) ((_qi).qx * (_s));		    
+	    (_qo).qy = (float) ((_qi).qy * (_s));		    
+	    (_qo).qz = (float) ((_qi).qz * (_s));		    
+	  }
 
 	/* _qo = _qo + _qi */
 	public static void QUAT_ADD(DoubleQuat _qo, DoubleQuat _qi) {		    
+	    (_qo).qi += (_qi).qi;		    
+	    (_qo).qx += (_qi).qx;		    
+	    (_qo).qy += (_qi).qy;		    
+	    (_qo).qz += (_qi).qz;		    
+	  }
+	
+	public static void QUAT_ADD(FloatQuat _qo, FloatQuat _qi) {		    
 	    (_qo).qi += (_qi).qi;		    
 	    (_qo).qx += (_qi).qx;		    
 	    (_qo).qy += (_qi).qy;		    
@@ -774,12 +897,25 @@ public class Pprz_algebra {
 	    (_qo).qz = -(_qi).qz;		    
 	  }
 
+	public static void QUAT_INVERT(FloatQuat _qo, FloatQuat _qi) {		    
+	    (_qo).qi =  (_qi).qi;		    
+	    (_qo).qx = -(_qi).qx;		    
+	    (_qo).qy = -(_qi).qy;		    
+	    (_qo).qz = -(_qi).qz;		    
+	  }
+
 	/* _vo=[ qx qy qz] */
 	public static void QUAT_EXTRACT_Q(DoubleVect3 _vo, DoubleQuat _qi) {  
 	  (_vo).x=(_qi).qx;                 
 	  (_vo).y=(_qi).qy;                 
 	  (_vo).z=(_qi).qz;                 
 	}
+
+	public static void QUAT_EXTRACT_Q(FloatVect3 _vo, FloatQuat _qi) {  
+		  (_vo).x=(_qi).qx;                 
+		  (_vo).y=(_qi).qy;                 
+		  (_vo).z=(_qi).qz;                 
+		}
 
 	/* _qo = _qo / _s */
 	public static void QUAT_SDIV(DoubleQuat _qo, DoubleQuat _qi, double _s) { 
@@ -843,6 +979,18 @@ public class Pprz_algebra {
 	  }
 
 	public static void RMAT_VECT3_TRANSP_MUL(DoubleVect3 _vout , DoubleRMat _rmat,DoubleVect3 _vin) {     
+	    (_vout).x = RMAT_ELMT((_rmat), 0, 0) * (_vin).x +	 
+	                RMAT_ELMT((_rmat), 1, 0) * (_vin).y +	 
+	                RMAT_ELMT((_rmat), 2, 0) * (_vin).z;	 
+	    (_vout).y = RMAT_ELMT((_rmat), 0, 1) * (_vin).x +    
+	                RMAT_ELMT((_rmat), 1, 1) * (_vin).y +    
+	                RMAT_ELMT((_rmat), 2, 1) * (_vin).z;	 
+	    (_vout).z = RMAT_ELMT((_rmat), 0, 2) * (_vin).x +	 
+	                RMAT_ELMT((_rmat), 1, 2) * (_vin).y +	 
+	                RMAT_ELMT((_rmat), 2, 2) * (_vin).z;	 
+	  }
+	
+	public static void RMAT_VECT3_TRANSP_MUL(FloatVect3 _vout , FloatRMat _rmat,FloatVect3 _vin) {     
 	    (_vout).x = RMAT_ELMT((_rmat), 0, 0) * (_vin).x +	 
 	                RMAT_ELMT((_rmat), 1, 0) * (_vin).y +	 
 	                RMAT_ELMT((_rmat), 2, 0) * (_vin).z;	 
@@ -956,6 +1104,18 @@ public class Pprz_algebra {
 	    (_rf).q = RATE_FLOAT_OF_BFP((_ri).q);		
 	    (_rf).r = RATE_FLOAT_OF_BFP((_ri).r);		
 	  }
+	
+	public static void RATES_FLOAT_OF_BFP(FloatVect3 _rf, Int32Rates _ri) {			
+	    (_rf).p = RATE_FLOAT_OF_BFP((_ri).p);		
+	    (_rf).q = RATE_FLOAT_OF_BFP((_ri).q);		
+	    (_rf).r = RATE_FLOAT_OF_BFP((_ri).r);		
+	  }
+	
+	public static void RATES_FLOAT_OF_BFP(FloatRates _rf, FloatRates _ri) {			
+	    (_rf).p = RATE_FLOAT_OF_BFP((_ri).p);		
+	    (_rf).q = RATE_FLOAT_OF_BFP((_ri).q);		
+	    (_rf).r = RATE_FLOAT_OF_BFP((_ri).r);		
+	  }
 
 	public static void RATES_BFP_OF_REAL(Int32Rates _ri,FloatRates _rf) {			
 	    (_ri).p = RATE_BFP_OF_REAL((_rf).p);		
@@ -1039,9 +1199,9 @@ public class Pprz_algebra {
 	    (_ef).z = ACCEL_BFP_OF_REAL((_ei).z);		
 	  }
 	public static void ACCELS_BFP_OF_REAL(NedCoor_i _ef,NedCoor_f _ei) {			
-		(_ef).x = ACCEL_BFP_OF_REAL((_ei).x);		
-		(_ef).y = ACCEL_BFP_OF_REAL((_ei).y);		
-		(_ef).z = ACCEL_BFP_OF_REAL((_ei).z);		
+		(_ef).x = (long) ACCEL_BFP_OF_REAL((_ei).x);		
+		(_ef).y = (long) ACCEL_BFP_OF_REAL((_ei).y);		
+		(_ef).z = (long) ACCEL_BFP_OF_REAL((_ei).z);		
 	}
 	public static void ACCELS_BFP_OF_REAL(EcefCoor_i _ef,EcefCoor_f _ei) {			
 		(_ef).x = ACCEL_BFP_OF_REAL((_ei).x);		
