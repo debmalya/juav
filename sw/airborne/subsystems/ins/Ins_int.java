@@ -3,6 +3,8 @@ package sw.airborne.subsystems.ins;
 import sw.airborne.math.*;
 import static sw.airborne.subsystems.Imu.*;
 import static sw.airborne.math.Pprz_algebra_int.*;
+import static sw.airborne.math.Pprz_geodetic_int.*;
+
 import static sw.airborne.State.*;
 import static sw.airborne.subsystems.ins.vf_float.*;
 import static sw.airborne.subsystems.ins.hf_float.*;
@@ -70,4 +72,35 @@ public class Ins_int {
 
 		  ins_ned_to_state();
 		}
+
+	public static void ins_init(){
+		if( USE_INS_NAV_INIT)
+		{ ins_init_origin_from_flightplan();
+		  ins_impl.ltp_initialized = true;
+		}else
+		  ins_impl.ltp_initialized  = false;
+		
+
+		  // Bind to BARO_ABS message
+		  AbiBindMsgBARO_ABS(INS_BARO_ID, baro_ev, baro_cb);
+		  ins_impl.baro_initialized = false;
+	}
+	public static void ins_init_origin_from_flightplan() {
+
+		   LlaCoor_i llh_nav0=new LlaCoor_i(); /* Height above the ellipsoid */
+		  llh_nav0.lat = INT32_RAD_OF_DEG(NAV_LAT0);
+		  llh_nav0.lon = INT32_RAD_OF_DEG(NAV_LON0);
+		  /* NAV_ALT0 = ground alt above msl, NAV_MSL0 = geoid-height (msl) over ellipsoid */
+		  llh_nav0.alt = NAV_ALT0 + NAV_MSL0;
+
+		   EcefCoor_i ecef_nav0=new EcefCoor_i();
+		  ecef_of_lla_i(ecef_nav0, llh_nav0);
+
+		  ltp_def_from_ecef_i(ins_impl.ltp_def, ecef_nav0);
+		  ins_impl.ltp_def.hmsl = NAV_ALT0;
+		  stateSetLocalOrigin_i(ins_impl.ltp_def);
+
+		}
+
+	
 }

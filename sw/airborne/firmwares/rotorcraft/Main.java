@@ -3,7 +3,7 @@ package sw.airborne.firmwares.rotorcraft;
 import static sw.airborne.State.*;
 import static sw.airborne.subsystems.Imu.*;
 import static sw.airborne.subsystems.ImuFloat.*;
-import static sw.airborne.subsystems.Gps.*;
+//import static sw.airborne.subsystems.Gps.*;
 import static sw.airborne.firmwares.rotorcraft.Autopilot.*;
 //import static sw.airborne.subsystems.ahrs.arhs_gx3.*;
 import static sw.airborne.subsystems.ins.Ins_int.*;
@@ -87,7 +87,7 @@ public class Main {
 		ahrs_aligner_init();
 		ahrs_init();
 
-		ins_init();
+		sw.airborne.subsystems.Ins.ins_init();
 
 		if(USE_GPS)	gps_init();
 		
@@ -327,6 +327,7 @@ public class Main {
 		
 	}*/
 
+	
 	
 
 }
