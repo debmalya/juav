@@ -102,4 +102,5 @@ public class Guidance_v_adapt {
 				(GUIDANCE_V_ADAPT_MAX_HOVER_THROTTLE * 9600));
 		Std.Bound(gv_adapt_X, min_out, max_out);
 	}
+
 }

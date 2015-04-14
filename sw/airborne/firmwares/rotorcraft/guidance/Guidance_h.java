@@ -18,7 +18,7 @@ import static sw.airborne.State.*;
 
 //import sw.airborne.math.*; 
 import sw.include.Std;
-//import static sw.airborne.math.Pprz_algebra_int.*;
+import static sw.airborne.math.Pprz_algebra_int.*;
 //import static sw.airborne.math.Pprz_algebra.*;
 import static sw.include.Std.*;
 import static sw.airborne.math.Pprz_geodetic.*;
@@ -107,53 +107,53 @@ public class Guidance_h {
 
 	public static void send_gh() {
 		 NedCoor_i pos = stateGetPositionNed_i();
-		DOWNLINK_SEND_GUIDANCE_H_INT(DefaultChannel, DefaultDevice,
-				guidance_h_pos_sp.x, guidance_h_pos_sp.y,
-				guidance_h_pos_ref.x, guidance_h_pos_ref.y,
-				(pos.x), (pos.y));
+//		DOWNLINK_SEND_GUIDANCE_H_INT(DefaultChannel, DefaultDevice,
+//				guidance_h_pos_sp.x, guidance_h_pos_sp.y,
+//				guidance_h_pos_ref.x, guidance_h_pos_ref.y,
+//				(pos.x), (pos.y));
 	}
 
 	public static void send_hover_loop() {
 		 NedCoor_i pos = stateGetPositionNed_i();
 		 NedCoor_i speed = stateGetSpeedNed_i();
 		 NedCoor_i accel = stateGetAccelNed_i();
-		DOWNLINK_SEND_HOVER_LOOP(DefaultChannel, DefaultDevice,
-				guidance_h_pos_sp.x,
-				guidance_h_pos_sp.y,
-				(pos.x), (pos.y),
-				(speed.x), (speed.y),
-				(accel.x), (accel.y),
-				guidance_h_pos_err.x,
-				guidance_h_pos_err.y,
-				guidance_h_speed_err.x,
-				guidance_h_speed_err.y,
-				guidance_h_trim_att_integrator.x,
-				guidance_h_trim_att_integrator.y,
-				guidance_h_cmd_earth.x,
-				guidance_h_cmd_earth.y,
-				guidance_h_heading_sp);
+//		DOWNLINK_SEND_HOVER_LOOP(DefaultChannel, DefaultDevice,
+//				guidance_h_pos_sp.x,
+//				guidance_h_pos_sp.y,
+//				(pos.x), (pos.y),
+//				(speed.x), (speed.y),
+//				(accel.x), (accel.y),
+//				guidance_h_pos_err.x,
+//				guidance_h_pos_err.y,
+//				guidance_h_speed_err.x,
+//				guidance_h_speed_err.y,
+//				guidance_h_trim_att_integrator.x,
+//				guidance_h_trim_att_integrator.y,
+//				guidance_h_cmd_earth.x,
+//				guidance_h_cmd_earth.y,
+//				guidance_h_heading_sp);
 	}
 
 	public static void send_href() {
-		DOWNLINK_SEND_GUIDANCE_H_REF_INT(DefaultChannel, DefaultDevice,
-				guidance_h_pos_sp.x, guidance_h_pos_ref.x,
-				guidance_h_speed_ref.x, guidance_h_accel_ref.x,
-				guidance_h_pos_sp.y, guidance_h_pos_ref.y,
-				guidance_h_speed_ref.y, guidance_h_accel_ref.y);
+//		DOWNLINK_SEND_GUIDANCE_H_REF_INT(DefaultChannel, DefaultDevice,
+//				guidance_h_pos_sp.x, guidance_h_pos_ref.x,
+//				guidance_h_speed_ref.x, guidance_h_accel_ref.x,
+//				guidance_h_pos_sp.y, guidance_h_pos_ref.y,
+//				guidance_h_speed_ref.y, guidance_h_accel_ref.y);
 	}
 
 	public static void send_tune_hover() {
-		DOWNLINK_SEND_ROTORCRAFT_TUNE_HOVER(DefaultChannel, DefaultDevice,
-				radio_control.values[RADIO_ROLL],
-				radio_control.values[RADIO_PITCH],
-				radio_control.values[RADIO_YAW],
-				stabilization_cmd[COMMAND_ROLL],
-				stabilization_cmd[COMMAND_PITCH],
-				stabilization_cmd[COMMAND_YAW],
-				stabilization_cmd[COMMAND_THRUST],
-				(stateGetNedToBodyEulers_i().phi),
-				(stateGetNedToBodyEulers_i().theta),
-				(stateGetNedToBodyEulers_i().psi));
+//		DOWNLINK_SEND_ROTORCRAFT_TUNE_HOVER(DefaultChannel, DefaultDevice,
+//				radio_control.values[RADIO_ROLL],
+//				radio_control.values[RADIO_PITCH],
+//				radio_control.values[RADIO_YAW],
+//				stabilization_cmd[COMMAND_ROLL],
+//				stabilization_cmd[COMMAND_PITCH],
+//				stabilization_cmd[COMMAND_YAW],
+//				stabilization_cmd[COMMAND_THRUST],
+//				(stateGetNedToBodyEulers_i().phi),
+//				(stateGetNedToBodyEulers_i().theta),
+//				(stateGetNedToBodyEulers_i().psi));
 	}
 
 	
@@ -168,20 +168,20 @@ public class Guidance_h {
 		INT_VECT2_ZERO(guidance_h_trim_att_integrator);
 		INT_EULERS_ZERO(guidance_h_rc_sp);
 		guidance_h_heading_sp = 0;
-		guidance_h_pgain = GUIDANCE_H_PGAIN;//hardcode TODO
-		guidance_h_igain = GUIDANCE_H_IGAIN;//hardcode TODO
-		guidance_h_dgain = GUIDANCE_H_DGAIN;//hardcode TODO
+		guidance_h_pgain = 50;// GUIDANCE_H_PGAIN;//hardcode TODO
+		guidance_h_igain = 20;//GUIDANCE_H_IGAIN;//hardcode TODO
+		guidance_h_dgain = 100;//GUIDANCE_H_DGAIN;//hardcode TODO
 		guidance_h_again = GUIDANCE_H_AGAIN;
 		guidance_h_vgain = GUIDANCE_H_VGAIN;
 		transition_percentage = 0;
 		transition_theta_offset = 0;
 
-		if(PERIODIC_TELEMETRY){
-			register_periodic_telemetry(DefaultPeriodic, "GUIDANCE_H_INT", send_gh);
-			register_periodic_telemetry(DefaultPeriodic, "HOVER_LOOP", send_hover_loop);
-			register_periodic_telemetry(DefaultPeriodic, "GUIDANCE_H_REF", send_href);
-			register_periodic_telemetry(DefaultPeriodic, "ROTORCRAFT_TUNE_HOVER", send_tune_hover);
-		}
+//		if(PERIODIC_TELEMETRY){
+//			register_periodic_telemetry(DefaultPeriodic, "GUIDANCE_H_INT", send_gh);
+//			register_periodic_telemetry(DefaultPeriodic, "HOVER_LOOP", send_hover_loop);
+//			register_periodic_telemetry(DefaultPeriodic, "GUIDANCE_H_REF", send_href);
+//			register_periodic_telemetry(DefaultPeriodic, "ROTORCRAFT_TUNE_HOVER", send_tune_hover);
+//		}
 	}
 
 
@@ -261,51 +261,51 @@ public class Guidance_h {
 	}
 
 
-	public static void guidance_h_read_rc(boolean  in_flight) {
-
-		switch ( guidance_h_mode ) {
-
-		case GUIDANCE_H_MODE_RC_DIRECT:
-			stabilization_none_read_rc();
-			break;
-
-		case GUIDANCE_H_MODE_RATE:
-			if(SWITCH_STICKS_FOR_RATE_CONTROL){
-			stabilization_rate_read_rc_switched_sticks();
-			}
-			else
-				stabilization_rate_read_rc();
-			
-			break;
-		case GUIDANCE_H_MODE_CARE_FREE:
-			stabilization_attitude_read_rc(in_flight, true, false);
-			break;
-		case GUIDANCE_H_MODE_FORWARD:
-			stabilization_attitude_read_rc(in_flight, false, true);
-			break;
-		case GUIDANCE_H_MODE_ATTITUDE:
-			stabilization_attitude_read_rc(in_flight, false, false);
-			break;
-		case GUIDANCE_H_MODE_HOVER:
-			stabilization_attitude_read_rc_setpoint_eulers(guidance_h_rc_sp, in_flight, false, false);
-			if(GUIDANCE_H_USE_SPEED_REF)
-			read_rc_setpoint_speed_i(guidance_h_speed_sp, in_flight);
-			
-			break;
-
-		case GUIDANCE_H_MODE_NAV:
-			if (radio_control.status == RC_OK) {
-				stabilization_attitude_read_rc_setpoint_eulers(guidance_h_rc_sp, in_flight, false, false);
-			}
-			else {
-				INT_EULERS_ZERO(guidance_h_rc_sp);
-			}
-			break;
-		default:
-			break;
-		}
-
-	}
+//	public static void guidance_h_read_rc(boolean  in_flight) {
+//
+//		switch ( guidance_h_mode ) {
+//
+//		case GUIDANCE_H_MODE_RC_DIRECT:
+//			stabilization_none_read_rc();
+//			break;
+//
+//		case GUIDANCE_H_MODE_RATE:
+//			if(SWITCH_STICKS_FOR_RATE_CONTROL){
+//			stabilization_rate_read_rc_switched_sticks();
+//			}
+//			else
+//				stabilization_rate_read_rc();
+//			
+//			break;
+//		case GUIDANCE_H_MODE_CARE_FREE:
+//			stabilization_attitude_read_rc(in_flight, true, false);
+//			break;
+//		case GUIDANCE_H_MODE_FORWARD:
+//			stabilization_attitude_read_rc(in_flight, false, true);
+//			break;
+//		case GUIDANCE_H_MODE_ATTITUDE:
+//			stabilization_attitude_read_rc(in_flight, false, false);
+//			break;
+//		case GUIDANCE_H_MODE_HOVER:
+//			stabilization_attitude_read_rc_setpoint_eulers(guidance_h_rc_sp, in_flight, false, false);
+//			if(GUIDANCE_H_USE_SPEED_REF)
+//			read_rc_setpoint_speed_i(guidance_h_speed_sp, in_flight);
+//			
+//			break;
+//
+//		case GUIDANCE_H_MODE_NAV:
+//			if (radio_control.status == RC_OK) {
+//				stabilization_attitude_read_rc_setpoint_eulers(guidance_h_rc_sp, in_flight, false, false);
+//			}
+//			else {
+//				INT_EULERS_ZERO(guidance_h_rc_sp);
+//			}
+//			break;
+//		default:
+//			break;
+//		}
+//
+//	}
 
 
 	public static void guidance_h_run(boolean  in_flight) {
@@ -520,33 +520,33 @@ public class Guidance_h {
 	}
 
 	/// read speed setpoint from RC
-	public static void read_rc_setpoint_speed_i( Int32Vect2 speed_sp, boolean in_flight) {
-		if (in_flight) {
-			// negative pitch is forward
-			int rc_x = -radio_control.values[RADIO_PITCH];
-			int rc_y = radio_control.values[RADIO_ROLL];
-			DeadBand(rc_x, MAX_PPRZ/20);
-			DeadBand(rc_y, MAX_PPRZ/20);
-
-			// convert input from MAX_PPRZ range to SPEED_BFP
-			int max_speed = SPEED_BFP_OF_REAL(GUIDANCE_H_REF_MAX_SPEED);
-			/// @todo calc proper scale while making sure a division by zero can't occur
-			//int rc_norm = sqrtf(rc_x * rc_x + rc_y * rc_y);
-			//int max_pprz = rc_norm * MAX_PPRZ / Max(abs(rc_x), abs(rc_y);
-			rc_x = rc_x * max_speed / MAX_PPRZ;
-			rc_y = rc_y * max_speed / MAX_PPRZ;
-
-			/* Rotate from body to NED frame by negative psi angle */
-			int psi = -stateGetNedToBodyEulers_i().psi;
-			int s_psi, c_psi;
-			s_psi = PPRZ_ITRIG_SIN(psi);
-			c_psi = PPRZ_ITRIG_COS(psi);
-			speed_sp.x = (int)(( (int)c_psi * rc_x + (int)s_psi * rc_y) >> INT32_TRIG_FRAC);
-			speed_sp.y = (int)((-(int)s_psi * rc_x + (int)c_psi * rc_y) >> INT32_TRIG_FRAC);
-		}
-		else {
-			speed_sp.x = 0;
-			speed_sp.y = 0;
-		}
-	}
+//	public static void read_rc_setpoint_speed_i( Int32Vect2 speed_sp, boolean in_flight) {
+//		if (in_flight) {
+//			// negative pitch is forward
+//			int rc_x = -radio_control.values[RADIO_PITCH];
+//			int rc_y = radio_control.values[RADIO_ROLL];
+//			DeadBand(rc_x, MAX_PPRZ/20);
+//			DeadBand(rc_y, MAX_PPRZ/20);
+//
+//			// convert input from MAX_PPRZ range to SPEED_BFP
+//			int max_speed = SPEED_BFP_OF_REAL(GUIDANCE_H_REF_MAX_SPEED);
+//			/// @todo calc proper scale while making sure a division by zero can't occur
+//			//int rc_norm = sqrtf(rc_x * rc_x + rc_y * rc_y);
+//			//int max_pprz = rc_norm * MAX_PPRZ / Max(abs(rc_x), abs(rc_y);
+//			rc_x = rc_x * max_speed / MAX_PPRZ;
+//			rc_y = rc_y * max_speed / MAX_PPRZ;
+//
+//			/* Rotate from body to NED frame by negative psi angle */
+//			int psi = -stateGetNedToBodyEulers_i().psi;
+//			int s_psi, c_psi;
+//			s_psi = PPRZ_ITRIG_SIN(psi);
+//			c_psi = PPRZ_ITRIG_COS(psi);
+//			speed_sp.x = (int)(( (int)c_psi * rc_x + (int)s_psi * rc_y) >> INT32_TRIG_FRAC);
+//			speed_sp.y = (int)((-(int)s_psi * rc_x + (int)c_psi * rc_y) >> INT32_TRIG_FRAC);
+//		}
+//		else {
+//			speed_sp.x = 0;
+//			speed_sp.y = 0;
+//		}
+//	}
 }

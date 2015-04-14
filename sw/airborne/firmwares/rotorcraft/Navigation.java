@@ -13,11 +13,13 @@ import static sw.airborne.math.Pprz_algebra_float.*;
 import static sw.airborne.math.Pprz_trig_int.*;
 import static sw.airborne.State.*;
 import static sw.airborne.firmwares.rotorcraft.guidance.Guidance_h_ref.*;
-
+import static sw.airborne.firmwares.rotorcraft.guidance.Guidance_h.*;
 import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_none.*;
 import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_rate.*;
 import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_rc_setpoint.*;
 import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_euler_int.*;
+import static sw.airborne.firmwares.rotorcraft.Autopilot.*;
+import static sw.airborne.subsystems.ins.Ins_int.*;
 
 public class Navigation {
 	public static final int VERTICAL_MODE_MANUAL=      0;
@@ -53,12 +55,12 @@ public class Navigation {
 	public static int  nav_heading, nav_course;
 	public static float nav_radius;
 	
-	public static final double DEFAULT_CIRCLE_RADIUS = 5;
+	public static final int DEFAULT_CIRCLE_RADIUS = 5;
 	
 	public static int vertical_mode;
 	public static int nav_throttle;
 	public static int nav_climb, nav_altitude, nav_flight_altitude;
-	float flight_altitude;
+	public static float flight_altitude;
 	
 	public static int CLOSE_TO_WAYPOINT = (15 << 8);
 	public static int CARROT_DIST = (12 << 8);
@@ -68,22 +70,22 @@ public class Navigation {
 	private static final int WP_HOME = 0;///???????????????? 
 	
 	public static void send_nav_status() {
-		DOWNLINK_SEND_ROTORCRAFT_NAV_STATUS(DefaultChannel, DefaultDevice,
-				block_time, stage_time,
-				nav_block, nav_stage,
-				horizontal_mode);
+//		DOWNLINK_SEND_ROTORCRAFT_NAV_STATUS(DefaultChannel, DefaultDevice,
+//				block_time, stage_time,
+//				nav_block, nav_stage,
+//				horizontal_mode);
 		if (horizontal_mode == HORIZONTAL_MODE_ROUTE) {
 			float sx = POS_FLOAT_OF_BFP(waypoints[nav_segment_start].x);
 			float sy = POS_FLOAT_OF_BFP(waypoints[nav_segment_start].y);
 			float ex = POS_FLOAT_OF_BFP(waypoints[nav_segment_end].x);
 			float ey = POS_FLOAT_OF_BFP(waypoints[nav_segment_end].y);
-			DOWNLINK_SEND_SEGMENT(DefaultChannel, DefaultDevice, sx, sy, ex, ey);
+			//DOWNLINK_SEND_SEGMENT(DefaultChannel, DefaultDevice, sx, sy, ex, ey);
 		}
 		else if (horizontal_mode == HORIZONTAL_MODE_CIRCLE) {
 			float cx = POS_FLOAT_OF_BFP(waypoints[nav_circle_centre].x);
 			float cy = POS_FLOAT_OF_BFP(waypoints[nav_circle_centre].y);
-			float r = POS_FLOAT_OF_BFP((nav_circle_radius);
-			DOWNLINK_SEND_CIRCLE(DefaultChannel, DefaultDevice, cx, cy, r);
+			float r = POS_FLOAT_OF_BFP(nav_circle_radius);
+			//DOWNLINK_SEND_CIRCLE(DefaultChannel, DefaultDevice, cx, cy, r);
 		}
 	}
 	
@@ -91,11 +93,11 @@ public class Navigation {
 	public static void send_wp_moved() {
 		//static int i;
 		i_send_wp_moved++; if (i_send_wp_moved >= nb_waypoint) i_send_wp_moved = 0;
-		DOWNLINK_SEND_WP_MOVED_ENU(DefaultChannel, DefaultDevice,
-				i_send_wp_moved,
-				(waypoints[i].x),
-				(waypoints[i].y),
-				(waypoints[i].z));
+//		DOWNLINK_SEND_WP_MOVED_ENU(DefaultChannel, DefaultDevice,
+//				i_send_wp_moved,
+//				(waypoints[i].x),
+//				(waypoints[i].y),
+//				(waypoints[i].z));
 	}
 	
 	public static void nav_init() {
@@ -133,10 +135,10 @@ public class Navigation {
 		too_far_from_home = false;
 		dist2_to_home = 0;
 
-		if(PERIODIC_TELEMETRY){
-			register_periodic_telemetry(DefaultPeriodic, "ROTORCRAFT_NAV_STATUS", send_nav_status);
-			register_periodic_telemetry(DefaultPeriodic, "WP_MOVED", send_wp_moved);
-		}
+//		if(PERIODIC_TELEMETRY){
+//			register_periodic_telemetry(DefaultPeriodic, "ROTORCRAFT_NAV_STATUS", send_nav_status);
+//			register_periodic_telemetry(DefaultPeriodic, "WP_MOVED", send_wp_moved);
+//		}
 	}
 	
 	public static void nav_advance_carrot() {
@@ -149,7 +151,7 @@ public class Navigation {
 		VECT2_STRIM(path_to_waypoint, -(1<<15), (1<<15));
 
 		int dist_to_waypoint;
-		INT32_VECT2_NORM(dist_to_waypoint, path_to_waypoint);
+		dist_to_waypoint = INT32_VECT2_NORM(dist_to_waypoint, path_to_waypoint);
 
 		if (dist_to_waypoint < CLOSE_TO_WAYPOINT) {
 			VECT2_COPY(navigation_carrot, navigation_target);
@@ -174,7 +176,21 @@ public class Navigation {
 			// store last qdr
 			int last_qdr = nav_circle_qdr;
 			// compute qdr
-			INT32_ATAN2(nav_circle_qdr, pos_diff.y, pos_diff.x);
+			//INT32_ATAN2(nav_circle_qdr, pos_diff.y, pos_diff.x);
+			 int c1 = INT32_ANGLE_PI_4;        
+		     int c2 = 3 * INT32_ANGLE_PI_4;        
+		     int abs_y = Math.abs(pos_diff.y) + 1;          
+		    int r;                      
+		    if ( (pos_diff.x >= 0)) {                               
+		      r = (((pos_diff.x)-abs_y)<<R_FRAC) / ((pos_diff.x)+abs_y);    
+		      (nav_circle_qdr) = c1 - ((c1 * r)>>R_FRAC);               
+		    }                           
+		    else {                      
+		      r = (((pos_diff.x)+abs_y)<<R_FRAC) / (abs_y-(pos_diff.x));    
+		      (nav_circle_qdr) = c2 - ((c1 * r)>>R_FRAC);           
+		    }                           
+		    if ((pos_diff.y)<0)                     
+		      (nav_circle_qdr) = -(nav_circle_qdr);                 
 			// increment circle radians
 			if (nav_circle_radians != 0) {
 				int angle_diff = nav_circle_qdr - last_qdr;
@@ -189,14 +205,14 @@ public class Navigation {
 			// direction of rotation
 			int sign_radius = radius > 0 ? 1 : -1;
 			// absolute radius
-			int abs_radius = abs(radius);
+			int abs_radius = Math.abs(radius);
 			// carrot_angle
 			int carrot_angle = ((CARROT_DIST<<INT32_ANGLE_FRAC) / abs_radius);
 			Bound(carrot_angle, (INT32_ANGLE_PI / 16), INT32_ANGLE_PI_4);
 			carrot_angle = nav_circle_qdr - sign_radius * carrot_angle;
 			int s_carrot, c_carrot;
-			PPRZ_ITRIG_SIN(s_carrot, carrot_angle);
-			PPRZ_ITRIG_COS(c_carrot, carrot_angle);
+			s_carrot = PPRZ_ITRIG_SIN(carrot_angle);
+			c_carrot = PPRZ_ITRIG_COS( carrot_angle);
 			// compute setpoint
 			VECT2_ASSIGN(pos_diff, abs_radius * c_carrot, abs_radius * s_carrot);
 			INT32_VECT2_RSHIFT(pos_diff, pos_diff, INT32_TRIG_FRAC);
@@ -215,11 +231,12 @@ public class Navigation {
 		INT32_VECT2_RSHIFT(wp_diff,wp_diff,INT32_POS_FRAC);
 		INT32_VECT2_RSHIFT(pos_diff,pos_diff,INT32_POS_FRAC);
 		int leg_length2 = Max((wp_diff.x * wp_diff.x + wp_diff.y * wp_diff.y),1);
-		INT32_SQRT(nav_leg_length,leg_length2);
+		//INT32_SQRT(nav_leg_length,leg_length2);
+		nav_leg_length =(int) Math.sqrt(leg_length2);//TODO: change here
 		nav_leg_progress = (pos_diff.x * wp_diff.x + pos_diff.y * wp_diff.y) / nav_leg_length;
-		int32_t progress = Max((CARROT_DIST >> INT32_POS_FRAC), 0);
+		int progress = Max((CARROT_DIST >> INT32_POS_FRAC), 0);
 		nav_leg_progress += progress;
-		int32_t prog_2 = nav_leg_length;// + progress / 2;
+		int prog_2 = nav_leg_length;// + progress / 2;
 		Bound(nav_leg_progress, 0, prog_2);
 		Int32Vect2 progress_pos;
 		VECT2_SMUL(progress_pos, wp_diff, nav_leg_progress);
@@ -241,7 +258,7 @@ public class Navigation {
 		horizontal_mode = HORIZONTAL_MODE_ROUTE;
 	}
 	
-	public static boolean nav_approaching_from(int wp_idx, int from_idx, int approaching_time) {
+	public static boolean nav_approaching_from(int wp_idx, int from_idx, double approaching_time) {
 		int dist_to_point;
 		Int32Vect2 diff;
 		EnuCoor_i pos = stateGetPositionEnu_i();
@@ -286,7 +303,7 @@ public class Navigation {
 	private static int wp_entry_time = 0;
 	private static boolean wp_reached = false;
 	private static int wp_idx_last = 0;
-	public static boolean nav_check_wp_time(int wp_idx, int stay_time) {
+	public static boolean nav_check_wp_time(int wp_idx, double stay_time) {
 		int time_at_wp;
 		int dist_to_point;
 //		static int wp_entry_time = 0;
@@ -367,7 +384,7 @@ public class Navigation {
 	
 	// add   nav_run
 	public static void nav_run(){
-		if(Guidance_h.GUIDANCE_H_USE_REF){
+		if(GUIDANCE_H_USE_REF){
 			navigation_carrot.x=navigation_target.x;
 			navigation_carrot.y=navigation_target.y;
 		}else {nav_advance_carrot();}
@@ -391,8 +408,8 @@ public class Navigation {
 	public static void nav_move_waypoint(int wp_id,EnuCoor_i  new_pos) {
 		if (wp_id < nb_waypoint) {
 			INT32_VECT3_COPY(waypoints[wp_id],(new_pos));
-			DOWNLINK_SEND_WP_MOVED_ENU(DefaultChannel, DefaultDevice, wp_id, (new_pos.x),
-					(new_pos.y), (new_pos.z));
+//			DOWNLINK_SEND_WP_MOVED_ENU(DefaultChannel, DefaultDevice, wp_id, (new_pos.x),
+//					(new_pos.y), (new_pos.z));
 		}
 	}
 	
@@ -400,8 +417,8 @@ public class Navigation {
 	public static void navigation_update_wp_from_speed(int wp,Int16Vect3 speed_sp, int heading_rate_sp ) {
 		//  MY_ASSERT(wp < nb_waypoint); FIXME
 		int s_heading, c_heading;
-		PPRZ_ITRIG_SIN(s_heading, nav_heading);
-		PPRZ_ITRIG_COS(c_heading, nav_heading);
+		s_heading=PPRZ_ITRIG_SIN( nav_heading);
+		c_heading=PPRZ_ITRIG_COS( nav_heading);
 		// FIXME : scale POS to SPEED
 		Int32Vect3 delta_pos;
 		VECT3_SDIV(delta_pos, speed_sp, NAV_FREQ); /* fixme :make sure the division is really a >> */
@@ -418,7 +435,7 @@ public class Navigation {
 		TEN_PERIODIC_TASK++;					
 		if (TEN_PERIODIC_TASK >= 10) {			
 			TEN_PERIODIC_TASK = 0;					
-			DOWNLINK_SEND_WP_MOVED_ENU(DefaultChannel, DefaultDevice, wp, (waypoints[wp].x), (waypoints[wp].y), (waypoints[wp].z));					
+			//DOWNLINK_SEND_WP_MOVED_ENU(DefaultChannel, DefaultDevice, wp, (waypoints[wp].x), (waypoints[wp].y), (waypoints[wp].z));					
 		}	
 	}
 	
@@ -428,7 +445,7 @@ public class Navigation {
 		return true;
 	}
 	
-	public static boolean boolean nav_is_in_flight() {
+	public static boolean nav_is_in_flight() {
 		return autopilot_in_flight;
 	}
 	
@@ -533,7 +550,7 @@ public class Navigation {
 		  INT32_VECT3_COPY( navigation_target, waypoints[_wp]); 
 		}
 	
-	public static void  NavCircleWaypoint(double _center, double _radius) { 
+	public static void  NavCircleWaypoint(int _center, double _radius) { 
 		horizontal_mode = HORIZONTAL_MODE_CIRCLE; 
 		nav_circle(_center, POS_BFP_OF_REAL(_radius)); 
 	}
@@ -541,7 +558,8 @@ public class Navigation {
 	public static double NavCircleCount() {return (Math.abs(nav_circle_radians) / INT32_ANGLE_2_PI);}
 	
 	public static int NavCircleQdr() { 
-		int qdr = INT32_DEG_OF_RAD(INT32_ANGLE_2_PI_2 - nav_circle_qdr) >> INT32_ANGLE_FRAC; 
+		//int qdr = INT32_DEG_OF_RAD(INT32_ANGLE_2_PI_2 - nav_circle_qdr) >> INT32_ANGLE_FRAC; TODO: where is this defined 
+		int qdr;
 		NormCourse(qdr); 
 		return qdr;
 	}
@@ -551,7 +569,7 @@ public class Navigation {
 	public static void NavCourseCloseTo(double x) {}
 	
 	/*********** Navigation along a line *************************************/
-	public static void NavSegment(double _start, double _end){
+	public static void NavSegment(int _start, int _end){
 		horizontal_mode = HORIZONTAL_MODE_ROUTE; 
 		  nav_route(_start, _end); 
 	}
@@ -566,13 +584,13 @@ public class Navigation {
 	}
 	
 	/** Proximity tests on approaching a wp */
-	public static boolean nav_approaching_from(int wp_idx, int from_idx, int approaching_time){return false;}
+	//public static boolean nav_approaching_from(int wp_idx, int from_idx, int approaching_time){return false;}
 	public static boolean NavApproaching(int wp, double time){ return nav_approaching_from(wp, 0, time);}
 	public static boolean NavApproachingFrom(int wp, int from, double time) { return nav_approaching_from(wp, from, time);}
 	
 	/** Check the time spent in a radius of 'ARRIVED_AT_WAYPOINT' around a wp  */
-	public static boolean nav_check_wp_time(int wp_idx, int stay_time){return false;}
-	public static double NavCheckWaypointTime(int wp, double time) { return nav_check_wp_time(wp, time);}
+	//public static boolean nav_check_wp_time(int wp_idx, int stay_time){return false;}
+	public static boolean NavCheckWaypointTime(int wp, double time) { return nav_check_wp_time(wp, time);}
 	
 	/** Set the climb control to auto-throttle with the specified pitch
     pre-command */
@@ -598,7 +616,7 @@ public class Navigation {
 	}
 	
 	/** Set the vertical mode to fixed throttle with the specified setpoint */
-	public static void NavVerticalThrottleMode(double _throttle) { 
+	public static void NavVerticalThrottleMode(int _throttle) { 
 	  vertical_mode = VERTICAL_MODE_MANUAL;      
 	  nav_throttle = _throttle;                  
 	}
@@ -622,7 +640,7 @@ public class Navigation {
 
 
 	public static void navigation_SetFlightAltitude(double x) { 
-	  flight_altitude = x; 
+	  flight_altitude = (float) x; 
 	  nav_flight_altitude = POS_BFP_OF_REAL(flight_altitude) - ground_alt; 
 	}
 

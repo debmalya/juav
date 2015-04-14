@@ -80,7 +80,7 @@ public class Autopilot {
 	private static final int COMMAND_ROLL = 3;
 	private static boolean AUTOPILOT_DISABLE_AHRS_KILL_DEFINED = false;
 	//private static  boolean USE_GPS = false;
-	private static final boolean USE_MOTOR_MIXING = false;
+	private static boolean USE_MOTOR_MIXING = false;
 	private static final String DefaultChannel = null;
 	private static final String DefaultDevice = null;
 	private static final String MD5SUM = null;
@@ -219,7 +219,7 @@ public class Autopilot {
 	
 	
 	public static void send_alive(){
-		DOWNLINK_SEND_ALIVE(DefaultChannel, DefaultDevice, 16, MD5SUM);
+		//DOWNLINK_SEND_ALIVE(DefaultChannel, DefaultDevice, 16, MD5SUM);
 	}
 	
 	public static void send_status(){
@@ -238,14 +238,14 @@ public class Autopilot {
 		else fix = GPS_FIX_NONE;
 		
 		int time_sec = Sys_time.nb_sec;
-		DOWNLINK_SEND_ROTORCRAFT_STATUS(DefaultChannel, DefaultDevice,
-		      imu_nb_err, _motor_nb_err,
-		    //  radio_control.status, radio_control.frame_rate,
-		      fix, autopilot_mode,
-		      autopilot_in_flight, autopilot_motors_on,
-		      guidance_h_mode, guidance_v_mode,
-		     // electrical.vsupply,
-		      time_sec);
+//		DOWNLINK_SEND_ROTORCRAFT_STATUS(DefaultChannel, DefaultDevice,
+//		      imu_nb_err, _motor_nb_err,
+//		    //  radio_control.status, radio_control.frame_rate,
+//		      fix, autopilot_mode,
+//		      autopilot_in_flight, autopilot_motors_on,
+//		      guidance_h_mode, guidance_v_mode,
+//		     // electrical.vsupply,
+//		      time_sec);
 	}
 	
 //	public static void send_energy(){
@@ -257,22 +257,22 @@ public class Autopilot {
 	
 	public static void send_fp() {
 		  int carrot_up = -guidance_v_z_sp;
-		  DOWNLINK_SEND_ROTORCRAFT_FP(DefaultChannel, DefaultDevice,
-		      (stateGetPositionEnu_i().x),
-		      (stateGetPositionEnu_i().y),
-		      (stateGetPositionEnu_i().z),
-		      (stateGetSpeedEnu_i().x),
-		      (stateGetSpeedEnu_i().y),
-		      (stateGetSpeedEnu_i().z),
-		      (stateGetNedToBodyEulers_i().phi),
-		      (stateGetNedToBodyEulers_i().theta),
-		      (stateGetNedToBodyEulers_i().psi),
-		      guidance_h_pos_sp.y,
-		      guidance_h_pos_sp.x,
-		      carrot_up,
-		      guidance_h_heading_sp,
-		      stabilization_cmd[COMMAND_THRUST],
-		      autopilot_flight_time);
+//		  DOWNLINK_SEND_ROTORCRAFT_FP(DefaultChannel, DefaultDevice,
+//		      (stateGetPositionEnu_i().x),
+//		      (stateGetPositionEnu_i().y),
+//		      (stateGetPositionEnu_i().z),
+//		      (stateGetSpeedEnu_i().x),
+//		      (stateGetSpeedEnu_i().y),
+//		      (stateGetSpeedEnu_i().z),
+//		      (stateGetNedToBodyEulers_i().phi),
+//		      (stateGetNedToBodyEulers_i().theta),
+//		      (stateGetNedToBodyEulers_i().psi),
+//		      guidance_h_pos_sp.y,
+//		      guidance_h_pos_sp.x,
+//		      carrot_up,
+//		      guidance_h_heading_sp,
+//		      stabilization_cmd[COMMAND_THRUST],
+//		      autopilot_flight_time);
 		}
 	/*
 	public static void send_rc(){
@@ -296,19 +296,19 @@ public class Autopilot {
 	}
 	*/
 	public static void send_actuators() {
-		  DOWNLINK_SEND_ACTUATORS(DefaultChannel, DefaultDevice , ACTUATORS_NB, actuators);
+		 // DOWNLINK_SEND_ACTUATORS(DefaultChannel, DefaultDevice , ACTUATORS_NB, actuators);
 	}
 	
 	public static void send_dl_value() {
-		  PeriodicSendDlValue(DefaultChannel, DefaultDevice);
+		//  PeriodicSendDlValue(DefaultChannel, DefaultDevice);
 	}
 	
 	public static void send_rotorcraft_cmd() {
-		  DOWNLINK_SEND_ROTORCRAFT_CMD(DefaultChannel, DefaultDevice,
-		      stabilization_cmd[COMMAND_ROLL],
-		      stabilization_cmd[COMMAND_PITCH],
-		      stabilization_cmd[COMMAND_YAW],
-		      stabilization_cmd[COMMAND_THRUST]);
+//		  DOWNLINK_SEND_ROTORCRAFT_CMD(DefaultChannel, DefaultDevice,
+//		      stabilization_cmd[COMMAND_ROLL],
+//		      stabilization_cmd[COMMAND_PITCH],
+//		      stabilization_cmd[COMMAND_YAW],
+//		      stabilization_cmd[COMMAND_THRUST]);
 	}
 
 	
@@ -584,46 +584,46 @@ public class Autopilot {
 		autopilot_arming_set(autopilot_motors_on);
 	}
 
-	public static void autopilot_on_rc_frame(){
-
-		if (kill_switch_is_on()) {
-			autopilot_set_mode(AP_MODE_KILL);
-		}
-		else if ((autopilot_mode != AP_MODE_HOME) || (UNLOCKED_HOME_MODE_DEFINED && !too_far_from_home))
-		{
-			int new_autopilot_mode = 0;
-			//AP_MODE_OF_PPRZ(radio_control.values[RADIO_MODE], new_autopilot_mode);
-
-			
-			/* don't enter NAV mode if GPS is lost (this also prevents mode oscillations) */
-			if (USE_GPS && !(new_autopilot_mode == AP_MODE_NAV && GpsIsLost()))
-				autopilot_set_mode(new_autopilot_mode);
-			else
-				autopilot_set_mode(new_autopilot_mode);
-		}
-
-		/* if not in FAILSAFE or HOME mode check motor and in_flight status, read RC */
-		if (autopilot_mode != AP_MODE_FAILSAFE && autopilot_mode != AP_MODE_HOME) {
-
-			/* if there are some commands that should always be set from RC, do it */
-			if(SetAutoCommandsFromRC_DEFINED){
-				SetAutoCommandsFromRC(commands, radio_control.values);
-			}
-
-			/* if not in NAV_MODE set commands from the rc */
-			if(SetCommandsFromRC_DEFINED){
-				if (autopilot_mode != AP_MODE_NAV) {
-					SetCommandsFromRC(commands, radio_control.values);
-				}
-			}
-
-			/* an arming sequence is used to start/stop motors */
-			autopilot_arming_check_motors_on();
-			kill_throttle = ! autopilot_motors_on;
-
-			guidance_v_read_rc();
-			guidance_h_read_rc(autopilot_in_flight);
-		}
-
-	}
+//	public static void autopilot_on_rc_frame(){
+//		//if(kill_switch_is_on()){
+//		if (false) {
+//			autopilot_set_mode(AP_MODE_KILL);
+//		}
+//		else if ((autopilot_mode != AP_MODE_HOME) || (UNLOCKED_HOME_MODE_DEFINED && !too_far_from_home))
+//		{
+//			int new_autopilot_mode = 0;
+//			//AP_MODE_OF_PPRZ(radio_control.values[RADIO_MODE], new_autopilot_mode);
+//
+//			
+//			/* don't enter NAV mode if GPS is lost (this also prevents mode oscillations) */
+//			if (USE_GPS && !(new_autopilot_mode == AP_MODE_NAV && GpsIsLost()))
+//				autopilot_set_mode(new_autopilot_mode);
+//			else
+//				autopilot_set_mode(new_autopilot_mode);
+//		}
+//
+//		/* if not in FAILSAFE or HOME mode check motor and in_flight status, read RC */
+//		if (autopilot_mode != AP_MODE_FAILSAFE && autopilot_mode != AP_MODE_HOME) {
+//
+//			/* if there are some commands that should always be set from RC, do it */
+//			if(SetAutoCommandsFromRC_DEFINED){
+//				//SetAutoCommandsFromRC(commands, radio_control.values);
+//			}
+//
+//			/* if not in NAV_MODE set commands from the rc */
+//			if(SetCommandsFromRC_DEFINED){
+//				if (autopilot_mode != AP_MODE_NAV) {
+//					//SetCommandsFromRC(commands, radio_control.values);
+//				}
+//			}
+//
+//			/* an arming sequence is used to start/stop motors */
+//			autopilot_arming_check_motors_on();
+//			kill_throttle = ! autopilot_motors_on;
+//
+//			guidance_v_read_rc();
+//			guidance_h_read_rc(autopilot_in_flight);
+//		}
+//
+//	}
 }

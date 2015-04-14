@@ -325,5 +325,13 @@ public class Pprz_geodetic_int {
 
 	  }
 	
+	public static void ltp_def_from_lla_i(LtpDef_i def, LlaCoor_i lla){
+		  /* store the origin of the tangeant plane */
+		  LLA_COPY(def.lla, lla);
+		  /* compute the ecef representation of the origin */
+		  ecef_of_lla_i(def.ecef, def.lla);
+		  /* store the rotation matrix                    */
+		  ltp_of_ecef_rmat_from_lla_i(def.ltp_of_ecef, def.lla);
+	}
 	
 }

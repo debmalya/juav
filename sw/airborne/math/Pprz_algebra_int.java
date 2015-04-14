@@ -9,6 +9,28 @@ public class Pprz_algebra_int {
 		return (((_a)*(_b))>>(_r));
 	}
 	
+	public static int INT32_VECT2_NORM(int n, Int32Vect2 v){
+	    int n2 = (v).x*(v).x + (v).y*(v).y; 
+	    //INT32_SQRT(n, n2);   
+	    if ((n2) == 0)                                             
+	      (n) = 0;                                               
+	    else {                                                      
+	      int s1, s2;                                          
+	      int iter = 0;                                         
+	      s2 = n2;                                                 
+	      do {                                                      
+	        s1 = s2;                                                
+	        s2 = (n2) / s1;                                        
+	        s2 += s1;                                               
+	        s2 /= 2;                                                
+	        iter++;                                                 
+	      }                                                         
+	      while( ( (s1-s2) > 1) && (iter < INT32_SQRT_MAX_ITER));   
+	      (n) = s2;                                              
+	    }      
+	    return n;
+	}
+	
 	public static void INT32_VECT3_COPY(Int32Vect3 _a,Int32Vect3 _b){
 		(_a).x = (_b).x;				
 	    (_a).y = (_b).y;				
@@ -42,10 +64,14 @@ public class Pprz_algebra_int {
 //	#define INT32_SPEED_OF_CM_S 5242.88
 //	#define INT32_SPEED_OF_CM_S_NUM 41943
 //	#define INT32_SPEED_OF_CM_S_DEN 8
-
+	public static int INT32_PERCENTAGE_FRAC = 10;
 	public static int INT32_ACCEL_FRAC=10;
 	public static int INT32_MAG_FRAC =11;
 
+	public static int INT32_RAD_OF_DEG(double _deg){
+		return (int)(((long)(_deg) * 14964008)/857374503);
+	}	
+	
 	public static int BFP_OF_REAL(float _vr, int _frac) {  return (int)((_vr)*(1<<(_frac)));}
 	public static int BFP_OF_REAL(double _vr, int _frac) {  return (int)((_vr)*(1<<(_frac)));}
 	public static float FLOAT_OF_BFP( int _vbfp,int _frac){ return (float)(_vbfp)/(1<<(_frac));}
@@ -54,6 +80,7 @@ public class Pprz_algebra_int {
 	public static float RATE_FLOAT_OF_BFP(int _ai)  {return FLOAT_OF_BFP((_ai), INT32_RATE_FRAC);}
 	public static float RATE_FLOAT_OF_BFP(float _ai)  {return FLOAT_OF_BFP((_ai), INT32_RATE_FRAC);}
 	public static int ANGLE_BFP_OF_REAL(float _af)  {return BFP_OF_REAL((_af), INT32_ANGLE_FRAC);}
+	public static int ANGLE_BFP_OF_REAL(double _af)  {return BFP_OF_REAL((_af), INT32_ANGLE_FRAC);}
 	public static float ANGLE_FLOAT_OF_BFP(int _ai){return FLOAT_OF_BFP((_ai), INT32_ANGLE_FRAC);}
 	public static int TRIG_BFP_OF_REAL(float _tf) { return BFP_OF_REAL((_tf), INT32_TRIG_FRAC);}
 	public static int TRIG_BFP_OF_REAL(int _tf) { return BFP_OF_REAL((_tf), INT32_TRIG_FRAC);}
@@ -64,7 +91,9 @@ public class Pprz_algebra_int {
 	 public static float QUAT1_FLOAT_OF_BFP(int _qi) {return FLOAT_OF_BFP((_qi), INT32_QUAT_FRAC);}
 	
 	public static int  POS_BFP_OF_REAL(float _af) { return   BFP_OF_REAL((_af), INT32_POS_FRAC);}
+	public static int  POS_BFP_OF_REAL(double _af) { return   BFP_OF_REAL((_af), INT32_POS_FRAC);}
 	public static float POS_FLOAT_OF_BFP(int _ai)  { return FLOAT_OF_BFP((_ai), INT32_POS_FRAC);}
+	public static float POS_FLOAT_OF_BFP(long _ai)  { return FLOAT_OF_BFP((_ai), INT32_POS_FRAC);}
 	public static int  SPEED_BFP_OF_REAL(float _af) {return BFP_OF_REAL((_af), INT32_SPEED_FRAC);}
 	public static int  SPEED_BFP_OF_REAL(double _af) {return BFP_OF_REAL((_af), INT32_SPEED_FRAC);}
 	public static float SPEED_FLOAT_OF_BFP(int _ai){return FLOAT_OF_BFP((_ai), INT32_SPEED_FRAC);}
@@ -112,6 +141,11 @@ public class Pprz_algebra_int {
 	    (_o).y = ((_i).y >> (_r));       
 	    (_o).z = ((_i).z >> (_r));       
 	  }
+	public static void  INT32_VECT3_RSHIFT(Int32Vect3 _o,Int32Vect3 _i,int _r) { 
+		(_o).x = ((_i).x >> (_r));       
+		(_o).y = ((_i).y >> (_r));       
+		(_o).z = ((_i).z >> (_r));       
+	}
 	public static void INT32_COURSE_NORMALIZE(int _a) {                
 	    while ((_a) < 0) (_a) += INT32_ANGLE_2_PI;                  
 	    while ((_a) >= INT32_ANGLE_2_PI)  (_a) -= INT32_ANGLE_2_PI; 
