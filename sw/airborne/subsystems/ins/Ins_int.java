@@ -4,7 +4,7 @@ import sw.airborne.math.*;
 import static sw.airborne.subsystems.Imu.*;
 import static sw.airborne.math.Pprz_algebra_int.*;
 import static sw.airborne.math.Pprz_geodetic_int.*;
-
+import static sw.airborne.subsystems.Gps.*;
 import static sw.airborne.State.*;
 import static sw.airborne.subsystems.ins.vf_float.*;
 import static sw.airborne.subsystems.ins.hf_float.*;
@@ -15,20 +15,26 @@ public class Ins_int {
 	public static  boolean USE_HFF = false;//?????
 	public static boolean USE_NPS = false;
 	public static InsInt ins_impl = new InsInt();
-
+	public static int NAV_LAT0 = 434622300;//Generated value;
+	public static int NAV_LON0 = 14812805;//Generated value;
+	public static int NAV_ALT0 = 147000;//Generated value;
+	public static int NAV_MSL0 = 51850;//Generated value;
+	
+	public static boolean USE_INS_NAV_INIT = true;
+	
 	public static void ins_update_from_vff() {
-		  ins_impl.ltp_accel.z = (long) ACCEL_BFP_OF_REAL(vff.zdotdot);
-		  ins_impl.ltp_speed.z = (long) SPEED_BFP_OF_REAL(vff.zdot);
-		  ins_impl.ltp_pos.z   = (long) POS_BFP_OF_REAL(vff.z);
+		  ins_impl.ltp_accel.z =  ACCEL_BFP_OF_REAL(vff.zdotdot);
+		  ins_impl.ltp_speed.z =  SPEED_BFP_OF_REAL(vff.zdot);
+		  ins_impl.ltp_pos.z   =  POS_BFP_OF_REAL(vff.z);
 	}
 	
 	public static void ins_update_from_hff() {
-		  ins_impl.ltp_accel.x = (long) ACCEL_BFP_OF_REAL(b2_hff_state.xdotdot);
-		  ins_impl.ltp_accel.y = (long) ACCEL_BFP_OF_REAL(b2_hff_state.ydotdot);
-		  ins_impl.ltp_speed.x = (long) SPEED_BFP_OF_REAL(b2_hff_state.xdot);
-		  ins_impl.ltp_speed.y = (long) SPEED_BFP_OF_REAL(b2_hff_state.ydot);
-		  ins_impl.ltp_pos.x   = (long) POS_BFP_OF_REAL(b2_hff_state.x);
-		  ins_impl.ltp_pos.y   = (long) POS_BFP_OF_REAL(b2_hff_state.y);
+		  ins_impl.ltp_accel.x =  ACCEL_BFP_OF_REAL(b2_hff_state.xdotdot);
+		  ins_impl.ltp_accel.y =  ACCEL_BFP_OF_REAL(b2_hff_state.ydotdot);
+		  ins_impl.ltp_speed.x =  SPEED_BFP_OF_REAL(b2_hff_state.xdot);
+		  ins_impl.ltp_speed.y =  SPEED_BFP_OF_REAL(b2_hff_state.ydot);
+		  ins_impl.ltp_pos.x   =  POS_BFP_OF_REAL(b2_hff_state.x);
+		  ins_impl.ltp_pos.y   =  POS_BFP_OF_REAL(b2_hff_state.y);
 		}
 	
 	public static void ins_ned_to_state() {
@@ -82,7 +88,7 @@ public class Ins_int {
 		
 
 		  // Bind to BARO_ABS message
-		  AbiBindMsgBARO_ABS(INS_BARO_ID, baro_ev, baro_cb);
+		  //AbiBindMsgBARO_ABS(INS_BARO_ID, baro_ev, baro_cb); TODO What is this?
 		  ins_impl.baro_initialized = false;
 	}
 	public static void ins_init_origin_from_flightplan() {
@@ -101,6 +107,22 @@ public class Ins_int {
 		  stateSetLocalOrigin_i(ins_impl.ltp_def);
 
 		}
-
 	
+	public static void ins_reset_altitude_ref(){
+		LlaCoor_i lla = new LlaCoor_i();
+		lla.lon = state.ned_origin_i.lla.lon;
+		lla.lat = state.ned_origin_i.lla.lat;
+		lla.alt = gps.lla_pos.alt;
+		 ltp_def_from_lla_i(ins_impl.ltp_def, lla);
+		  ins_impl.ltp_def.hmsl = gps.hmsl;
+		  stateSetLocalOrigin_i(ins_impl.ltp_def);
+		  ins_impl.vf_reset = true;
+	}
+
+	public static void ins_reset_local_origin(){
+		  ins_impl.ltp_initialized = false;
+		  if(USE_HFF)  ins_impl.hf_realign = true;
+		    ins_impl.vf_reset = true;
+
+	}
 }

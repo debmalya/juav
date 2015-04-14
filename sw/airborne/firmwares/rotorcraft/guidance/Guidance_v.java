@@ -7,6 +7,7 @@ import static sw.airborne.firmwares.rotorcraft.Stabilization.*;
 import static sw.airborne.firmwares.rotorcraft.guidance.Guidance_v_ref.*;
 import static sw.airborne.firmwares.rotorcraft.guidance.Guidance_v_adapt.*;
 import sw.airborne.math.Int32RMat;
+import static sw.airborne.subsystems.datalink.telemetry.*;
 
 public class Guidance_v {
 	public static final int GUIDANCE_V_MODE_KILL     = 0;
@@ -23,28 +24,28 @@ public class Guidance_v {
 
 	//------------------------------guidance_v.c -----------------------------
 
-	public static boolean GUIDANCE_V_ADAPT_THROTTLE_ENABLED; 
-	public static double GUIDANCE_V_NOMINAL_HOVER_THROTTLE;
-	static{
-		if(!GUIDANCE_V_NOMINAL_HOVER_THROTLLE_DEFINED){
-			if(!GUIDANCE_V_ADAPT_THROTTLE_ENBALED_DEFINED){
-				GUIDANCE_V_ADAPT_THROTTLE_ENABLED =false;
-			}
-		}else{
-			GUIDANCE_V_NOMINAL_HOVER_THROTTLE = 0.4;
-			if(!GUIDANCE_V_ADAPT_THROTTLE_ENBALED_DEFINED){
-				GUIDANCE_V_ADAPT_THROTTLE_ENABLED =true;
-			}
-		}
-	}
+	public static boolean GUIDANCE_V_ADAPT_THROTTLE_ENABLED = false; 
+	public static double GUIDANCE_V_NOMINAL_HOVER_THROTTLE = 0.4;
+//	static{
+//		if(!GUIDANCE_V_NOMINAL_HOVER_THROTLLE_DEFINED){
+//			if(!GUIDANCE_V_ADAPT_THROTTLE_ENBALED_DEFINED){
+//				GUIDANCE_V_ADAPT_THROTTLE_ENABLED =false;
+//			}
+//		}else{
+//			GUIDANCE_V_NOMINAL_HOVER_THROTTLE = 0.4;
+//			if(!GUIDANCE_V_ADAPT_THROTTLE_ENBALED_DEFINED){
+//				GUIDANCE_V_ADAPT_THROTTLE_ENABLED =true;
+//			}
+//		}
+//	}
 
-	public static final double GUIDANCE_V_CLIMB_RC_DEADBAND =MAX_PPRZ/10;//9600
-	public static final int GUIDANCE_V_MAX_RC_CLIMB_SPEED =GUIDANCE_V_REF_MIN_ZD;
-	public static final int GUIDANCE_V_MAX_RC_DESCENT_SPEED =GUIDANCE_V_REF_MAX_ZD;
-	
-	private static final int COMMAND_THRUST = 0;
-	private static final boolean NO_RC_THRUST_LIMIT = false;
 	private static final int MAX_PPRZ = 9600;
+	public static final double GUIDANCE_V_CLIMB_RC_DEADBAND =MAX_PPRZ/10;//9600
+	public static final double GUIDANCE_V_MAX_RC_CLIMB_SPEED =GUIDANCE_V_REF_MIN_ZD;
+	public static final double GUIDANCE_V_MAX_RC_DESCENT_SPEED =GUIDANCE_V_REF_MAX_ZD;
+	
+	public static final int COMMAND_THRUST = 3;//TODO from generated airframe.h
+	private static final boolean NO_RC_THRUST_LIMIT = false;
 
 	public static int guidance_v_mode;
 	public static int guidance_v_ff_cmd;
@@ -80,28 +81,28 @@ public class Guidance_v {
 	}
 
 	public static void send_vert_loop() {
-		DOWNLINK_SEND_VERT_LOOP(DefaultChannel, DefaultDevice,
-				guidance_v_z_sp, guidance_v_zd_sp,
-				(stateGetPositionNed_i().z),
-				(stateGetSpeedNed_i().z),
-				(stateGetAccelNed_i().z),
-				guidance_v_z_ref, guidance_v_zd_ref,
-				guidance_v_zdd_ref,
-				gv_adapt_X,
-				gv_adapt_P,
-				gv_adapt_Xmeas,
-				guidance_v_z_sum_err,
-				guidance_v_ff_cmd,
-				guidance_v_fb_cmd,
-				guidance_v_delta_t);
+//		DOWNLINK_SEND_VERT_LOOP(DefaultChannel, DefaultDevice,
+//				guidance_v_z_sp, guidance_v_zd_sp,
+//				(stateGetPositionNed_i().z),
+//				(stateGetSpeedNed_i().z),
+//				(stateGetAccelNed_i().z),
+//				guidance_v_z_ref, guidance_v_zd_ref,
+//				guidance_v_zdd_ref,
+//				gv_adapt_X,
+//				gv_adapt_P,
+//				gv_adapt_Xmeas,
+//				guidance_v_z_sum_err,
+//				guidance_v_ff_cmd,
+//				guidance_v_fb_cmd,
+//				guidance_v_delta_t);
 	}
 
 	public static void send_tune_vert() {
-		DOWNLINK_SEND_TUNE_VERT(DefaultChannel, DefaultDevice,
-				guidance_v_z_sp,
-				(stateGetPositionNed_i().z),
-				guidance_v_z_ref,
-				guidance_v_zd_ref);
+//		DOWNLINK_SEND_TUNE_VERT(DefaultChannel, DefaultDevice,
+//				guidance_v_z_sp,
+//				(stateGetPositionNed_i().z),
+//				guidance_v_z_ref,
+//				guidance_v_zd_ref);
 	}
 
 
@@ -109,9 +110,9 @@ public class Guidance_v {
 
 		guidance_v_mode = GUIDANCE_V_MODE_KILL;
 
-		guidance_v_kp = GUIDANCE_V_HOVER_KP;
-		guidance_v_kd = GUIDANCE_V_HOVER_KD;
-		guidance_v_ki = GUIDANCE_V_HOVER_KI;
+		guidance_v_kp = 150;// in nps/generated/airframe.h GUIDANCE_V_HOVER_KP;
+		guidance_v_kd = 80 ;//GUIDANCE_V_HOVER_KD;
+		guidance_v_ki = 20;//GUIDANCE_V_HOVER_KI;
 
 		guidance_v_z_sum_err = 0;
 
@@ -120,31 +121,31 @@ public class Guidance_v {
 
 		gv_adapt_init();
 
-		if(PERIODIC_TELEMETRY){
-			register_periodic_telemetry(DefaultPeriodic, "VERT_LOOP", send_vert_loop);
-			register_periodic_telemetry(DefaultPeriodic, "TUNE_VERT", send_tune_vert);
-		}
+//		if(PERIODIC_TELEMETRY){
+//			register_periodic_telemetry(DefaultPeriodic, "VERT_LOOP", send_vert_loop);
+//			register_periodic_telemetry(DefaultPeriodic, "TUNE_VERT", send_tune_vert);
+//		}
 	}
 
 	private static int climb_scale; 
 	private static int descent_scale;
-	public static void guidance_v_read_rc() {
-
-		/* used in RC_DIRECT directly and as saturation in CLIMB and HOVER */
-		guidance_v_rc_delta_t = (int)radio_control.values[RADIO_THROTTLE];
-
-		/* used in RC_CLIMB */
-		guidance_v_rc_zd_sp = (MAX_PPRZ/2) - (int)radio_control.values[RADIO_THROTTLE];
-		DeadBand(guidance_v_rc_zd_sp, GUIDANCE_V_CLIMB_RC_DEADBAND);
-
-		climb_scale = (int) Math.abs(SPEED_BFP_OF_REAL(GUIDANCE_V_MAX_RC_CLIMB_SPEED) / (MAX_PPRZ/2 - GUIDANCE_V_CLIMB_RC_DEADBAND));
-		descent_scale = (int) Math.abs(SPEED_BFP_OF_REAL(GUIDANCE_V_MAX_RC_DESCENT_SPEED) / (MAX_PPRZ/2 - GUIDANCE_V_CLIMB_RC_DEADBAND));
-
-		if(guidance_v_rc_zd_sp > 0)
-			guidance_v_rc_zd_sp *= descent_scale;
-		else
-			guidance_v_rc_zd_sp *= climb_scale;
-	}
+//	public static void guidance_v_read_rc() {
+//
+//		/* used in RC_DIRECT directly and as saturation in CLIMB and HOVER */
+//		guidance_v_rc_delta_t = (int)radio_control.values[RADIO_THROTTLE];
+//
+//		/* used in RC_CLIMB */
+//		guidance_v_rc_zd_sp = (MAX_PPRZ/2) - (int)radio_control.values[RADIO_THROTTLE];
+//		DeadBand(guidance_v_rc_zd_sp, GUIDANCE_V_CLIMB_RC_DEADBAND);
+//
+//		climb_scale = (int) Math.abs(SPEED_BFP_OF_REAL(GUIDANCE_V_MAX_RC_CLIMB_SPEED) / (MAX_PPRZ/2 - GUIDANCE_V_CLIMB_RC_DEADBAND));
+//		descent_scale = (int) Math.abs(SPEED_BFP_OF_REAL(GUIDANCE_V_MAX_RC_DESCENT_SPEED) / (MAX_PPRZ/2 - GUIDANCE_V_CLIMB_RC_DEADBAND));
+//
+//		if(guidance_v_rc_zd_sp > 0)
+//			guidance_v_rc_zd_sp *= descent_scale;
+//		else
+//			guidance_v_rc_zd_sp *= climb_scale;
+//	}
 
 	public static void guidance_v_mode_changed(int new_mode) {
 
@@ -312,13 +313,16 @@ public class Guidance_v {
 		guidance_v_zdd_ref = gv_zdd_ref<<(INT32_ACCEL_FRAC - GV_ZDD_REF_FRAC);
 		/* compute the error to our reference */
 		int err_z  = guidance_v_z_ref - stateGetPositionNed_i().z;
-		Bound(err_z, GUIDANCE_V_MIN_ERR_Z, GUIDANCE_V_MAX_ERR_Z);
+		//Bound(err_z, GUIDANCE_V_MIN_ERR_Z, GUIDANCE_V_MAX_ERR_Z);
+		Bound(err_z, POS_BFP_OF_REAL(-10.), POS_BFP_OF_REAL(-10.));
 		int err_zd = guidance_v_zd_ref - stateGetSpeedNed_i().z;
-		Bound(err_zd, GUIDANCE_V_MIN_ERR_ZD, GUIDANCE_V_MAX_ERR_ZD);
+		//Bound(err_zd, GUIDANCE_V_MIN_ERR_ZD, GUIDANCE_V_MAX_ERR_ZD);
+		Bound(err_zd, SPEED_BFP_OF_REAL(-10.), SPEED_BFP_OF_REAL(10.));
 
 		if (in_flight) {
 			guidance_v_z_sum_err += err_z;
-			Bound(guidance_v_z_sum_err, -GUIDANCE_V_MAX_SUM_ERR, GUIDANCE_V_MAX_SUM_ERR);
+			//Bound(guidance_v_z_sum_err, -GUIDANCE_V_MAX_SUM_ERR, GUIDANCE_V_MAX_SUM_ERR);
+			Bound(guidance_v_z_sum_err, -2000000, 2000000);
 		}
 		else
 			guidance_v_z_sum_err = 0;

@@ -1,5 +1,9 @@
 package sw.airborne.firmwares.rotorcraft;
 
+import static sw.airborne.Paparazzi.*;
+import static sw.airborne.firmwares.rotorcraft.Autopilot.*;
+import static sw.airborne.firmwares.rotorcraft.Autopilot_rc_helpers.*;
+
 public class Autopilot_arming_switch {
 	public enum arming_state {
 		STATE_UNINIT,

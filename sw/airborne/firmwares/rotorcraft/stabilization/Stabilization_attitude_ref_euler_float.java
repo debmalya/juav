@@ -1,5 +1,16 @@
 package sw.airborne.firmwares.rotorcraft.stabilization;
 
+import sw.airborne.math.*; 
+import sw.include.Std;
+import static sw.airborne.math.Pprz_algebra_int.*;
+import static sw.airborne.math.Pprz_algebra.*;
+import static sw.include.Std.*;
+import static sw.airborne.math.Pprz_geodetic.*;
+import static sw.airborne.math.Pprz_orientation_conversion.*;
+import static sw.airborne.math.Pprz_geodetic_int.*;
+import static sw.airborne.math.Pprz_geodetic_float.*;
+import static sw.airborne.math.Pprz_algebra_float.*;
+
 public class Stabilization_attitude_ref_euler_float {
 	
 	public static FloatEulers stab_att_sp_euler;

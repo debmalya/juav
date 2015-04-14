@@ -1,7 +1,7 @@
 package sw.airborne.math;
 
 import static sw.airborne.math.Pprz_algebra.*;
-import static sw.airborne.subsystems.Parameters.*;
+//import static sw.airborne.subsystems.Parameters.*;
 import sw.airborne.subsystems.ins.*;
 
 public class Pprz_algebra_float {
@@ -44,6 +44,9 @@ public class Pprz_algebra_float {
 
 	
 	
+	public static float FLOAT_VECT2_NORM2(FloatVect2 _v){
+		return ((_v).x*(_v).x + (_v).y*(_v).y);
+	}
 	public static float FLOAT_VECT2_NORM2(NedCoor_f _v){
 		return ((_v).x*(_v).x + (_v).y*(_v).y);
 	}

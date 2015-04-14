@@ -12,6 +12,13 @@ import sw.airborne.math.*;
 import  sw.airborne.math.Int32Quat;
 import sw.airborne.math.Int32Vect2;
 import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_quat_transformations.*;
+import sw.include.Std;
+import static sw.airborne.math.Pprz_geodetic.*;
+import static sw.airborne.math.Pprz_orientation_conversion.*;
+import static sw.airborne.math.Pprz_geodetic_int.*;
+import static sw.airborne.math.Pprz_geodetic_float.*;
+import static sw.airborne.math.Pprz_algebra_float.*;
+
 public class Stabilization_attitude_quat_int {
 	//TODO
 	public static Int32AttitudeGains stabilization_gains = {
