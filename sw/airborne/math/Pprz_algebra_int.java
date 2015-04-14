@@ -99,8 +99,8 @@ public class Pprz_algebra_int {
 		(_o).y = ((_i).y >> (_r)); 
 	}
 	public static void INT32_VECT2_RSHIFT(Int32Vect2 _o,Int64Vect2 _i,int _r) { 
-		(_o).x = ((_i).x >> (_r)); 
-		(_o).y = ((_i).y >> (_r)); 
+		(_o).x = (long) ((_i).x >> (_r)); 
+		(_o).y = (long) ((_i).y >> (_r)); 
 	}
 
 	public static void INT32_VECT2_LSHIFT(Int32Vect2 _o,Int32Vect2 _i,int _l) { 
