@@ -38,7 +38,11 @@ public class Gps {
 //		  LED_OFF(GPS_LED);
 //		#endif
 //		#ifdef GPS_TYPE_H
-		gps_impl_init();
+		
+		// Not needed same as constructor.
+		
+		//gps_impl_init();
+		
 //		#endif
 //
 //		#if PERIODIC_TELEMETRY

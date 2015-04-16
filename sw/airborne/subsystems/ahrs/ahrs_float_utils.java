@@ -8,6 +8,7 @@ import static sw.airborne.subsystems.Parameters.*;
 
 public class ahrs_float_utils {
 	//public static float FLT_MIN = 1.17549435082228750797e-38F;
+	private static float FLT_MIN = Float.MIN_VALUE; 
 	public static void ahrs_float_get_quat_from_accel( FloatQuat q,  Int32Vect3 accel){
 		  /* normalized accel measurement in floating point */
 		  FloatVect3 acc_normalized = new FloatVect3();
@@ -15,6 +16,7 @@ public class ahrs_float_utils {
 		  FLOAT_VECT3_NORMALIZE(acc_normalized);
 
 		  /* check for 180deg case */
+		  //FLT_MIN in java is 1.4E-45 and in c++ (1E-37 or smaller) may cause calculation errors
 		  if ( Math.abs(acc_normalized.z - 1.0) < 5*FLT_MIN ) {
 		    QUAT_ASSIGN(q, 0.0, 1.0, 0.0, 0.0);
 		  }

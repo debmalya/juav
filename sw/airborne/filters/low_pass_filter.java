@@ -17,6 +17,7 @@ public class low_pass_filter {
 				}
 	
 	public static long update_butterworth_2_low_pass_int(Butterworth2LowPass_int filter, long value) {
-		  return update_second_order_low_pass_int(filter, value);//?????
+		  return (Long) null;//Commented for compilation's sake
+		  					//update_second_order_low_pass_int(filter, value);//?????
 	}
 }
