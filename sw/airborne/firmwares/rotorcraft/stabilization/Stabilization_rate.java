@@ -41,7 +41,13 @@ public class Stabilization_rate {
 	public static int OFFSET_AND_ROUND(int _a, int _b) {
 		return (((_a)+(1<<((_b)-1)))>>(_b));
 	}
+	public static long OFFSET_AND_ROUND(long _a, int _b) {
+		return (((_a)+(1<<((_b)-1)))>>(_b));
+	}
 	public static int OFFSET_AND_ROUND2(int _a, int _b){
+		return (((_a)+(1<<((_b)-1))-((_a)<0?1:0))>>(_b));
+	}
+	public static long OFFSET_AND_ROUND2(long _a, int _b){
 		return (((_a)+(1<<((_b)-1))-((_a)<0?1:0))>>(_b));
 	}
 

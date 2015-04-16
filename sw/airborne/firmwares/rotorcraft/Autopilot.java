@@ -1,7 +1,7 @@
 package sw.airborne.firmwares.rotorcraft;
 import static sw.airborne.State.*;
 import static sw.airborne.subsystems.Ahrs.*;
-import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_euler_float.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_euler_int.*;
 import sw.airborne.math.*;
 import sw.airborne.mcu_periph.Sys_time;
 import sw.airborne.subsystems.AhrsState;
@@ -256,7 +256,7 @@ public class Autopilot {
 //	}
 	
 	public static void send_fp() {
-		  int carrot_up = -guidance_v_z_sp;
+		  long carrot_up = -guidance_v_z_sp;
 //		  DOWNLINK_SEND_ROTORCRAFT_FP(DefaultChannel, DefaultDevice,
 //		      (stateGetPositionEnu_i().x),
 //		      (stateGetPositionEnu_i().y),

@@ -23,7 +23,7 @@ import sw.airborne.math.*;
 import sw.airborne.mcu_periph.Sys_time;
 import sw.airborne.subsystems.*;
 import static sw.simulator.nps.Nps_autopilot_rotorcraft.*;
-import static sw.airborne.subsystems.ins.ins_float_invariant.*;
+//import static sw.airborne.subsystems.ins.ins_float_invariant.*;
 //import static sw.airborne.subsystems.ins.ins_int.*;
 //import static sw.airborne.modules.vehicle_interface.vi_overo_link.*; //TODO: do we need vehicle interface
 //import static sw.airborne.modules.vehicle_interface.vi_overo_link.*;

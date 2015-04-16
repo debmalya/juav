@@ -8,7 +8,8 @@ import sw.airborne.math.*;
 import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_none.*;
 import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_rate.*;
 import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_rc_setpoint.*;
-import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_quat_int.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_euler_int.*;
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_ref_euler_int.*;
 import static sw.airborne.math.Pprz_algebra_int.*;
 import static sw.airborne.math.Pprz_geodetic_int.*;
 import static sw.airborne.firmwares.rotorcraft.Stabilization.*;
@@ -94,7 +95,7 @@ public class Guidance_h {
 
 	public static Int32Vect2  guidance_h_cmd_earth;
 	public static Int32Eulers guidance_h_rc_sp;
-	public static int guidance_h_heading_sp;
+	public static long guidance_h_heading_sp;
 
 	public static int guidance_h_pgain;
 	public static int guidance_h_dgain;
@@ -424,7 +425,7 @@ public class Guidance_h {
 
 	private static int  traj_max_bank;
 	private static int total_max_bank;
-	private static int thrust_cmd_filt;
+	private static long thrust_cmd_filt;
 	public static void guidance_h_traj_run(boolean in_flight) {
 		/* maximum bank angle: default 20 deg, max 40 deg*/
 		traj_max_bank = Math.max(BFP_OF_REAL((float)GUIDANCE_H_MAX_BANK, INT32_ANGLE_FRAC),
@@ -442,10 +443,10 @@ public class Guidance_h {
 		VECT2_STRIM(guidance_h_speed_err, (int)-MAX_SPEED_ERR, (int)MAX_SPEED_ERR);
 
 		/* run PID */
-		int pd_x =
+		long pd_x =
 				((guidance_h_pgain * guidance_h_pos_err.x) >> (INT32_POS_FRAC - GH_GAIN_SCALE)) +
 				((guidance_h_dgain * (guidance_h_speed_err.x >> 2)) >> (INT32_SPEED_FRAC - GH_GAIN_SCALE - 2));
-		int pd_y =
+		long pd_y =
 				((guidance_h_pgain * guidance_h_pos_err.y) >> (INT32_POS_FRAC - GH_GAIN_SCALE)) +
 				((guidance_h_dgain * (guidance_h_speed_err.y >> 2)) >> (INT32_SPEED_FRAC - GH_GAIN_SCALE - 2));
 		guidance_h_cmd_earth.x =
@@ -480,7 +481,7 @@ public class Guidance_h {
 		/* compute a better approximation of force commands by taking thrust into account */
 		if (guidance_h_approx_force_by_thrust && in_flight) {
 			//static int thrust_cmd_filt;
-			int vertical_thrust = (stabilization_cmd[COMMAND_THRUST] * guidance_v_thrust_coeff) >> INT32_TRIG_FRAC;
+			long vertical_thrust = (stabilization_cmd[COMMAND_THRUST] * guidance_v_thrust_coeff) >> INT32_TRIG_FRAC;
 			thrust_cmd_filt = (thrust_cmd_filt * GUIDANCE_H_THRUST_CMD_FILTER + vertical_thrust) / (GUIDANCE_H_THRUST_CMD_FILTER + 1);
 			guidance_h_cmd_earth.x = ANGLE_BFP_OF_REAL((float)Math.atan2((guidance_h_cmd_earth.x * MAX_PPRZ / INT32_ANGLE_PI_2), thrust_cmd_filt));
 			guidance_h_cmd_earth.y = ANGLE_BFP_OF_REAL((float)Math.atan2((guidance_h_cmd_earth.y * MAX_PPRZ / INT32_ANGLE_PI_2), thrust_cmd_filt));

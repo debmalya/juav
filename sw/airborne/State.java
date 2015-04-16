@@ -615,14 +615,14 @@ public class State {
 	}
 
 	/// Get norm of horizontal ground speed (int).
-	public static  int stateGetHorizontalSpeedNorm_i() {
+	public static  long stateGetHorizontalSpeedNorm_i() {
 	  if (!Std.bit_is_set(state.speed_status, SPEED_HNORM_I))
 	    stateCalcHorizontalSpeedNorm_i();
 	  return state.h_speed_norm_i;
 	}
 
 	/// Get dir of horizontal ground speed (int).
-	public static  int stateGetHorizontalSpeedDir_i() {
+	public static  long stateGetHorizontalSpeedDir_i() {
 	  if (!Std.bit_is_set(state.speed_status, SPEED_HDIR_I))
 	    stateCalcHorizontalSpeedDir_i();
 	  return state.h_speed_dir_i;
@@ -1680,14 +1680,14 @@ public class State {
 			state.h_speed_norm_i = SPEED_BFP_OF_REAL(state.h_speed_norm_f);
 		}
 		else if (bit_is_set(state.speed_status, SPEED_NED_I)) {
-			int n2 = (state.ned_speed_i.x*state.ned_speed_i.x +
+			long n2 = (state.ned_speed_i.x*state.ned_speed_i.x +
 					state.ned_speed_i.y*state.ned_speed_i.y) >> INT32_SPEED_FRAC;
 	  //INT32_SQRT(state.h_speed_norm_i, n2);
-	  int _in = n2;
+	  long _in = n2;
 	  if ((_in) == 0)                                             
 		  (state.h_speed_norm_i) = 0;                                               
 	  else {                                                      
-		  int s1, s2;                                          
+		  long s1, s2;                                          
 		  int iter = 0;                                         
 		  s2 = _in;                                                 
 		  do {                                                      
@@ -1708,15 +1708,15 @@ public class State {
 			state.h_speed_norm_i = SPEED_BFP_OF_REAL(state.h_speed_norm_f);
 		}
 		else if (bit_is_set(state.speed_status, SPEED_ENU_I)) {
-			int n2 = (state.enu_speed_i.x*state.enu_speed_i.x +
+			long n2 = (state.enu_speed_i.x*state.enu_speed_i.x +
 					state.enu_speed_i.y*state.enu_speed_i.y) >> INT32_SPEED_FRAC;
 	  //INT32_SQRT(state.h_speed_norm_i, n2);
 	  
-	  int _in = n2;
+	  long _in = n2;
 	  if ((_in) == 0)                                             
 		  (state.h_speed_norm_i) = 0;                                               
 	  else {                                                      
-		  int s1, s2;                                          
+		  long s1, s2;                                          
 		  int iter = 0;                                         
 		  s2 = _in;                                                 
 		  do {                                                      
@@ -1741,15 +1741,15 @@ public class State {
 			/* transform ecef speed to ned, set status bit, then compute norm */
 			ned_of_ecef_vect_i(state.ned_speed_i, state.ned_origin_i, state.ecef_speed_i);
 			SetBit(state.speed_status, SPEED_NED_I);
-			int n2 = (state.ned_speed_i.x*state.ned_speed_i.x +
+			long n2 = (state.ned_speed_i.x*state.ned_speed_i.x +
 					state.ned_speed_i.y*state.ned_speed_i.y) >> INT32_SPEED_FRAC;
 	 // INT32_SQRT(state.h_speed_norm_i, n2);
 	  
-	  int _in = n2;
+	  long _in = n2;
 	  if ((_in) == 0)                                             
 		  (state.h_speed_norm_i) = 0;                                               
 	  else {                                                      
-		  int s1, s2;                                          
+		  long s1, s2;                                          
 		  int iter = 0;                                         
 		  s2 = _in;                                                 
 		  do {                                                      
@@ -1788,11 +1788,11 @@ public class State {
 		}
 		else if (bit_is_set(state.speed_status, SPEED_NED_I)) {
 			//INT32_ATAN2(state.h_speed_dir_i, state.ned_speed_i.y, state.ned_speed_i.x);
-			int _y = state.ned_speed_i.y, _x = state.ned_speed_i.x;
+			long _y = state.ned_speed_i.y, _x = state.ned_speed_i.x;
 			int c1 = INT32_ANGLE_PI_4;        
 		    int c2 = 3 * INT32_ANGLE_PI_4;        
-		    int abs_y = Math.abs(_y) + 1;          
-		    int r;                      
+		    long abs_y = Math.abs(_y) + 1;          
+		    long r;                      
 		    if ( (_x) >= 0) {                               
 		      r = (((_x)-abs_y)<<R_FRAC) / ((_x)+abs_y);    
 		      (state.h_speed_dir_i) = c1 - ((c1 * r)>>R_FRAC);               
@@ -1811,11 +1811,11 @@ public class State {
 		}
 		else if (bit_is_set(state.speed_status, SPEED_ENU_I)) {
 			//INT32_ATAN2(state.h_speed_dir_i, state.enu_speed_i.x, state.enu_speed_i.y);
-			int _y = state.enu_speed_i.x, _x = state.enu_speed_i.y;
+			long _y = state.enu_speed_i.x, _x = state.enu_speed_i.y;
 			int c1 = INT32_ANGLE_PI_4;        
 		    int c2 = 3 * INT32_ANGLE_PI_4;        
-		    int abs_y = Math.abs(_y) + 1;          
-		    int r;                      
+		    long abs_y = Math.abs(_y) + 1;          
+		    long r;                      
 		    if ( (_x) >= 0) {                               
 		      r = (((_x)-abs_y)<<R_FRAC) / ((_x)+abs_y);    
 		      (state.h_speed_dir_i) = c1 - ((c1 * r)>>R_FRAC);               
@@ -1835,11 +1835,11 @@ public class State {
 			SPEEDS_BFP_OF_REAL(state.ned_speed_i, state.ned_speed_f);
 			SetBit(state.speed_status, SPEED_NED_I);
 			//INT32_ATAN2(state.h_speed_dir_i, state.ned_speed_i.y, state.ned_speed_i.x);
-			int _y = state.ned_speed_i.y, _x = state.ned_speed_i.x;
+			long _y = state.ned_speed_i.y, _x = state.ned_speed_i.x;
 			int c1 = INT32_ANGLE_PI_4;        
 		    int c2 = 3 * INT32_ANGLE_PI_4;        
-		    int abs_y = Math.abs(_y) + 1;          
-		    int r;                      
+		    long abs_y = Math.abs(_y) + 1;          
+		    long r;                      
 		    if ( (_x) >= 0) {                               
 		      r = (((_x)-abs_y)<<R_FRAC) / ((_x)+abs_y);    
 		      (state.h_speed_dir_i) = c1 - ((c1 * r)>>R_FRAC);               
@@ -1859,11 +1859,11 @@ public class State {
 			SPEEDS_BFP_OF_REAL(state.enu_speed_i, state.enu_speed_f);
 			SetBit(state.speed_status, SPEED_ENU_I);
 			//INT32_ATAN2(state.h_speed_dir_i, state.enu_speed_i.x, state.enu_speed_i.y);
-			int _y = state.enu_speed_i.x, _x = state.enu_speed_i.y;
+			long _y = state.enu_speed_i.x, _x = state.enu_speed_i.y;
 			int c1 = INT32_ANGLE_PI_4;        
 		    int c2 = 3 * INT32_ANGLE_PI_4;        
-		    int abs_y = Math.abs(_y) + 1;          
-		    int r;                      
+		    long abs_y = Math.abs(_y) + 1;          
+		    long r;                      
 		    if ( (_x) >= 0) {                               
 		      r = (((_x)-abs_y)<<R_FRAC) / ((_x)+abs_y);    
 		      (state.h_speed_dir_i) = c1 - ((c1 * r)>>R_FRAC);               

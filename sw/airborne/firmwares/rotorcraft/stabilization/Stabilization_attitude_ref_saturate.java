@@ -1,5 +1,7 @@
 package sw.airborne.firmwares.rotorcraft.stabilization;
 
+import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_ref_euler_int.*;
+
 public class Stabilization_attitude_ref_saturate {
 	
 	public static void SATURATE_SPEED_TRIM_ACCEL() {                   

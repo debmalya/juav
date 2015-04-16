@@ -39,51 +39,51 @@ public class Autopilot_arming_switch {
 	  }
 	}
 
-	
-	public static  void autopilot_arming_check_motors_on() {
-	  switch(autopilot_arming_state) {
-	  case STATE_UNINIT:
-	    autopilot_motors_on = false;
-	    if (kill_switch_is_on()) {
-	      autopilot_arming_state = arming_state.STATE_STARTABLE;
-	    }
-	    else {
-	      autopilot_arming_state = arming_state.STATE_WAITING;
-	    }
-	    break;
-	  case STATE_WAITING:
-	    autopilot_motors_on = false;
-	    if (kill_switch_is_on()) {
-	      autopilot_arming_state = arming_state.STATE_STARTABLE;
-	    }
-	    break;
-	  case STATE_STARTABLE:
-	    autopilot_motors_on = false;
-	    if (!kill_switch_is_on() &&
-	        THROTTLE_STICK_DOWN() &&
-	        rc_attitude_sticks_centered() &&
-	        (autopilot_mode == MODE_MANUAL || autopilot_unarmed_in_auto)) {
-	      autopilot_arming_state = arming_state.STATE_MOTORS_ON;
-	    }
-	    break;
-	  case STATE_MOTORS_ON:
-	    autopilot_motors_on = true;
-	    if (kill_switch_is_on()) {
-	      /* if killed, go to STATE_STARTABLE where motors will be turned off */
-	      autopilot_arming_state = arming_state.STATE_STARTABLE;
-	      /* if turned off in an AUTO mode, remember it so it can be turned on again in AUTO */
-	      if (autopilot_mode != MODE_MANUAL) {
-	        autopilot_unarmed_in_auto = true;
-	      }
-	      else {
-	        autopilot_unarmed_in_auto = false;
-	      }
-	    }
-	    break;
-	  default:
-	    break;
-	  }
-
-	}
+//	
+//	public static  void autopilot_arming_check_motors_on() {
+//	  switch(autopilot_arming_state) {
+//	  case STATE_UNINIT:
+//	    autopilot_motors_on = false;
+//	    if (kill_switch_is_on()) {
+//	      autopilot_arming_state = arming_state.STATE_STARTABLE;
+//	    }
+//	    else {
+//	      autopilot_arming_state = arming_state.STATE_WAITING;
+//	    }
+//	    break;
+//	  case STATE_WAITING:
+//	    autopilot_motors_on = false;
+//	    if (kill_switch_is_on()) {
+//	      autopilot_arming_state = arming_state.STATE_STARTABLE;
+//	    }
+//	    break;
+//	  case STATE_STARTABLE:
+//	    autopilot_motors_on = false;
+//	    if (!kill_switch_is_on() &&
+//	        THROTTLE_STICK_DOWN() &&
+//	        rc_attitude_sticks_centered() &&
+//	        (autopilot_mode == MODE_MANUAL || autopilot_unarmed_in_auto)) {
+//	      autopilot_arming_state = arming_state.STATE_MOTORS_ON;
+//	    }
+//	    break;
+//	  case STATE_MOTORS_ON:
+//	    autopilot_motors_on = true;
+//	    if (kill_switch_is_on()) {
+//	      /* if killed, go to STATE_STARTABLE where motors will be turned off */
+//	      autopilot_arming_state = arming_state.STATE_STARTABLE;
+//	      /* if turned off in an AUTO mode, remember it so it can be turned on again in AUTO */
+//	      if (autopilot_mode != MODE_MANUAL) {
+//	        autopilot_unarmed_in_auto = true;
+//	      }
+//	      else {
+//	        autopilot_unarmed_in_auto = false;
+//	      }
+//	    }
+//	    break;
+//	  default:
+//	    break;
+//	  }
+//
+//	}
 
 }

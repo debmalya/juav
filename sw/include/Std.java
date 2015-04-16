@@ -61,6 +61,9 @@ public class Std {
 	public static int Max(int x, int y){
 		return (x > y ? x : y);
 	}
+	public static long Max(long x, int y){
+		return (x > y ? x : y);
+	}
 	
 	public static int ABS(int val){
 		return ((val) < 0 ? -(val) : (val));
@@ -68,6 +71,13 @@ public class Std {
 	
 	public static void Bound(int _x, int _min, int _max){
 		 if (_x > _max) _x = _max; else if (_x < _min) _x = _min;
+	}
+	public static void Bound(long _x, int _min, int _max){
+		if (_x > _max) _x = _max; else if (_x < _min) _x = _min;
+	}
+	
+	public static void Bound(long _x, long _min, long _max){
+		if (_x > _max) _x = _max; else if (_x < _min) _x = _min;
 	}
 	
 	public static void BoundInverted(int _x, int _min, int _max){
@@ -87,6 +97,9 @@ public class Std {
 	}
 	
 	public static void BoundAbs(int _x,int  _max){
+		Bound(_x, -(_max), (_max));
+	}
+	public static void BoundAbs(long  _x,long  _max){
 		Bound(_x, -(_max), (_max));
 	}
 	

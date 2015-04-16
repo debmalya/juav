@@ -7,7 +7,6 @@ import static sw.airborne.math.Pprz_geodetic_int.*;
 import static sw.airborne.subsystems.Gps.*;
 import static sw.airborne.State.*;
 import static sw.airborne.subsystems.ins.vf_float.*;
-import static sw.airborne.subsystems.ins.hf_float.*;
 import static sw.simulator.nps.Nps_autopilot_rotorcraft.*;
 import static sw.airborne.firmwares.rotorcraft.Main.*;
 
@@ -28,14 +27,14 @@ public class Ins_int {
 		  ins_impl.ltp_pos.z   =  POS_BFP_OF_REAL(vff.z);
 	}
 	
-	public static void ins_update_from_hff() {
-		  ins_impl.ltp_accel.x =  ACCEL_BFP_OF_REAL(b2_hff_state.xdotdot);
-		  ins_impl.ltp_accel.y =  ACCEL_BFP_OF_REAL(b2_hff_state.ydotdot);
-		  ins_impl.ltp_speed.x =  SPEED_BFP_OF_REAL(b2_hff_state.xdot);
-		  ins_impl.ltp_speed.y =  SPEED_BFP_OF_REAL(b2_hff_state.ydot);
-		  ins_impl.ltp_pos.x   =  POS_BFP_OF_REAL(b2_hff_state.x);
-		  ins_impl.ltp_pos.y   =  POS_BFP_OF_REAL(b2_hff_state.y);
-		}
+//	public static void ins_update_from_hff() {
+//		  ins_impl.ltp_accel.x =  ACCEL_BFP_OF_REAL(b2_hff_state.xdotdot);
+//		  ins_impl.ltp_accel.y =  ACCEL_BFP_OF_REAL(b2_hff_state.ydotdot);
+//		  ins_impl.ltp_speed.x =  SPEED_BFP_OF_REAL(b2_hff_state.xdot);
+//		  ins_impl.ltp_speed.y =  SPEED_BFP_OF_REAL(b2_hff_state.ydot);
+//		  ins_impl.ltp_pos.x   =  POS_BFP_OF_REAL(b2_hff_state.x);
+//		  ins_impl.ltp_pos.y   =  POS_BFP_OF_REAL(b2_hff_state.y);
+//		}
 	
 	public static void ins_ned_to_state() {
 		  stateSetPositionNed_i(ins_impl.ltp_pos);
@@ -68,9 +67,9 @@ public class Ins_int {
 
 		if(USE_HFF){
 		  /* propagate horizontal filter */
-		  b2_hff_propagate();
+		  //b2_hff_propagate(); TODO could not find use_hff
 		  /* convert and copy result to ins_impl */
-		  ins_update_from_hff();
+		  //ins_update_from_hff();
 		}else{
 		  ins_impl.ltp_accel.x = accel_meas_ltp.x;
 		  ins_impl.ltp_accel.y = accel_meas_ltp.y;

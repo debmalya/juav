@@ -147,20 +147,20 @@ public class Pprz_geodetic_int {
 
 	public static void ecef_of_enu_vect_i( EcefCoor_i ecef,  LtpDef_i def,  EnuCoor_i enu) {
 
-		int tmpx = (int)def.ltp_of_ecef.m[0] * enu.x +
-				(int)def.ltp_of_ecef.m[3] * enu.y +
-				(int)def.ltp_of_ecef.m[6] * enu.z;
-		ecef.x = (int)(tmpx>>HIGH_RES_TRIG_FRAC);
+		long tmpx = def.ltp_of_ecef.m[0] * enu.x +
+				def.ltp_of_ecef.m[3] * enu.y +
+				def.ltp_of_ecef.m[6] * enu.z;
+		ecef.x = (tmpx>>HIGH_RES_TRIG_FRAC);
 
-		int tmpy = (int)def.ltp_of_ecef.m[1] * enu.x +
-				(int)def.ltp_of_ecef.m[4] * enu.y +
-				(int)def.ltp_of_ecef.m[7] * enu.z;
-		ecef.y = (int)(tmpy>>HIGH_RES_TRIG_FRAC);
+		long tmpy = def.ltp_of_ecef.m[1] * enu.x +
+				def.ltp_of_ecef.m[4] * enu.y +
+				def.ltp_of_ecef.m[7] * enu.z;
+		ecef.y = (tmpy>>HIGH_RES_TRIG_FRAC);
 
 		/* first element is always zero http://en.wikipedia.org/wiki/Geodetic_system#From_ENU_to_ECEF */
-		int tmpz = (int)def.ltp_of_ecef.m[5] * enu.y +
-				(int)def.ltp_of_ecef.m[8] * enu.z;
-		ecef.z = (int)(tmpz>>HIGH_RES_TRIG_FRAC);
+		long tmpz = def.ltp_of_ecef.m[5] * enu.y +
+				def.ltp_of_ecef.m[8] * enu.z;
+		ecef.z = (tmpz>>HIGH_RES_TRIG_FRAC);
 
 	}
 	
@@ -181,18 +181,18 @@ public class Pprz_geodetic_int {
 	
 	public static void enu_of_ecef_vect_i(EnuCoor_i enu, LtpDef_i def,EcefCoor_i ecef) {
 
-		  int tmpx = (int)def.ltp_of_ecef.m[0]*ecef.x +
-		                       (int)def.ltp_of_ecef.m[1]*ecef.y +
+		  long tmpx = def.ltp_of_ecef.m[0]*ecef.x +
+		                       def.ltp_of_ecef.m[1]*ecef.y +
 		                       0; /* this element is always zero http://en.wikipedia.org/wiki/Geodetic_system#From_ECEF_to_ENU */
-		  enu.x = (int)(tmpx>>HIGH_RES_TRIG_FRAC);
-		   int tmpy = (int)def.ltp_of_ecef.m[3]*ecef.x +
-		                       (int)def.ltp_of_ecef.m[4]*ecef.y +
-		                       (int)def.ltp_of_ecef.m[5]*ecef.z;
-		  enu.y = (int)(tmpy>>HIGH_RES_TRIG_FRAC);
-		   int tmpz = (int)def.ltp_of_ecef.m[6]*ecef.x +
-		                       (int)def.ltp_of_ecef.m[7]*ecef.y +
-		                       (int)def.ltp_of_ecef.m[8]*ecef.z;
-		  enu.z = (int)(tmpz>>HIGH_RES_TRIG_FRAC);
+		  enu.x = (tmpx>>HIGH_RES_TRIG_FRAC);
+		   long tmpy = def.ltp_of_ecef.m[3]*ecef.x +
+		                       def.ltp_of_ecef.m[4]*ecef.y +
+		                       def.ltp_of_ecef.m[5]*ecef.z;
+		  enu.y = (tmpy>>HIGH_RES_TRIG_FRAC);
+		   long tmpz = def.ltp_of_ecef.m[6]*ecef.x +
+		                       def.ltp_of_ecef.m[7]*ecef.y +
+		                       def.ltp_of_ecef.m[8]*ecef.z;
+		  enu.z = (tmpz>>HIGH_RES_TRIG_FRAC);
 
 		}
 	
@@ -216,18 +216,18 @@ public class Pprz_geodetic_int {
 
 	   EcefCoor_i delta = new EcefCoor_i();
 	  VECT3_DIFF(delta, ecef, def.ecef);
-	   int tmpx = (int)def.ltp_of_ecef.m[0]*delta.x +
-	                       (int)def.ltp_of_ecef.m[1]*delta.y +
+	   long tmpx = def.ltp_of_ecef.m[0]*delta.x +
+	                       def.ltp_of_ecef.m[1]*delta.y +
 	                       0; /* this element is always zero http://en.wikipedia.org/wiki/Geodetic_system#From_ECEF_to_ENU */
-	  enu.x = (int)(tmpx>>HIGH_RES_TRIG_FRAC);
-	   int tmpy = (int)def.ltp_of_ecef.m[3]*delta.x +
-	                       (int)def.ltp_of_ecef.m[4]*delta.y +
-	                       (int)def.ltp_of_ecef.m[5]*delta.z;
-	  enu.y = (int)(tmpy>>HIGH_RES_TRIG_FRAC);
-	   int tmpz = (int)def.ltp_of_ecef.m[6]*delta.x +
-	                       (int)def.ltp_of_ecef.m[7]*delta.y +
-	                       (int)def.ltp_of_ecef.m[8]*delta.z;
-	  enu.z = (int)(tmpz>>HIGH_RES_TRIG_FRAC);
+	  enu.x = (tmpx>>HIGH_RES_TRIG_FRAC);
+	   long tmpy = def.ltp_of_ecef.m[3]*delta.x +
+	                       def.ltp_of_ecef.m[4]*delta.y +
+	                       def.ltp_of_ecef.m[5]*delta.z;
+	  enu.y = (tmpy>>HIGH_RES_TRIG_FRAC);
+	   long tmpz = def.ltp_of_ecef.m[6]*delta.x +
+	                       def.ltp_of_ecef.m[7]*delta.y +
+	                       def.ltp_of_ecef.m[8]*delta.z;
+	  enu.z = (tmpz>>HIGH_RES_TRIG_FRAC);
 
 	}
 

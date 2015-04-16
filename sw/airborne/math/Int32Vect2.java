@@ -1,8 +1,8 @@
 package sw.airborne.math;
 
 public class Int32Vect2 {
-	public int x;
-	public int y;
+	public long x;
+	public long y;
 	public boolean equals(Int32Vect2 _a){
 		if(this.x==_a.x) return false;
 		if(this.y==_a.y) return false;

@@ -47,33 +47,45 @@ public class Guidance_v {
 	public static final int COMMAND_THRUST = 3;//TODO from generated airframe.h
 	private static final boolean NO_RC_THRUST_LIMIT = false;
 
-	public static int guidance_v_mode;
-	public static int guidance_v_ff_cmd;
-	public static int guidance_v_fb_cmd;
-	public static int guidance_v_delta_t;
+	public static long guidance_v_mode;
+	public static long guidance_v_ff_cmd;
+	public static long guidance_v_fb_cmd;
+	public static long guidance_v_delta_t;
 
 	public static double guidance_v_nominal_throttle;
 	public static boolean guidance_v_adapt_throttle_enabled;
 
-	public static int guidance_v_rc_delta_t;
+	public static long guidance_v_rc_delta_t;
 
-	public static int guidance_v_rc_zd_sp;
+	public static long guidance_v_rc_zd_sp;
 
-	public static int guidance_v_z_sp;
-	public static int guidance_v_zd_sp;
-	public static int guidance_v_z_ref;
-	public static int guidance_v_zd_ref;
-	public static int guidance_v_zdd_ref;
+	public static long guidance_v_z_sp;
+	public static long guidance_v_zd_sp;
+	public static long guidance_v_z_ref;
+	public static long guidance_v_zd_ref;
+	public static long guidance_v_zdd_ref;
 
-	public static int guidance_v_kp;
-	public static int guidance_v_kd;
-	public static int guidance_v_ki;
+	public static long guidance_v_kp;
+	public static long guidance_v_kd;
+	public static long guidance_v_ki;
 
-	public static int guidance_v_z_sum_err;
+	public static long guidance_v_z_sum_err;
 
-	public static int guidance_v_thrust_coeff;
+	public static long guidance_v_thrust_coeff;
 
 	public static void GuidanceVSetRef(int _pos, int _speed, int _accel) { 
+		gv_set_ref(_pos, _speed, _accel);        
+		guidance_v_z_ref = _pos;            
+		guidance_v_zd_ref = _speed;          
+		guidance_v_zdd_ref = _accel;             
+	}
+	public static void GuidanceVSetRef(long _pos, int _speed, int _accel) { 
+		gv_set_ref(_pos, _speed, _accel);        
+		guidance_v_z_ref = _pos;            
+		guidance_v_zd_ref = _speed;          
+		guidance_v_zdd_ref = _accel;             
+	}
+	public static void GuidanceVSetRef(long _pos, long _speed, int _accel) { 
 		gv_set_ref(_pos, _speed, _accel);        
 		guidance_v_z_ref = _pos;            
 		guidance_v_zd_ref = _speed;          
@@ -189,7 +201,7 @@ public class Guidance_v {
 		// AKA SUPERVISION and co
 		guidance_v_thrust_coeff = get_vertical_thrust_coeff();
 		if (in_flight) {
-			int vertical_thrust = (stabilization_cmd[COMMAND_THRUST] * guidance_v_thrust_coeff) >> 14;
+			long vertical_thrust = (stabilization_cmd[COMMAND_THRUST] * guidance_v_thrust_coeff) >> 14;
 			Guidance_v_adapt.gv_adapt_run(stateGetAccelNed_i().z, vertical_thrust, guidance_v_zd_ref);
 		}
 		else {
@@ -197,7 +209,7 @@ public class Guidance_v {
 			Guidance_v_adapt.gv_adapt_init();
 		}
 
-		switch (guidance_v_mode) {
+		switch ((int)guidance_v_mode) {
 
 		case GUIDANCE_V_MODE_RC_DIRECT:
 			guidance_v_z_sp = stateGetPositionNed_i().z; // for display only
@@ -277,7 +289,7 @@ public class Guidance_v {
 
 	/// get the cosine of the angle between thrust vector and gravity vector
 	private static int max_bank_coef;
-	public static int get_vertical_thrust_coeff() {
+	public static long get_vertical_thrust_coeff() {
 		//static const int max_bank_coef = BFP_OF_REAL(RadOfDeg(30.), INT32_TRIG_FRAC);
 		max_bank_coef = BFP_OF_REAL((float)((30.0) * (3.1415926/180.0)), 14);
 		Int32RMat att = stateGetNedToBodyRMat_i();
@@ -295,7 +307,7 @@ public class Guidance_v {
 		 * also can be simplified considering: v1 is zaxis with (0,0,1)
 		 *  dot(v1, v2) = v1.z * v2.z = v2.z
 		 */
-		int coef = att.m[8];
+		long coef = att.m[8];
 		if (coef < max_bank_coef)
 			coef = max_bank_coef;
 		return coef;
@@ -307,15 +319,15 @@ public class Guidance_v {
 	public static void run_hover_loop(boolean in_flight) {
 
 		/* convert our reference to generic representation */
-		int tmp  = gv_z_ref>>(GV_Z_REF_FRAC - INT32_POS_FRAC);
-		guidance_v_z_ref = (int)tmp;
+		long tmp  = gv_z_ref>>(GV_Z_REF_FRAC - INT32_POS_FRAC);
+		guidance_v_z_ref = tmp;
 		guidance_v_zd_ref = gv_zd_ref<<(INT32_SPEED_FRAC - GV_ZD_REF_FRAC);
 		guidance_v_zdd_ref = gv_zdd_ref<<(INT32_ACCEL_FRAC - GV_ZDD_REF_FRAC);
 		/* compute the error to our reference */
-		int err_z  = guidance_v_z_ref - stateGetPositionNed_i().z;
+		long err_z  = guidance_v_z_ref - stateGetPositionNed_i().z;
 		//Bound(err_z, GUIDANCE_V_MIN_ERR_Z, GUIDANCE_V_MAX_ERR_Z);
 		Bound(err_z, POS_BFP_OF_REAL(-10.), POS_BFP_OF_REAL(-10.));
-		int err_zd = guidance_v_zd_ref - stateGetSpeedNed_i().z;
+		long err_zd = guidance_v_zd_ref - stateGetSpeedNed_i().z;
 		//Bound(err_zd, GUIDANCE_V_MIN_ERR_ZD, GUIDANCE_V_MAX_ERR_ZD);
 		Bound(err_zd, SPEED_BFP_OF_REAL(-10.), SPEED_BFP_OF_REAL(10.));
 
@@ -337,7 +349,7 @@ public class Guidance_v {
 			inv_m = BFP_OF_REAL((float)(9.81 / (guidance_v_nominal_throttle * MAX_PPRZ)), FF_CMD_FRAC);
 		}
 
-		int g_m_zdd = (int)BFP_OF_REAL((float)9.81, FF_CMD_FRAC) -
+		long g_m_zdd = BFP_OF_REAL((float)9.81, FF_CMD_FRAC) -
 				(guidance_v_zdd_ref << (FF_CMD_FRAC - INT32_ACCEL_FRAC));
 
 		guidance_v_ff_cmd = g_m_zdd / inv_m;

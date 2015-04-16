@@ -151,14 +151,14 @@ public class State_struct {
 	   * Norm of horizontal ground speed.
 	   * Unit: m/s in BFP with #INT32_SPEED_FRAC
 	   */
-	  public   int h_speed_norm_i;
+	  public   long h_speed_norm_i;
 
 	  /**
 	   * Direction of horizontal ground speed.
 	   * Unit: rad in BFP with #INT32_ANGLE_FRAC
 	   * (clockwise, zero=north)
 	   */
-	  public  int h_speed_dir_i;
+	  public  long h_speed_dir_i;
 
 	  /**
 	   * Velocity in EarthCenteredEarthFixed coordinates.
