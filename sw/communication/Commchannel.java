@@ -7,14 +7,15 @@ import sw.airborne.math.FloatRates;
 import sw.airborne.subsystems.Imu;
 import fr.dgac.ivy.* ;
 import devices.Gps;
-import devices.GpsState;
 
 public class Commchannel implements IvyMessageListener {
-	private Ivy bus;
+	private static Ivy bus;
 	//Add buffer for GPS
 	//Add buffer for AHRS
+	//Buffer not added values updated directly to state as they come in --Buffer can be added later
 
-	public void CommChannel() throws IvyException {
+	//The below method is not a constructor
+	public static void CommChannel() throws IvyException {
 		 bus = new Ivy("JUAV","JUAV Ready",null);
 		 bus.bindMsg("GPS_CALCULAED_DEVICE(.*)",new IvyMessageListener() {
 		      public void receive(IvyClient client, String[] args) {
