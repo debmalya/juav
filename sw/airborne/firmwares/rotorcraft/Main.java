@@ -248,11 +248,11 @@ public class Main {
 		if(USE_GPS){
 		//GpsEvent(on_gps_event); //TODO why?
 		if (gps_available) {                            
-		      gps.last_msg_ticks = Sys_time.nb_sec_rem;     
-		      gps.last_msg_time = Sys_time.nb_sec;          
+		      gps.last_msg_ticks = time.nb_sec_rem;     
+		      gps.last_msg_time = time.nb_sec;          
 		      if (gps.fix == 3) {                  
-		        gps.last_3dfix_ticks = Sys_time.nb_sec_rem; 
-		        gps.last_3dfix_time = Sys_time.nb_sec;      
+		        gps.last_3dfix_ticks = time.nb_sec_rem; 
+		        gps.last_3dfix_time = time.nb_sec;      
 		      }                                             
 		      on_gps_event();                    
 		      gps_available = false;  

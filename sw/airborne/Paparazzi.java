@@ -19,5 +19,5 @@ public class Paparazzi {
 	
 	public static char nav_block;
 	public static char nav_stage;
-	
+	public static final int PERIODIC_FREQUENCY = 512;
 }

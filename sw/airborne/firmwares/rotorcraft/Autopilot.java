@@ -3,7 +3,7 @@ import static sw.airborne.State.*;
 import static sw.airborne.subsystems.Ahrs.*;
 import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attitude_euler_int.*;
 import sw.airborne.math.*;
-import sw.airborne.mcu_periph.Sys_time;
+import static sw.airborne.mcu_periph.Sys_time.*;
 import sw.airborne.subsystems.AhrsState;
 import sw.airborne.subsystems.Gps;
 import sw.airborne.subsystems.actuators.motor_mixing.Motor_mixing;
@@ -237,7 +237,7 @@ public class Autopilot {
 		if(USE_GPS)  fix = Gps.gps.fix;
 		else fix = GPS_FIX_NONE;
 		
-		int time_sec = Sys_time.nb_sec;
+		int time_sec = time.nb_sec;
 //		DOWNLINK_SEND_ROTORCRAFT_STATUS(DefaultChannel, DefaultDevice,
 //		      imu_nb_err, _motor_nb_err,
 //		    //  radio_control.status, radio_control.frame_rate,
