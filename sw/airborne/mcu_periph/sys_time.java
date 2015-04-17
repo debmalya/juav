@@ -13,5 +13,11 @@ public class sys_time {
 	public int ticks_per_sec; ///< sys_time ticks per second (SYS_TIME_FREQUENCY)
 	public int resolution_cpu_ticks; ///< sys_time_timer resolution in cpu ticks
 	public int cpu_ticks_per_sec;
-
+	
+	sys_time(){
+		for(int i = 0; i<SYS_TIME_NB_TIMER; i++){
+			timer[i] = new sys_time_timer();
+		}
+	}
+	
 }

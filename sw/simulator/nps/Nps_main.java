@@ -15,7 +15,7 @@ public class Nps_main {
 	{
 		sim_time = val;
 	}
-	void Nps_main()
+	Nps_main()
 	{
 		host_time_elapsed =System.currentTimeMillis();
 	}
