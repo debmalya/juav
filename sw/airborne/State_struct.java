@@ -17,14 +17,14 @@ public class State_struct {
 	   * Position in EarthCenteredEarthFixed coordinates.
 	   * Units: centimeters
 	   */
-	  public EcefCoor_i ecef_pos_i;
+	  public EcefCoor_i ecef_pos_i = new EcefCoor_i();
 
 	  /**
 	   * Position in Latitude, Longitude and Altitude.
 	   * Units lat,lon: radians*1e7
 	   * Units alt: milimeters above reference ellipsoid
 	   */
-	  public  LlaCoor_i lla_pos_i;
+	  public  LlaCoor_i lla_pos_i = new LlaCoor_i();
 
 	  /**
 	   * Definition of the local (flat earth) coordinate system.
@@ -33,7 +33,7 @@ public class State_struct {
 	   * coordinates and the roation matrix from ECEF to local frame.
 	   * (int version)
 	   */
-	  public  LtpDef_i ned_origin_i;
+	  public  LtpDef_i ned_origin_i = new LtpDef_i();
 
 	  /**
 	   * true if local int coordinate frame is initialsed
@@ -45,21 +45,21 @@ public class State_struct {
 	   * with respect to ned_origin_i (flat earth)
 	   * Units: m in BFP with INT32_POS_FRAC
 	   */
-	  public  NedCoor_i ned_pos_i;
+	  public  NedCoor_i ned_pos_i = new NedCoor_i();
 
 	  /**
 	   * Position in East North Up coordinates.
 	   * with respect to ned_origin_i (flat earth)
 	   * Units: m in BFP with INT32_POS_FRAC
 	   */
-	  public   EnuCoor_i enu_pos_i;
+	  public   EnuCoor_i enu_pos_i = new EnuCoor_i();
 
 	  /**
 	   * Position in UTM coordinates.
 	   * Units x,y: meters.
 	   * Units z: meters above MSL
 	   */
-	  public  UtmCoor_f utm_pos_f;
+	  public  UtmCoor_f utm_pos_f = new UtmCoor_f();
 
 	  /**
 	   * Altitude above ground level.
@@ -72,13 +72,13 @@ public class State_struct {
 	   * Units lat,lon: radians
 	   * Units alt: meters above reference ellipsoid
 	   */
-	  public  LlaCoor_f lla_pos_f;
+	  public  LlaCoor_f lla_pos_f = new LlaCoor_f();
 
 	  /**
 	   * Position in EarthCenteredEarthFixed coordinates.
 	   * Units: meters
 	   */
-	  public EcefCoor_f ecef_pos_f;
+	  public EcefCoor_f ecef_pos_f = new EcefCoor_f();
 
 	  /**
 	   * Definition of the local (flat earth) coordinate system.
@@ -87,7 +87,7 @@ public class State_struct {
 	   * coordinates and the roation matrix from ECEF to local frame.
 	   * (float version)
 	   */
-	  public  LtpDef_f ned_origin_f;
+	  public  LtpDef_f ned_origin_f = new LtpDef_f();
 
 	  /// True if local float coordinate frame is initialsed
 	  public  boolean ned_initialized_f;
@@ -99,7 +99,7 @@ public class State_struct {
 	   * initialized.
 	   * (float version)
 	   */
-	  public   UtmCoor_f utm_origin_f;
+	  public   UtmCoor_f utm_origin_f = new UtmCoor_f();
 
 	  /// True if utm origin (float) coordinate frame is initialsed
 	  public  boolean utm_initialized_f;
@@ -109,14 +109,14 @@ public class State_struct {
 	   * with respect to ned_origin_i (flat earth)
 	   * Units: meters
 	   */
-	  public NedCoor_f ned_pos_f;
+	  public NedCoor_f ned_pos_f = new NedCoor_f();
 
 	  /**
 	   * Position in East North Up coordinates.
 	   * with respect to ned_origin_i (flat earth)
 	   * Units: meters
 	   */
-	  public   EnuCoor_f enu_pos_f;
+	  public   EnuCoor_f enu_pos_f = new EnuCoor_f();
 	  /** @}*/
 
 
@@ -133,19 +133,19 @@ public class State_struct {
 	   * Velocity in EarthCenteredEarthFixed coordinates.
 	   * Units: m/s in BFP with #INT32_SPEED_FRAC
 	   */
-	  public  EcefCoor_i ecef_speed_i;
+	  public  EcefCoor_i ecef_speed_i = new EcefCoor_i();
 
 	  /**
 	   * Velocity in North East Down coordinates.
 	   * Units: m/s in BFP with #INT32_SPEED_FRAC
 	   */
-	  public  NedCoor_i ned_speed_i;
+	  public  NedCoor_i ned_speed_i = new NedCoor_i();
 
 	  /**
 	   * Velocity in East North Up coordinates.
 	   * Units: m/s in BFP with #INT32_SPEED_FRAC
 	   */
-	  public   EnuCoor_i enu_speed_i;
+	  public   EnuCoor_i enu_speed_i = new EnuCoor_i();
 
 	  /**
 	   * Norm of horizontal ground speed.
@@ -164,18 +164,18 @@ public class State_struct {
 	   * Velocity in EarthCenteredEarthFixed coordinates.
 	   * Units: m/s
 	   */
-	  public EcefCoor_f ecef_speed_f;
+	  public EcefCoor_f ecef_speed_f = new EcefCoor_f();
 
 	  /**
 	   * @brief speed in North East Down coordinates
 	   * @details Units: m/s */
-	  public  NedCoor_f ned_speed_f;
+	  public  NedCoor_f ned_speed_f = new NedCoor_f();
 
 	  /**
 	   * Velocity in East North Up coordinates.
 	   * Units: m/s
 	   */
-	  public  EnuCoor_f enu_speed_f;
+	  public  EnuCoor_f enu_speed_f = new EnuCoor_f();
 
 	  /**
 	   * Norm of horizontal ground speed.
@@ -204,31 +204,31 @@ public class State_struct {
 	   * Acceleration in North East Down coordinates.
 	   * Units: m/s^2 in BFP with #INT32_ACCEL_FRAC
 	   */
-	  public   NedCoor_i ned_accel_i;
+	  public   NedCoor_i ned_accel_i = new NedCoor_i();
 
 	  /**
 	   * Acceleration in EarthCenteredEarthFixed coordinates.
 	   * Units: m/s^2 in BFP with INT32_ACCEL_FRAC
 	   */
-	  public  EcefCoor_i ecef_accel_i;
+	  public  EcefCoor_i ecef_accel_i = new EcefCoor_i();
 
 	  /**
 	   * Acceleration in North East Down coordinates.
 	   * Units: m/s^2
 	   */
-	  public  NedCoor_f ned_accel_f;
+	  public  NedCoor_f ned_accel_f = new NedCoor_f();
 
 	  /**
 	   * Acceleration in EarthCenteredEarthFixed coordinates.
 	   * Units: m/s^2
 	   */
-	  public  EcefCoor_f ecef_accel_f;
+	  public  EcefCoor_f ecef_accel_f = new EcefCoor_f();
 	  /** @}*/
 
 
 	  /** @defgroup state_attitude Attitude representations
 	   */
-	  public OrientationReps ned_to_body_orientation;
+	  public OrientationReps ned_to_body_orientation = new OrientationReps();
 
 
 	  /** @addtogroup state_rate
@@ -244,13 +244,13 @@ public class State_struct {
 	   * Angular rates in body frame.
 	   * Units: rad/s in BFP with #INT32_RATE_FRAC
 	   */
-	  public  Int32Rates body_rates_i;
+	  public  Int32Rates body_rates_i = new Int32Rates();
 
 	  /**
 	   * Angular rates in body frame.
 	   * Units: rad/s
 	   */
-	  public FloatRates  body_rates_f;
+	  public FloatRates  body_rates_f = new FloatRates();
 	  /** @}*/
 
 
@@ -267,7 +267,7 @@ public class State_struct {
 	   * Horizontal windspeed in north/east.
 	   * Units: m/s in BFP with #INT32_SPEED_FRAC
 	   */
-	  public Int32Vect2 h_windspeed_i;
+	  public Int32Vect2 h_windspeed_i = new Int32Vect2();
 
 	  /**
 	   * Norm of horizontal ground speed.
@@ -279,7 +279,7 @@ public class State_struct {
 	   * Horizontal windspeed.
 	   * Units: m/s with x=north, y=east
 	   */
-	  public   FloatVect2 h_windspeed_f;
+	  public   FloatVect2 h_windspeed_f = new FloatVect2();
 
 	  /**
 	   * Norm of relative air speed.

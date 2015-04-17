@@ -30,9 +30,12 @@ public class Navigation {
 	public static final int NB_WAYPOINT = 10;//////??????
 	public static final int nb_waypoint = NB_WAYPOINT;
 	public static EnuCoor_i[] waypoints = new EnuCoor_i[10];
-	public static EnuCoor_i navigation_target;
-	public static EnuCoor_i navigation_carrot;
-	public static EnuCoor_i nav_last_point;
+	static{
+		for(int i =0; i<10; i++) waypoints[i] = new EnuCoor_i();
+	}
+	public static EnuCoor_i navigation_target = new EnuCoor_i();
+	public static EnuCoor_i navigation_carrot= new EnuCoor_i();
+	public static EnuCoor_i nav_last_point= new EnuCoor_i();
 	
 	public static int ground_alt;
 	

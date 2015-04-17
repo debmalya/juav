@@ -66,7 +66,7 @@ public class State {
 	public static final int AOA_F       =4;
 	public static final int SIDESLIP_F  =5;
 	
-	public static State_struct state;
+	public static State_struct state = new State_struct();
 	
 	public static void stateSetLocalOrigin_i(LtpDef_i ltp_def) {
 		//memcpy(&state.ned_origin_i, ltp_def, sizeof( LtpDef_i));

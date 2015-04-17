@@ -25,10 +25,10 @@ import static sw.airborne.firmwares.rotorcraft.stabilization.Stabilization_attit
 //
 public class Stabilization_attitude_ref_euler_int {
 
-	public static Int32Eulers stab_att_sp_euler;
-	public static Int32Eulers stab_att_ref_euler;  ///< with #REF_ANGLE_FRAC
-	public static Int32Rates  stab_att_ref_rate;
-	public static Int32Rates  stab_att_ref_accel;
+	public static Int32Eulers stab_att_sp_euler = new Int32Eulers();
+	public static Int32Eulers stab_att_ref_euler= new Int32Eulers();  ///< with #REF_ANGLE_FRAC
+	public static Int32Rates  stab_att_ref_rate= new Int32Rates();
+	public static Int32Rates  stab_att_ref_accel= new Int32Rates();
 	public static long STABILIZATION_ATTITUDE_THETA_IGAIN = 200;
 	public static long STABILIZATION_ATTITUDE_PHI_IGAIN = 200;
 	public static long STABILIZATION_ATTITUDE_PSI_IGAIN = 10;

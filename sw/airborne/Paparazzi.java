@@ -12,7 +12,9 @@ public class Paparazzi {
 	
 	public static final int NB_WAYPOINT = 10;
 	public static EnuCoor_f[] WAYPOINTS = new EnuCoor_f[10];//TODO
-	
+	static{
+		for(int i =0; i<10; i++) WAYPOINTS[i] = new EnuCoor_f();
+	}
 	public static final double GROUND_ALT = 147.;
 	public static final double SECURITY_HEIGHT = 2.;
 	public static final double SECURITY_ALT = 149.;

@@ -2,10 +2,21 @@ package sw.simulator.nps;
 
 import fr.dgac.ivy.IvyException;
 import sw.communication.Commchannel;
+import static sw.airborne.mcu_periph.Sys_time.*;
 
 public class Nps_main {
-	static double sim_time;
-	static double host_time_elapsed;
+	public static double sim_time;
+	public static double host_time_elapsed;
+	public static double host_time_factor ;
+	public static double real_initial_time;
+	public static double scaled_initial_time;
+	public static double display_time;
+	
+	public static final double SIM_DT = (1./SYS_TIME_FREQUENCY);
+	
+	public static Nps_main npsMain;
+	public static int iteration = 0;//TODO:debugging. will run for 10 iterations.;
+	
 	Nps_autopilot_rotorcraft npsRotorcraft = new Nps_autopilot_rotorcraft();
 	void nps_main_run_sim_step() 
 	{
@@ -18,17 +29,41 @@ public class Nps_main {
 	Nps_main()
 	{
 		host_time_elapsed =System.currentTimeMillis();
+		nps_main_init();
+	}
+	
+	public static void nps_main_init(){
+		 sim_time = 0;
+		 display_time = 0;
+		 
+		 real_initial_time = System.nanoTime();
+		 scaled_initial_time = System.nanoTime();
+		 
+		 host_time_factor = 1. ;//HOST_TIME_FACTOR
+		 Nps_autopilot_rotorcraft.nps_autopilot_init();
 	}
 	
 	public static void main(String args[]) throws IvyException
 	{
-		Nps_main npsMain = new Nps_main();
+		npsMain = new Nps_main();
 		Commchannel.CommChannel();
-		while (Nps_main.sim_time <= npsMain.host_time_elapsed) {
-			Nps_main.host_time_elapsed =System.currentTimeMillis();
-			npsMain.nps_main_run_sim_step();
+		
+		for(iteration = 0; iteration<1; iteration++){
+			nps_main_periodic();
 		}
+		System.out.println("Debug: Ran 1 iteration");
 	}
 	
+	public static void nps_main_periodic(){
+		
+		double host_time_now = System.nanoTime();
+		host_time_elapsed = host_time_factor*(host_time_now -scaled_initial_time);
+		System.out.println("Debug: host_time_elapsed: "+host_time_elapsed);
+		while (sim_time <= host_time_elapsed) {
+			npsMain.nps_main_run_sim_step();
+			sim_time += SIM_DT;
+			System.out.println("Degub: sim_time: "+sim_time);
+		}
+	}
 		
 }

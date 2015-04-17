@@ -82,19 +82,19 @@ public class Guidance_h {
 	public static boolean guidance_h_use_ref;
 	public static boolean guidance_h_approx_force_by_thrust;
 
-	public static Int32Vect2 guidance_h_pos_sp;
-	public static Int32Vect2 guidance_h_pos_ref;
-	public static Int32Vect2 guidance_h_speed_ref;
-	public static Int32Vect2 guidance_h_accel_ref;
+	public static Int32Vect2 guidance_h_pos_sp = new Int32Vect2();
+	public static Int32Vect2 guidance_h_pos_ref= new Int32Vect2();
+	public static Int32Vect2 guidance_h_speed_ref= new Int32Vect2();
+	public static Int32Vect2 guidance_h_accel_ref= new Int32Vect2();
 	//#if GUIDANCE_H_USE_SPEED_REF
-	public static Int32Vect2 guidance_h_speed_sp;
+	public static Int32Vect2 guidance_h_speed_sp= new Int32Vect2();
 	//#endif
-	public static Int32Vect2 guidance_h_pos_err;
-	public static Int32Vect2 guidance_h_speed_err;
-	public static Int32Vect2 guidance_h_trim_att_integrator;
+	public static Int32Vect2 guidance_h_pos_err= new Int32Vect2();
+	public static Int32Vect2 guidance_h_speed_err= new Int32Vect2();
+	public static Int32Vect2 guidance_h_trim_att_integrator= new Int32Vect2();
 
-	public static Int32Vect2  guidance_h_cmd_earth;
-	public static Int32Eulers guidance_h_rc_sp;
+	public static Int32Vect2  guidance_h_cmd_earth= new Int32Vect2();
+	public static Int32Eulers guidance_h_rc_sp= new Int32Eulers();
 	public static long guidance_h_heading_sp;
 
 	public static int guidance_h_pgain;

@@ -21,6 +21,13 @@ public class Nps_autopilot_rotorcraft
 	public static boolean nps_bypass_ahrs;
 	public static boolean nps_bypass_ins;
 	
+	public static void nps_autopilot_init(){
+		nps_bypass_ahrs = false;//NPS_BYPASS_AHRS;
+		nps_bypass_ins = false;//NPS_BYPASS_INS;
+		
+		main_init();
+	}
+	
 	void nps_autopilot_run_step(double time) 
 	{
 		if (Imu.gyro_available) {

@@ -24,8 +24,8 @@ import static sw.airborne.Paparazzi.*;
 
 public class Stabilization_attitude_euler_int {
 //
-	public static Int32AttitudeGains  stabilization_gains;
-	public static Int32Eulers stabilization_att_sum_err;
+	public static Int32AttitudeGains  stabilization_gains = new Int32AttitudeGains();
+	public static Int32Eulers stabilization_att_sum_err = new Int32Eulers();
 //
 	public static long stabilization_att_fb_cmd[] = new long[COMMANDS_NB];
 	public static long stabilization_att_ff_cmd[] = new long[COMMANDS_NB];

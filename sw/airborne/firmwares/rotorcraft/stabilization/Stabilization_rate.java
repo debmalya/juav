@@ -51,16 +51,16 @@ public class Stabilization_rate {
 		return (((_a)+(1<<((_b)-1))-((_a)<0?1:0))>>(_b));
 	}
 
-	public static Int32Rates stabilization_rate_sp;
-	public static Int32Rates stabilization_rate_gain;
-	public static Int32Rates stabilization_rate_igain;
-	public static Int32Rates stabilization_rate_ddgain;
-	public static Int32Rates stabilization_rate_ref;
-	public static Int32Rates stabilization_rate_refdot;
-	public static Int32Rates stabilization_rate_sum_err;
+	public static Int32Rates stabilization_rate_sp = new Int32Rates();
+	public static Int32Rates stabilization_rate_gain= new Int32Rates();
+	public static Int32Rates stabilization_rate_igain= new Int32Rates();
+	public static Int32Rates stabilization_rate_ddgain= new Int32Rates();
+	public static Int32Rates stabilization_rate_ref= new Int32Rates();
+	public static Int32Rates stabilization_rate_refdot= new Int32Rates();
+	public static Int32Rates stabilization_rate_sum_err= new Int32Rates();
 
-	public static Int32Rates stabilization_rate_fb_cmd;
-	public static Int32Rates stabilization_rate_ff_cmd;
+	public static Int32Rates stabilization_rate_fb_cmd= new Int32Rates();
+	public static Int32Rates stabilization_rate_ff_cmd= new Int32Rates();
 
 	public static final int STABILIZATION_RATE_DEADBAND_P =0;
 	public static final int STABILIZATION_RATE_DEADBAND_Q =0;
