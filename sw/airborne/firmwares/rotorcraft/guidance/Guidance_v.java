@@ -196,7 +196,7 @@ public class Guidance_v {
 
 
 	public static void guidance_v_run(boolean in_flight) {
-
+		System.out.println("Debug: In guidance_v_run");
 		// FIXME... SATURATIONS NOT TAKEN INTO ACCOUNT
 		// AKA SUPERVISION and co
 		guidance_v_thrust_coeff = get_vertical_thrust_coeff();

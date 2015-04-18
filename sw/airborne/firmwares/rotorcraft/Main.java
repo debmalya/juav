@@ -119,6 +119,7 @@ public class Main {
 	}
 
 	public static void handle_periodic_tasks() {
+		System.out.println("Debug: in handle_periodic_tasks");
 		if (sys_time_check_and_ack_timer(main_periodic_tid))
 			main_periodic();
 	/*	if (sys_time_check_and_ack_timer(modules_tid))
@@ -140,7 +141,7 @@ public class Main {
 	private static int TEN_MAIN_PERIODIC = 0;
 	private static int PERIODIC_FREQUENCY_MAIN_PERIODIC=0;
 	public static void main_periodic() {
-
+		System.out.println("Debug: in main_periodic()");
 		//imu_periodic();
 
 		/* run control loops */

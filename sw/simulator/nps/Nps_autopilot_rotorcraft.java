@@ -14,6 +14,7 @@ import static sw.simulator.nps.nps_fdm_jsbsim.*;
 import static sw.airborne.Paparazzi.*;
 import static sw.simulator.nps.Nps_autopilot.*;
 import static sw.airborne.firmwares.rotorcraft.Main.*;
+import static sw.airborne.arch.sim.mcu_periph.Sys_time_arch.*;
 
 public class Nps_autopilot_rotorcraft 
 {
@@ -30,6 +31,7 @@ public class Nps_autopilot_rotorcraft
 	
 	void nps_autopilot_run_step(double time) 
 	{
+		//System.out.println("Debug: in nps_autopilot_run_step");
 		if (Imu.gyro_available) {
 			//we were using main_event() which in turn called gyro and accel event removed the extra step and called gyro and accel event directly
 			//ImuEvent(on_gyro_event, on_accel_event, on_mag_event);
@@ -39,7 +41,9 @@ public class Nps_autopilot_rotorcraft
 		  if (Gps.gps_available) {
 			  //we were using main_event() which in turn called gps event removed the extra step and called gps event directly
 			  //GpsEvent(on_gps_event);
+			  System.out.println("Debug: Recevied GPS value");
 			  on_gps_event();
+			  Gps.gps_available = false; //TODO DEBUG
 		  }
 
 		 handle_periodic_tasks();
@@ -78,6 +82,10 @@ public class Nps_autopilot_rotorcraft
 		  VECT3_COPY(ltp_accel, fdm.ltpprz_ecef_accel);
 		  stateSetAccelNed_f(ltp_accel);
 
+	}
+	
+	public static void nps_autopilot_run_systime_step(){
+		sys_tick_handler();
 	}
 
 }

@@ -166,29 +166,28 @@ public class Autopilot {
 	public static int autopilot_in_flight_counter;
 	
 	public static int AUTOPILOT_IN_FLIGHT_TIME = 20;
-	public static boolean AUTOPILOT_IN_FLIGHT_TIME_DEFINED = true;
+	//public static boolean AUTOPILOT_IN_FLIGHT_TIME_DEFINED = true;
 	
 	public static double AUTOPILOT_IN_FLIGHT_MIN_SPEED = 0.2;
-	public static boolean AUTOPILOT_IN_FLIGHT_MIN_SPEED_DEFINED = true;
+	//public static boolean AUTOPILOT_IN_FLIGHT_MIN_SPEED_DEFINED = true;
 	
 	public static double AUTOPILOT_IN_FLIGHT_MIN_ACCEL = 2.0;
-	public static boolean AUTOPILOT_IN_FLIGHT_MIN_ACCEL_DEFINED = true;
+	//public static boolean AUTOPILOT_IN_FLIGHT_MIN_ACCEL_DEFINED = true;
 	
 	public static int AUTOPILOT_IN_FLIGHT_MIN_THRUST = 500;
-	public static boolean AUTOPILOT_IN_FLIGHT_MIN_THRUST_DEFINED = true;
+	//public static boolean AUTOPILOT_IN_FLIGHT_MIN_THRUST_DEFINED = true;
 	
 	public static boolean ahrs_is_aligned(){
-		if(!AUTOPILOT_DISABLE_AHRS_KILL_DEFINED)
-			{AUTOPILOT_DISABLE_AHRS_KILL_DEFINED=true;
-			return (AhrsState.status == AHRS_RUNNING);}
-		else return true;
+		
+			return (AhrsState.status == AHRS_RUNNING);
+		
 	}
 	
 	public static double FAILSAFE_DESCENT_SPEED = 1.5;
-	public static boolean FAILSAFE_DESCENT_SPEED_DEFINED = true;
+	//public static boolean FAILSAFE_DESCENT_SPEED_DEFINED = true;
 	
 	public static int FAILSAFE_MODE_TOO_FAR_FROM_HOME = AP_MODE_FAILSAFE;
-	public static boolean FAILSAFE_MODE_TOO_FAR_FROM_HOME_DEFINED = true; 
+	//public static boolean FAILSAFE_MODE_TOO_FAR_FROM_HOME_DEFINED = true; 
 	
 	/*
 	 * 
@@ -369,6 +368,7 @@ public class Autopilot {
 	
 	public static void autopilot_periodic(){
 		//RunOnceEvery(NAV_PRESCALER, C);
+		System.out.println("Debug: in autopilot_periodic");
 		NAV_PRESCALER_COMPUTE_DIST2_TO_HOME++;					
 		if (NAV_PRESCALER_COMPUTE_DIST2_TO_HOME >= NAV_PRESCALER) {			
 			NAV_PRESCALER_COMPUTE_DIST2_TO_HOME = 0;					
@@ -432,6 +432,7 @@ public class Autopilot {
 		 */
 		if (autopilot_mode == AP_MODE_KILL) {
 			//SetCommands(commands_failsafe);
+			System.out.println("Debug: autpilot_mode is AP_MODE_KILL");
 		}
 		else {
 			guidance_v_run( autopilot_in_flight );
@@ -444,18 +445,20 @@ public class Autopilot {
 	public static void autopilot_set_mode(int new_autopilot_mode) {
 
 		/* force kill mode as long as AHRS is not aligned */
-		if (!ahrs_is_aligned())
+		if (!ahrs_is_aligned()){
 			new_autopilot_mode = AP_MODE_KILL;
+			System.out.println("Debug: ahrs_is_aligned() returned false");
+		}
 
 		if (new_autopilot_mode != autopilot_mode) {
 			/* horizontal mode */
 			switch (new_autopilot_mode) {
 			case AP_MODE_FAILSAFE:
-				if(!KILL_AS_FAILSAFE_DEFINED){
+				//if(!KILL_AS_FAILSAFE_DEFINED){
 					stabilization_attitude_set_failsafe_setpoint();
 					guidance_h_mode_changed(GUIDANCE_H_MODE_ATTITUDE);
 					break;
-				}
+				//}
 			case AP_MODE_KILL:
 				autopilot_in_flight =false;
 				autopilot_in_flight_counter = 0;
@@ -495,11 +498,11 @@ public class Autopilot {
 			/* vertical mode */
 			switch (new_autopilot_mode) {
 			case AP_MODE_FAILSAFE:
-				if(KILL_AS_FAILSAFE_DEFINED){
+				//if(KILL_AS_FAILSAFE_DEFINED){
 					guidance_v_mode_changed(GUIDANCE_V_MODE_CLIMB);
 					guidance_v_zd_sp = SPEED_BFP_OF_REAL((float)FAILSAFE_DESCENT_SPEED);
 					break;
-				}
+				//}
 			case AP_MODE_KILL:
 				autopilot_set_motors_on(false);
 				stabilization_cmd[COMMAND_THRUST] = 0;

@@ -3,6 +3,7 @@ package sw.simulator.nps;
 import fr.dgac.ivy.IvyException;
 import sw.communication.Commchannel;
 import static sw.airborne.mcu_periph.Sys_time.*;
+import static sw.simulator.nps.Nps_autopilot_rotorcraft.*;
 
 public class Nps_main {
 	public static double sim_time;
@@ -20,6 +21,7 @@ public class Nps_main {
 	Nps_autopilot_rotorcraft npsRotorcraft = new Nps_autopilot_rotorcraft();
 	void nps_main_run_sim_step() 
 	{
+		nps_autopilot_run_systime_step();
 		npsRotorcraft.nps_autopilot_run_step(sim_time);
 	}
 	public void updateSimTime(Double val)
@@ -59,10 +61,11 @@ public class Nps_main {
 		double host_time_now = System.nanoTime();
 		host_time_elapsed = host_time_factor*(host_time_now -scaled_initial_time);
 		System.out.println("Debug: host_time_elapsed: "+host_time_elapsed);
+		System.out.println("Debug: sim_time: "+sim_time);
 		while (sim_time <= host_time_elapsed) {
 			npsMain.nps_main_run_sim_step();
 			sim_time += SIM_DT;
-			System.out.println("Degub: sim_time: "+sim_time);
+			//System.out.println("Degub: sim_time: "+sim_time);
 		}
 	}
 		
