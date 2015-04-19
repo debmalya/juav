@@ -23,6 +23,7 @@ public class Commchannel implements IvyMessageListener {
 		    	Long[] gpsState = new Long[17];
 		    	int i=0;
 		    	 StringTokenizer tokenizedString = new StringTokenizer(args[0], " ");
+		    	 //System.out.println("Debug: Receiving GPS value");
 		    	 while (tokenizedString.hasMoreElements()) {
 					String currentString = tokenizedString.nextToken();
 					gpsState[i] = Long.parseLong(currentString);
@@ -36,10 +37,11 @@ public class Commchannel implements IvyMessageListener {
 			// Process AHRS
 		    	  long[] gyroUnscaled = new long[6];
 		    	  int i=0;
+		    	  //System.out.println("Debug: Received GYRO values"+args[0]);
 			    	 StringTokenizer tokenizedString = new StringTokenizer(args[0], " ");
 			    	 while (tokenizedString.hasMoreElements()) {
 						String currentString = tokenizedString.nextToken();
-						gyroUnscaled[i] = Long.parseLong(currentString);
+						gyroUnscaled[i] = (long) Double.parseDouble(currentString);
 						i++;
 					}
 			    	 Imu.imu_feed_gyro_accel(gyroUnscaled);
@@ -51,6 +53,7 @@ public class Commchannel implements IvyMessageListener {
 		    	  double[] ahrsLtpEcef = new double[7];
 		    	  int i=0;
 			    	 StringTokenizer tokenizedString = new StringTokenizer(args[0], " ");
+			    	 //System.out.println("Debug: received ahrs values "+args[0]);
 			    	 while (tokenizedString.hasMoreElements()) {
 						String currentString = tokenizedString.nextToken();
 						ahrsLtpEcef[i] = Double.parseDouble(currentString);

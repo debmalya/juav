@@ -47,13 +47,13 @@ public class Nps_main {
 	
 	public static void main(String args[]) throws IvyException
 	{
-		npsMain = new Nps_main();
+		//npsMain = new Nps_main();
 		Commchannel.CommChannel();
 		
-		for(iteration = 0; iteration<1; iteration++){
-			nps_main_periodic();
-		}
-		System.out.println("Debug: Ran 1 iteration");
+//		for(iteration = 0; iteration<1; iteration++){
+//			nps_main_periodic();
+//		}
+//		System.out.println("Debug: Ran 1 iteration");
 	}
 	
 	public static void nps_main_periodic(){

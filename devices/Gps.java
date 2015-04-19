@@ -10,12 +10,12 @@ public class Gps {
 	
 	public static final int GPS_NB_CHANNELS = 1;
 	
-	public static GpsState gps;
+	public static GpsState gps = new GpsState();
 	public static boolean gps_has_fix;
 	public static boolean gps_available;
 	
 	public Gps(){
-		gps = new GpsState();
+		//gps = new GpsState();
 	}
 	
 	/** initialize the global GPS state */
@@ -111,7 +111,7 @@ public class Gps {
 
 		  /* ground course in radians * 1e7 */
 		  gps.course = values[16];
-		  System.out.println("Debug: Feeding gps value");
+		  //System.out.println("Debug: Feeding gps value");
 //		#if GPS_USE_LATLONG
 //		  /* Computes from (lat, long) in the referenced UTM zone */
 //		  struct LlaCoor_f lla_f;
