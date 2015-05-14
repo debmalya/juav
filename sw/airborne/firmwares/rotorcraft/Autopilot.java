@@ -18,7 +18,7 @@ import static sw.airborne.firmwares.rotorcraft.Autopilot_arming_switch.*;
 import static sw.airborne.firmwares.rotorcraft.Navigation.*;
 import static sw.airborne.subsystems.datalink.telemetry.*;
 import static sw.airborne.firmwares.rotorcraft.Main.*;
-
+import static sw.airborne.subsystems.Commands.*;
 
 public class Autopilot {
 	
@@ -104,7 +104,7 @@ public class Autopilot {
 	public static boolean autopilot_ground_detected;
 	public static boolean autopilot_detect_ground_once;
 	public static int autopilot_flight_time;
-	private static int[] commands;
+	//private static long[] commands;
 	
 	public static void AP_MODE_OF_PPRZ (int _rc, int _mode){
 		 if      (_rc > THRESHOLD_2_PPRZ)     
@@ -130,7 +130,7 @@ public class Autopilot {
 //		}
 	}
 	
-	public static void SetRotorcraftCommands(int _cmd[], boolean _in_flight, boolean _motor_on ){
+	public static void SetRotorcraftCommands(long _cmd[], boolean _in_flight, boolean _motor_on ){
 		if(!ROTORCRAFT_COMMANDS_YAW_ALWAYS_ENABLED_DEFINED){
 			 if (!(_in_flight)) { _cmd[COMMAND_YAW] = 0; }               
 			  if (!(_motor_on)) { _cmd[COMMAND_THRUST] = 0; }             
@@ -202,7 +202,7 @@ public class Autopilot {
 	PRINT_CONFIG_MSG("Using 2 sec yaw for motor arming")
 	#endif
 	 */
-	public static int MODE_STARTUP;
+	public static int MODE_STARTUP = AP_MODE_KILL;
 //	public static Autopilot_arming autopilot_arming;
 //	static{
 //		if(USE_KILL_SWITCH_FOR_MOTOR_ARMING)
@@ -223,7 +223,7 @@ public class Autopilot {
 	
 	public static void send_status(){
 		int imu_nb_err = 0;
-		int fix;
+		long fix;
 		int _motor_nb_err;
 		//Object _motor_nb_err;
 		if(USE_MOTOR_MIXING)
@@ -313,16 +313,21 @@ public class Autopilot {
 	
 	public static void autopilot_init(){
 		  /* mode is finally set at end of init if MODE_STARTUP is not KILL */
-		  autopilot_mode = AP_MODE_KILL;
-		  autopilot_motors_on = false;
+		 //autopilot_mode = AP_MODE_KILL; TODO: Debug
+		//System.out.println("Debug: in autopilot_init");
+		 autopilot_mode = AP_MODE_NAV; 
+		 //autopilot_motors_on = false; TODO: Debug
+		  autopilot_motors_on = true;
 		  kill_throttle = ! autopilot_motors_on;
-		  autopilot_in_flight = false;
+		  //autopilot_in_flight = false;
+		  autopilot_in_flight = true;
+		  //System.out.println("Debug: autopilot_in_fligt is "+autopilot_in_flight);
 		  autopilot_in_flight_counter = 0;
 		  autopilot_mode_auto2 = MODE_AUTO2;
 		  autopilot_ground_detected = false;
 		  autopilot_detect_ground_once = false;
 		  autopilot_flight_time = 0;
-		  autopilot_rc = true;
+		  autopilot_rc = false;
 		  autopilot_power_switch = false;
 		  
 		//  if(!POWER_SWITCH_GPIO_DEFINED){
@@ -339,7 +344,7 @@ public class Autopilot {
 		  stabilization_init();
 
 		  /* set startup mode, propagates through to guidance h/v */
-		  autopilot_set_mode(MODE_STARTUP);
+		  //autopilot_set_mode(MODE_STARTUP); TODO: Debug
 		 // telemetry DefaultPeriodic=new telemetry();
 		  register_periodic_telemetry(DefaultPeriodic, "ALIVE", 1);
 		  register_periodic_telemetry(DefaultPeriodic, "ROTORCRAFT_STATUS", 2);
@@ -352,6 +357,7 @@ public class Autopilot {
 		  //if(RADIO_CONTROL_DEFINED){
 			//  register_periodic_telemetry(DefaultPeriodic, "RC", send_rc);
 			 // register_periodic_telemetry(DefaultPeriodic, "ROTORCRAFT_RADIO_CONTROL", send_rotorcraft_rc);
+		  //System.out.println("Debug: Autopilot_init end autopilot_in_fligt is "+autopilot_in_flight);
 		  }
 	
 	
@@ -365,18 +371,31 @@ public class Autopilot {
 	private static int NAV_PRESCALER_NAV_HOME = 0;
 	private static int NAV_PRESCALER_NAV_PERIODIC_TASK = 0;
 	
-	
+	public static void display_state(){
+		  NedCoor_i pos, speed, accel;
+		  pos = stateGetSpeedNed_i();
+		  speed = stateGetPositionNed_i();
+		  accel = stateGetAccelNed_i();
+
+		  EnuCoor_i pos_enu = stateGetPositionEnu_i();
+//		  System.out.printf("pos,%d,%d,%d\n",pos.x,pos.y,pos.z);
+//		  System.out.printf("speed,%d,%d,%d\n",speed.x,speed.y,speed.z);
+//		  System.out.printf("accel,%d,%d,%d\n",accel.x,accel.y,accel.z);
+//		  System.out.printf("enupos,%d,%d,%d\n",pos_enu.x,pos_enu.y,pos_enu.z);
+		  System.out.printf("commands,%d,%d,%d\n",stabilization_cmd[0],stabilization_cmd[1],stabilization_cmd[2],stabilization_cmd[3]);
+		}
 	public static void autopilot_periodic(){
 		//RunOnceEvery(NAV_PRESCALER, C);
-		System.out.println("Debug: in autopilot_periodic");
+		//System.out.println("Debug: in autopilot_periodic");
 		NAV_PRESCALER_COMPUTE_DIST2_TO_HOME++;					
 		if (NAV_PRESCALER_COMPUTE_DIST2_TO_HOME >= NAV_PRESCALER) {			
 			NAV_PRESCALER_COMPUTE_DIST2_TO_HOME = 0;					
 			compute_dist2_to_home();						
 		}	
-
+		//System.out.println("Debug: autopilot_in_flight is "+autopilot_in_flight);
 		if (autopilot_in_flight) {
 			if (too_far_from_home) {
+				System.out.println("Debug: Autopilot too_far_from_home");
 				if (dist2_to_home > failsafe_mode_dist2)
 					autopilot_set_mode(FAILSAFE_MODE_TOO_FAR_FROM_HOME);
 				else
@@ -401,30 +420,32 @@ public class Autopilot {
 				NAV_PRESCALER_NAV_PERIODIC_TASK = 0;					
 				nav_periodic_task();						
 			}
-
+			display_state();//TODO: print logs
 		}
 
 
 		/* If in FAILSAFE mode and either already not in_flight anymore
 		 * or just "detected" ground, go to KILL mode.
 		 */
-		if (autopilot_mode == AP_MODE_FAILSAFE) {
-			if (!autopilot_in_flight)
-			autopilot_set_mode(AP_MODE_KILL);
-
-			if(FAILSAFE_GROUND_DETECT){
-				//INFO("Using FAILSAFE_GROUND_DETECT: KILL")
-				if (autopilot_ground_detected)
-				autopilot_set_mode(AP_MODE_KILL);
-			}
-		}
+		//TODO: Debug
+//		if (autopilot_mode == AP_MODE_FAILSAFE) {
+//			if (!autopilot_in_flight)
+//			autopilot_set_mode(AP_MODE_KILL);
+//
+//			if(FAILSAFE_GROUND_DETECT){
+//				//INFO("Using FAILSAFE_GROUND_DETECT: KILL")
+//				if (autopilot_ground_detected)
+//				autopilot_set_mode(AP_MODE_KILL);
+//			}
+//		}
 
 		/* Reset ground detection _after_ running flight plan
 		 */
-		if (!autopilot_in_flight || autopilot_ground_detected) {
-			autopilot_ground_detected = false;
-			autopilot_detect_ground_once = false;
-		}
+		//TODO: Debug
+//		if (!autopilot_in_flight || autopilot_ground_detected) {
+//			autopilot_ground_detected = false;
+//			autopilot_detect_ground_once = false;
+//		}
 
 		/* Set fixed "failsafe" commands from airframe file if in KILL mode.
 		 * If in FAILSAFE mode, run normal loops with failsafe attitude and
@@ -437,7 +458,7 @@ public class Autopilot {
 		else {
 			guidance_v_run( autopilot_in_flight );
 			guidance_h_run( autopilot_in_flight );
-			//SetRotorcraftCommands(stabilization_cmd, autopilot_in_flight, autopilot_motors_on);
+			SetRotorcraftCommands(stabilization_cmd, autopilot_in_flight, autopilot_motors_on);
 		}
 
 	}
@@ -538,7 +559,7 @@ public class Autopilot {
 			}
 			autopilot_mode = new_autopilot_mode;
 		}
-
+		//System.out.println("Debug: Autopilot_set_mode end autopilot_in_fligt is "+autopilot_in_flight);
 	}
 	
 	public static void autopilot_check_in_flight(boolean motors_on) {
@@ -570,6 +591,7 @@ public class Autopilot {
 					autopilot_in_flight_counter++;
 					if (autopilot_in_flight_counter == AUTOPILOT_IN_FLIGHT_TIME)
 						autopilot_in_flight = true;
+						System.out.println("Debug: Setting autopilot_in_flight to true");
 				}
 				else { /* currently not in_flight and thrust below threshold, reset counter */
 					autopilot_in_flight_counter = 0;

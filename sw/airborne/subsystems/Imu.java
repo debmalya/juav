@@ -63,7 +63,7 @@ public class Imu {
 		  // set availability flags...
 		  accel_available = true;
 		  gyro_available = true;
-
+		  //System.out.println("Debug: Received gyro and accel");
 		}
 	
 	public static void ImuScaleAccel(ImuState imu){

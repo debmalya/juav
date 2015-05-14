@@ -17,7 +17,6 @@ import static sw.airborne.subsystems.datalink.Datalink.*;
 //import static sw.airborne.subsystems.Setting.*;
 //import static sw.airborne.subsystems.Setting.*;
 //import static sw.airborne.subsystems.Setting.*;
-import static sw.airborne.subsystems.gps.Gps_sim_nps.*;
 import static sw.airborne.subsystems.Gps.*;
 import sw.airborne.math.*;
 import sw.airborne.mcu_periph.Sys_time;
@@ -119,29 +118,29 @@ public class Main {
 	}
 
 	public static void handle_periodic_tasks() {
-		System.out.println("Debug: in handle_periodic_tasks");
+		//System.out.println("Debug: in handle_periodic_tasks");
 		if (sys_time_check_and_ack_timer(main_periodic_tid))
 			main_periodic();
-	/*	if (sys_time_check_and_ack_timer(modules_tid))
-			modules_periodic_task();
-		if (sys_time_check_and_ack_timer(radio_control_tid))
-			radio_control_periodic_task();
+//		if (sys_time_check_and_ack_timer(modules_tid))
+//			modules_periodic_task();
+//		if (sys_time_check_and_ack_timer(radio_control_tid))
+//			radio_control_periodic_task();
 		if (sys_time_check_and_ack_timer(failsafe_tid))
 			failsafe_check();
-		if (sys_time_check_and_ack_timer(electrical_tid))
-			electrical_periodic();
-		if (sys_time_check_and_ack_timer(telemetry_tid))
-			telemetry_periodic();
-		if(USE_BARO_BOARD)
-		if (sys_time_check_and_ack_timer(baro_tid))
-			baro_periodic();*/
+//		if (sys_time_check_and_ack_timer(electrical_tid))
+//			electrical_periodic();
+//		if (sys_time_check_and_ack_timer(telemetry_tid))
+//			telemetry_periodic();
+//		if(USE_BARO_BOARD)
+//		if (sys_time_check_and_ack_timer(baro_tid))
+//			baro_periodic();
 		
 	}
 	
 	private static int TEN_MAIN_PERIODIC = 0;
 	private static int PERIODIC_FREQUENCY_MAIN_PERIODIC=0;
 	public static void main_periodic() {
-		System.out.println("Debug: in main_periodic()");
+		//System.out.println("Debug: in main_periodic()");
 		//imu_periodic();
 
 		/* run control loops */
@@ -151,6 +150,7 @@ public class Main {
 	//	SetActuatorsFromCommands(commands, autopilot_mode);
 
 		if (autopilot_in_flight) {
+			//System.out.println("Debug: autopilot_in_flight: "+autopilot_in_flight);
 			//RunOnceEvery(PERIODIC_FREQUENCY, { autopilot_flight_time++; datalink_time++; });
 			PERIODIC_FREQUENCY_MAIN_PERIODIC++;					
 			if (PERIODIC_FREQUENCY_MAIN_PERIODIC >= PERIODIC_FREQUENCY) {			
@@ -190,35 +190,35 @@ public class Main {
 	public static final boolean USE_VEHICLE_INTERFACE = false;
 	
 
-/*	public static void failsafe_check() {
-		if (radio_control.status == RC_REALLY_LOST &&
-				autopilot_mode != AP_MODE_KILL &&
-				autopilot_mode != AP_MODE_HOME &&
-				autopilot_mode != AP_MODE_FAILSAFE &&
-				autopilot_mode != AP_MODE_NAV)
-		{
-			autopilot_set_mode(RC_LOST_MODE);
-		}
-
-		if(FAILSAFE_ON_BAT_CRITICAL)
-		if (autopilot_mode != AP_MODE_KILL &&
-		electrical.bat_critical)
-		{
-			autopilot_set_mode(AP_MODE_FAILSAFE);
-		}
-		
+public static void failsafe_check() {
+//		if (radio_control.status == RC_REALLY_LOST &&
+//				autopilot_mode != AP_MODE_KILL &&
+//				autopilot_mode != AP_MODE_HOME &&
+//				autopilot_mode != AP_MODE_FAILSAFE &&
+//				autopilot_mode != AP_MODE_NAV)
+//		{
+//			autopilot_set_mode(RC_LOST_MODE);
+//		}
+//
+//		if(FAILSAFE_ON_BAT_CRITICAL)
+//		if (autopilot_mode != AP_MODE_KILL &&
+//		electrical.bat_critical)
+//		{
+//			autopilot_set_mode(AP_MODE_FAILSAFE);
+//		}
+//		
 
 		if(USE_GPS){
 		gps_periodic_check();
-		if (autopilot_mode == AP_MODE_NAV &&
-				autopilot_motors_on &&
-				
-				radio_control.status != RC_OK &&
-				
-				GpsIsLost())
-		{
-			autopilot_set_mode(AP_MODE_FAILSAFE);
-		}
+//		if (autopilot_mode == AP_MODE_NAV &&
+//				autopilot_motors_on &&
+//				
+//				radio_control.status != RC_OK &&
+//				
+//				GpsIsLost())
+//		{
+//			autopilot_set_mode(AP_MODE_FAILSAFE);
+//		}
 
 		if (autopilot_mode == AP_MODE_HOME &&
 				autopilot_motors_on && GpsIsLost())
@@ -228,7 +228,7 @@ public class Main {
 	}
 
 		autopilot_check_in_flight(autopilot_motors_on);
-	}*/
+	}
 
 	public static void main_event() {
 

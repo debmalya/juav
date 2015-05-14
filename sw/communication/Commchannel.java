@@ -6,7 +6,7 @@ import sw.airborne.math.FloatQuat;
 import sw.airborne.math.FloatRates;
 import sw.airborne.subsystems.Imu;
 import fr.dgac.ivy.* ;
-import devices.Gps;
+import sw.airborne.subsystems.Gps;
 
 public class Commchannel implements IvyMessageListener {
 	private static Ivy bus;
@@ -70,6 +70,7 @@ public class Commchannel implements IvyMessageListener {
 			    	 rates_f.q = (float) ahrsLtpEcef[5];
 			    	 rates_f.r = (float) ahrsLtpEcef[6];
 			    	 State.stateSetBodyRates_f(rates_f);
+			    	 //System.out.println("Debug: Feeding ahrs values");
 		      }
 		    });
 		 bus.start(null); // starts the bus on the default domain

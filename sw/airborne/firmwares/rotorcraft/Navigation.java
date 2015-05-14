@@ -474,7 +474,7 @@ public class Navigation {
 //	 * #too_far_from_home
 //	 */
 	public static void compute_dist2_to_home() {
-		System.out.println("Debug: in compute_dist2_to_home() ");
+	//System.out.println("Debug: in compute_dist2_to_home() ");
 	  EnuCoor_i pos = stateGetPositionEnu_i();
 	  Int32Vect2 home_d = new Int32Vect2();
 	  VECT2_DIFF(home_d, waypoints[WP_HOME], pos);

@@ -310,7 +310,7 @@ public class Guidance_h {
 
 
 	public static void guidance_h_run(boolean  in_flight) {
-		System.out.println("Debug: in guidance_h_run");
+		//System.out.println("Debug: in guidance_h_run");
 		switch ( guidance_h_mode ) {
 
 		case GUIDANCE_H_MODE_RC_DIRECT:

@@ -41,9 +41,9 @@ public class Nps_autopilot_rotorcraft
 		  if (Gps.gps_available) {
 			  //we were using main_event() which in turn called gps event removed the extra step and called gps event directly
 			  //GpsEvent(on_gps_event);
-			  System.out.println("Debug: Recevied GPS value");
+			  //System.out.println("Debug: Recevied GPS value");
 			  on_gps_event();
-			  Gps.gps_available = false; //TODO DEBUG
+			  //Gps.gps_available = false; //TODO DEBUG
 		  }
 
 		 handle_periodic_tasks();

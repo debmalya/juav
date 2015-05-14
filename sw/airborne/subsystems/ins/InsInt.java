@@ -1,7 +1,7 @@
 package sw.airborne.subsystems.ins;
 import sw.airborne.math.*;
 public class InsInt {
-	public  LtpDef_i  ltp_def;
+	public  LtpDef_i  ltp_def = new LtpDef_i();
 	public  boolean           ltp_initialized;
 
 	/** request to realign horizontal filter.
@@ -15,9 +15,9 @@ public class InsInt {
 	public  boolean vf_reset;
 
 	/* output LTP NED */
-	public  NedCoor_i ltp_pos;
-	public  NedCoor_i ltp_speed;
-	public  NedCoor_i ltp_accel;
+	public  NedCoor_i ltp_pos = new NedCoor_i();
+	public  NedCoor_i ltp_speed= new NedCoor_i();
+	public  NedCoor_i ltp_accel= new NedCoor_i();
 
 	/* baro */
 	public  float baro_z;  ///< z-position calculated from baro in meters (z-down)

@@ -47,24 +47,27 @@ public class Nps_main {
 	
 	public static void main(String args[]) throws IvyException
 	{
-		//npsMain = new Nps_main();
+		npsMain = new Nps_main();
 		Commchannel.CommChannel();
 		
-//		for(iteration = 0; iteration<1; iteration++){
-//			nps_main_periodic();
-//		}
-//		System.out.println("Debug: Ran 1 iteration");
+		for(iteration = 0; iteration<1; iteration++){
+			nps_main_periodic();
+		}
+		//System.out.println("Debug: Ran 1 iteration");
 	}
 	
 	public static void nps_main_periodic(){
 		
 		double host_time_now = System.nanoTime();
-		host_time_elapsed = host_time_factor*(host_time_now -scaled_initial_time);
-		System.out.println("Debug: host_time_elapsed: "+host_time_elapsed);
-		System.out.println("Debug: sim_time: "+sim_time);
+		host_time_elapsed = host_time_factor*(host_time_now -scaled_initial_time);//TODO: There is a difference in time scale
+		//System.out.println("Debug: host_time_elapsed: "+host_time_elapsed);
+		//System.out.println("Debug: sim_time: "+sim_time);
+		int i = 0; //TODO: Debug
 		while (sim_time <= host_time_elapsed) {
+		//while(i<2){	
 			npsMain.nps_main_run_sim_step();
 			sim_time += SIM_DT;
+			i++;
 			//System.out.println("Degub: sim_time: "+sim_time);
 		}
 	}

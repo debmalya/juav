@@ -41,7 +41,7 @@ public class Gps {
 		
 		// Not needed same as constructor.
 		
-		//gps_impl_init();
+		gps_impl_init();
 		
 //		#endif
 //
@@ -135,9 +135,15 @@ public class Gps {
 		  gps_available = true;
 		}
 	
-	public void gps_impl_init(){
+	public static void gps_impl_init(){
 		gps_available = false;
 		gps_has_fix = true;
 	}
 	
+	public static boolean GpsIsLost() {
+		  if (gps.fix == GPS_FIX_3D) {
+		    return false;
+		  }
+		  return true;
+		}
 }
