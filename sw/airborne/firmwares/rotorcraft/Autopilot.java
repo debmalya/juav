@@ -382,7 +382,7 @@ public class Autopilot {
 //		  System.out.printf("speed,%d,%d,%d\n",speed.x,speed.y,speed.z);
 //		  System.out.printf("accel,%d,%d,%d\n",accel.x,accel.y,accel.z);
 //		  System.out.printf("enupos,%d,%d,%d\n",pos_enu.x,pos_enu.y,pos_enu.z);
-		  System.out.printf("commands,%d,%d,%d\n",stabilization_cmd[0],stabilization_cmd[1],stabilization_cmd[2],stabilization_cmd[3]);
+//		  System.out.printf("commands,%d,%d,%d\n",stabilization_cmd[0],stabilization_cmd[1],stabilization_cmd[2],stabilization_cmd[3]);
 		}
 	public static void autopilot_periodic(){
 		//RunOnceEvery(NAV_PRESCALER, C);

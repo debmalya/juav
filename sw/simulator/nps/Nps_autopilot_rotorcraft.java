@@ -5,11 +5,12 @@ import sw.airborne.math.FloatRates;
 import sw.airborne.math.NedCoor_f;
 import static sw.airborne.math.Pprz_algebra.*;
 import static sw.airborne.State.*;
-
 import static sw.airborne.firmwares.rotorcraft.Main.*;
 import devices.Gps;
+import fr.dgac.ivy.IvyException;
 import sw.airborne.subsystems.Imu;
 import sw.airborne.subsystems.actuators.motor_mixing.Motor_mixing;
+import sw.communication.Commchannel;
 import static sw.simulator.nps.nps_fdm_jsbsim.*;
 import static sw.airborne.Paparazzi.*;
 import static sw.simulator.nps.Nps_autopilot.*;
@@ -52,7 +53,8 @@ public class Nps_autopilot_rotorcraft
 		 //int MAX_PPRZ = 9600;
 		  for (int  i=0; i < NPS_COMMANDS_NB; i++)
 			  autopilot.commands[i] = (double)Motor_mixing.commands[i]/MAX_PPRZ;
-
+		  String commandMessage = "CMD_MSG" +"," + autopilot.commands[0] +"," + autopilot.commands[1] +"," + autopilot.commands[2] +"," + autopilot.commands[3];
+		  Commchannel.sendMessage(commandMessage);
 		}
 
 	

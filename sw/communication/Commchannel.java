@@ -93,4 +93,14 @@ public class Commchannel implements IvyMessageListener {
 		// TODO Auto-generated method stub
 		
 	}
+	public static void sendMessage(String msg)
+	{
+		try {
+			System.out.println("Sending out " + msg);
+			bus.sendMsg(msg);
+		} catch (IvyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
